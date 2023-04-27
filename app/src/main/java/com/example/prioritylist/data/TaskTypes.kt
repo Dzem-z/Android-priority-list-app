@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
 TODO(comments)
  */
 
-enum class TaskTypes(taskType: KClass<out Task>, listType: KClass<out TaskList<*>>) {
+enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out TaskList<*>>) {
     CATEGORY(CategoryTask::class, CategoryTaskList::class),
     PRIORITY(PriorityTask::class, PriorityTaskList::class),
     DEADLINE_PRIORITY_CATEGORY(DeadlinePriorityCategoryTask::class, DeadlinePriorityCategoryTaskList::class),

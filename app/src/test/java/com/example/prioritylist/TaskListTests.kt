@@ -513,7 +513,28 @@ class TaskListTests {
 
     @Test
     fun editTask_taskEdited_taskProperlyEdited() {
-        
+        val list = PriorityTaskList(name = "test", id = 0)
+        val task = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            priority = 1
+        )
+        list.add(task)
+        val editedTask = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2022-03-12T12:15:30"),
+            name = "edited_task",
+            description = "desc_new",
+            id = 3,
+            priority = 3
+        )
+        list.editTask(0, editedTask)
+
+        val returnedTask = list.getTaskByID(0)
+
+        assertTrue(returnedTask == editedTask)
+
     }
 
     @Test
@@ -700,6 +721,10 @@ class TaskListTests {
         val task = list.getTaskByID(0)
 
         assertTrue(task == addedTask)
+
+        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+            val nonexistentTask = list.getTaskByID(1)
+        }
     }
 
     @Test
@@ -717,6 +742,29 @@ class TaskListTests {
             description = "desc",
             name = "test"
         )
+
+        val editedTask = PriorityTask(
+            priority = 5,
+            dateOfCreation = LocalDateTime.parse("2023-03-17T12:34:30"),
+            evaluatedPriority = 5.0,
+            id = 2,
+            description = "newDesc",
+            name = "editedTask"
+        )
+
+        list.add(addedTask)
+        list.editTask(0, editedTask)
+
+        list.undo()
+
+        val returnedTask = list.getTaskByID(0)
+
+        assertTrue(returnedTask == addedTask)
+
+        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+            val nonexistentTask = list.getTaskByID(1)
+        }
+
     }
 
 
