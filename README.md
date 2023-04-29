@@ -9,7 +9,7 @@ This project was created as the final project of a software engineering course. 
 This section will be filled in future releases.
 
 ## Legal
-This project is distributed under MIT license. See [LICENSE.md]("LICENSE.md") for details.
+This project is distributed under MIT license. See [LICENSE.md](https://github.com/Dzem-z/Android-priority-list-app/blob/master/LICENSE.md "LICENSE.md") for details.
 
 ## Build Status
 Because this project is being created with respect to the TDD process, currently there are only unit tests and backbone of project classes. It won't compile nor run at the moment.
