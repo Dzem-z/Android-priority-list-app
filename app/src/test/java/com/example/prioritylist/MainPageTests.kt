@@ -330,4 +330,35 @@ class MainPageTests {
         assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
     }
 
+    @Test
+    fun changeIDofCurrentList_onListOrderChange_listIDAndOrderChanged() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+
+        page.addList(type1, name1)
+        page.addList(type2, name2)
+        page.addList(type3, name3)
+        page.addList(type4, name4)
+
+        page.changeIDofCurrentList(0)
+        page.nextList()
+
+        assertTrue(page.currentListID == 1)
+        assertTrue(page.currentType == type2)
+        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
+
+
+        page.changeIDofCurrentList(2)
+        page.prevList()
+
+        assertTrue(page.currentListID == 1)
+        assertTrue(page.currentType == type3)
+        assertTrue((page.currentList as DeadlinePriorityTaskList).getName() == name3)
+
+
+    }
 }
