@@ -20,7 +20,6 @@ class MainPage() {
 
     fun addList(
         type: TaskTypes,
-        id: Int,
         name: String
     ) {
         TODO("not yet implemented")
