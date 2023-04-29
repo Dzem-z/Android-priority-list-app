@@ -21,7 +21,7 @@ class MainPage() {
     fun addList(
         type: TaskTypes,
         name: String
-    ) {
+    ): Status {
         TODO("not yet implemented")
     }
 
@@ -30,13 +30,16 @@ class MainPage() {
         TODO("not yet implemented")
     }
 
-    fun nextList() {
+    fun changeIDofCurrentList(newId: Int): Status {
         TODO("not yet implemented")
     }
-    fun prevList() {
+    fun nextList(): Status {
         TODO("not yet implemented")
     }
-    fun deleteCurrentList(){
+    fun prevList(): Status {
+        TODO("not yet implemented")
+    }
+    fun deleteCurrentList(): Status {
         TODO("not yet implemented")
     }
 
