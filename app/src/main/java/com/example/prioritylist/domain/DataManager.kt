@@ -1,9 +1,6 @@
 package com.example.prioritylist.domain
 
-import com.example.prioritylist.data.HistoryTask
-import com.example.prioritylist.data.Status
-import com.example.prioritylist.data.Task
-import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.data.*
 import java.util.Date
 
 /*
@@ -26,7 +23,10 @@ class DataManager {
     fun moveToHistoryUseCase(task: Task): Status {
         TODO("Not yet implemented")
     }
-    fun getListUseCase(): MutableList<HistoryTask<*>> {
+    fun getListUseCase(): MutableList<*> {
+        TODO("Not yet implemented")
+    }
+    fun getHistoryListUseCase(): MutableList<HistoryTask<*>> {
         TODO("Not yet implemented")
     }
     fun deleteFromHistoryUseCase(name: String): Status {
