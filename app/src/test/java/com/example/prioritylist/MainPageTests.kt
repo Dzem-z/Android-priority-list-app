@@ -181,7 +181,86 @@ class MainPageTests {
     }
 
     @Test
-    fun
+    fun addListsAndTriggerNextList_NextListSetsCurrentVariablesCorrectly() {
+        val page = MainPage()
 
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+        val name5 = "name5"; val type5 = TaskTypes.CATEGORY
+
+        page.addList(type1, name1)
+        page.prevList()
+        page.addList(type2, name2)
+        page.prevList()
+        page.addList(type3, name3)
+        page.prevList()
+        page.addList(type4, name4)
+        page.prevList()
+        page.addList(type5, name5)
+        page.prevList()
+
+        page.nextList()
+
+        assertTrue(page.currentListID == 1)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name4)
+        assertTrue(page.currentType == type4)
+
+        page.nextList()
+
+        assertTrue(page.currentListID == 2)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name3)
+        assertTrue(page.currentType == type3)
+
+        page.nextList()
+
+        assertTrue(page.currentListID == 3)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name2)
+        assertTrue(page.currentType == type2)
+
+        page.nextList()
+
+        assertTrue(page.currentListID == 0)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name1)
+        assertTrue(page.currentType == type1)
+
+    }
+
+    @Test
+    fun addListAndNextList_CurrentVariablesSetToLastList() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+
+        page.addList(type1, name1)
+        page.addList(type2, name2)
+
+        page.nextList()
+
+        assertTrue(page.currentListID == 1)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name2)
+        assertTrue(page.currentType == type2)
+    }
+
+    @Test
+    fun addListAndPrevList_CurrentVariablesSetToFirstList() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+
+        page.addList(type1, name1)
+        page.addList(type2, name2)
+
+        page.prevList()
+        page.prevList()
+        page.prevList()
+
+        assertTrue(page.currentListID == 0)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name1)
+        assertTrue(page.currentType == type1)
+    }
 
 }
