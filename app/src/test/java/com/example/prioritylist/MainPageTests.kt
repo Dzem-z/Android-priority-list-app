@@ -263,4 +263,71 @@ class MainPageTests {
         assertTrue(page.currentType == type1)
     }
 
+    @Test
+    fun deleteCurrentListInTheMiddle_onDelete_listDeletedAndPreviousListSetAsCurrent() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+
+        page.addList(type1, name1)
+        page.addList(type2, name2)
+        page.addList(type3, name3)
+        page.addList(type4, name4)
+        page.prevList()
+
+        page.deleteCurrentList()
+
+        assertTrue(page.currentListID == 1)
+        assertTrue(page.currentType == TaskTypes.DEADLINE_CATEGORY)
+        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
+    }
+
+    @Test
+    fun deleteCurrentListAtTheEnd_onDelete_listDeletedAndPreviousListSetAsCurrent() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+
+        page.addList(type1, name1)
+        page.addList(type2, name2)
+        page.addList(type3, name3)
+        page.addList(type4, name4)
+
+        page.deleteCurrentList()
+
+        assertTrue(page.currentListID == 3)
+        assertTrue(page.currentType == TaskTypes.DEADLINE_PRIORITY)
+        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name3)
+    }
+
+    @Test
+    fun deleteCurrentListAtTheStart_onDelete_listDeletedAndPreviousListSetAsCurrent() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+
+        page.addList(type1, name1)
+        page.addList(type2, name2)
+        page.addList(type3, name3)
+        page.addList(type4, name4)
+        page.prevList()
+        page.prevList()
+        page.prevList()
+
+        page.deleteCurrentList()
+
+        assertTrue(page.currentListID == 0)
+        assertTrue(page.currentType == TaskTypes.DEADLINE_CATEGORY)
+        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
+    }
+
 }
