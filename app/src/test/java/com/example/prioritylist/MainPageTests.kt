@@ -1,20 +1,22 @@
 package com.example.prioritylist
 
 import com.example.prioritylist.data.*
+import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
+import org.junit.Assert.assertThrows
 import org.junit.Test
 
 class MainPageTests {
 
     @Test
-    fun addListsWithSameType_onAddingNewList_listAddedAndRead() {
+    fun addListsWithSameType_listAddedAndRead() {
         val page = MainPage()
 
         val nameID0 = "list1"
         val nameID1 = "list2"
 
-        page.addList(TaskTypes.DEADLINE, 0, nameID0)
-        page.addList(TaskTypes.DEADLINE, 1, nameID1)
+        page.addList(TaskTypes.DEADLINE, nameID0)
+        page.addList(TaskTypes.DEADLINE, nameID1)
 
         val list = page.getListByID(0)
 
@@ -33,10 +35,10 @@ class MainPageTests {
         val nameID2 = "list3"
         val nameID3 = "list4"
 
-        page.addList(TaskTypes.PRIORITY, 0, nameID0)
-        page.addList(TaskTypes.DEADLINE, 1, nameID1)
-        page.addList(TaskTypes.DEADLINE_CATEGORY, 2, nameID2)
-        page.addList(TaskTypes.DEADLINE_PRIORITY, 3, nameID3)
+        page.addList(TaskTypes.PRIORITY, nameID0)
+        page.addList(TaskTypes.DEADLINE, nameID1)
+        page.addList(TaskTypes.DEADLINE_CATEGORY, nameID2)
+        page.addList(TaskTypes.DEADLINE_PRIORITY, nameID3)
 
         val list0 = page.getListByID(0)
         val list1 = page.getListByID(1)
@@ -57,7 +59,7 @@ class MainPageTests {
     }
 
     @Test
-    fun addAndGetLists_correctPrioritySet() {
+    fun addPrevListAndGetLists_correctIDSet() {
         val page = MainPage()
 
         val nameID0 = "list1"
@@ -65,10 +67,13 @@ class MainPageTests {
         val nameID2 = "list3"
         val nameID3 = "list4"
 
-        page.addList(TaskTypes.PRIORITY, 3, nameID3)
-        page.addList(TaskTypes.PRIORITY, 1, nameID1)
-        page.addList(TaskTypes.PRIORITY, 2, nameID2)
-        page.addList(TaskTypes.PRIORITY, 0, nameID0)
+        page.addList(TaskTypes.PRIORITY, nameID3)
+        page.prevList()
+        page.addList(TaskTypes.PRIORITY, nameID1)
+        page.addList(TaskTypes.PRIORITY, nameID2)
+        page.prevList()
+        page.prevList()
+        page.addList(TaskTypes.PRIORITY, nameID0)
 
 
         val list0 = page.getListByID(0)
@@ -89,17 +94,94 @@ class MainPageTests {
     }
 
     @Test
-    fun initialReadingOfCurrentList_listReadingAfterAddingFirstList_listReadCorrectly() {
+    fun addList_initialReadingOfCurrentList_currentListIDCurrentListCurrentTypeSetCorrectly() {
         val page = MainPage()
 
         val name = "name"
 
-        page.addList(TaskTypes.PRIORITY, 0, name)
+        page.addList(TaskTypes.PRIORITY, name)
 
         assertTrue(page.currentType == TaskTypes.PRIORITY)
         assertTrue((page.currentList as PriorityTaskList).getName() == name)
         assertTrue(page.currentListID == 0)
 
     }
+
+    @Test
+    fun addListPrevListGetList_addingCoupleOfLists_currentListIDCurrentListCurrentTypeSetCorrectly() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+        val name5 = "name5"; val type5 = TaskTypes.CATEGORY
+
+        page.addList(type1, name1)
+        page.prevList()
+        page.addList(type2, name2)
+        page.prevList()
+        page.addList(type3, name3)
+        page.prevList()
+        page.addList(type4, name4)
+        page.prevList()
+        page.addList(type5, name5)
+        page.prevList()
+
+        val list5 = page.getListByID(0)
+        val list4 = page.getListByID(1)
+        val list3 = page.getListByID(2)
+        val list2 = page.getListByID(3)
+        val list1 = page.getListByID(4)
+
+        assertTrue(page.currentListID == 0)
+        assertNotNull(page.currentList)
+        assertTrue(page.currentList!!::class  == type5.listType)
+
+        assertTrue((list5 as TaskList<Task>).getName() == name5)
+        assertTrue((list4 as TaskList<Task>).getName() == name4)
+        assertTrue((list3 as TaskList<Task>).getName() == name3)
+        assertTrue((list2 as TaskList<Task>).getName() == name2)
+        assertTrue((list1 as TaskList<Task>).getName() == name1)
+
+    }
+
+    @Test
+    fun addListGetList_BadIndex_ArrayIndexOutBoundsExceptionThrown() {
+        val page = MainPage()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+        val name4 = "name4"; val type4 = TaskTypes.DEADLINE
+        val name5 = "name5"; val type5 = TaskTypes.CATEGORY
+
+        page.addList(type1, name1)
+        page.prevList()
+        page.addList(type2, name2)
+        page.prevList()
+        page.addList(type3, name3)
+        page.prevList()
+        page.addList(type4, name4)
+        page.prevList()
+        page.addList(type5, name5)
+        page.prevList()
+
+
+
+        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+            page.getListByID(10)
+        }
+        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+            page.getListByID(5)
+        }
+        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+            page.getListByID(-1)
+        }
+    }
+
+    @Test
+    fun
+
 
 }
