@@ -27,6 +27,8 @@ abstract class TaskList<TaskType: Task>(
     internal fun delete(task: TaskType): Status {
         TODO("Not yet implemented")
     }
+
+    @JvmName("getNameTaskList")
     fun getName(): String {
         TODO("Not yet implemented")
     }
