@@ -195,24 +195,24 @@ class TaskListTests {
     }
 
     @Test
-    fun deadlineGetPriority_whenPriorityNeedsToBeEvaluated_correctOrdering() {
+    fun deadlineGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
         val list = DeadlineTaskList(name = "test", id = 0)
         val taskByDate1 = DeadlineTask(
-            dateOfCreation =  LocalDateTime.parse("2023-01-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-01-12T12:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3,
             deadline = LocalDateTime.parse("2023-04-12T12:15:30")
         )
         val taskByDate2 = DeadlineTask(
-            dateOfCreation =  LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-02-12T12:15:30"),
             name = "test_name_2",
             description = "desc_2",
             id = 3,
             deadline = LocalDateTime.parse("2023-05-12T12:15:30")
         )
         val taskByDate3 = DeadlineTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-03-12T12:15:30"),
             name = "test_name_3",
             description = "desc_3",
             id = 2,
@@ -232,6 +232,13 @@ class TaskListTests {
         assertTrue(firstTaskByDate == taskByDate1)
         assertTrue(secondTaskByDate == taskByDate2)
         assertTrue(thirdTaskByDate == taskByDate3)
+
+    }
+
+    @Test
+    fun deadlineGetPriority2__whenPriorityNeedsToBeEvaluated_correctOrdering(){
+
+        val list = DeadlineTaskList(name = "test", id = 0)
 
         val taskByDeadline1 = DeadlineTask(
             dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
@@ -273,7 +280,7 @@ class TaskListTests {
     }
 
     @Test
-    fun categoryGetPriority_whenPriorityNeedsToBeEvaluated_correctOrdering() {
+    fun categoryGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
         val list = CategoryTaskList(name = "test", id = 0)
         val cat1 = Category(
             name = "cat1",
@@ -296,21 +303,21 @@ class TaskListTests {
 
 
         val taskByDate1 = CategoryTask(
-            dateOfCreation =  LocalDateTime.parse("2023-01-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-01-12T12:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3,
             category = cat1
         )
         val taskByDate2 = CategoryTask(
-            dateOfCreation =  LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-02-12T12:15:30"),
             name = "test_name_2",
             description = "desc_2",
             id = 3,
             category = cat2
         )
         val taskByDate3 = CategoryTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-03-12T12:15:30"),
             name = "test_name_3",
             description = "desc_3",
             id = 2,
@@ -329,6 +336,31 @@ class TaskListTests {
         assertTrue(firstTaskByDate == taskByDate1)
         assertTrue(secondTaskByDate == taskByDate2)
         assertTrue(thirdTaskByDate == taskByDate3)
+
+    }
+
+    @Test
+    fun categoryGetPriority2_whenPriorityNeedsToBeEvaluated_correctOrdering(){
+        val list = CategoryTaskList(name = "test", id = 0)
+
+        val cat1 = Category(
+            name = "cat1",
+            priority = 1,
+            color = Color(12),
+            description = "desc1"
+        )
+        val cat2 = Category(
+            name = "cat2",
+            priority = 1,
+            color = Color(32),
+            description = "desc2"
+        )
+        val cat3 = Category(
+            name = "cat3",
+            priority = 4,
+            color = Color(512),
+            description = "desc3"
+        )
 
         val taskByCategory1 = CategoryTask(
             dateOfCreation =  LocalDateTime.parse("2023-01-12T12:15:30"),
@@ -381,7 +413,7 @@ class TaskListTests {
     }
 
     @Test
-    fun deadlineCategoryGetPriority_whenPriorityNeedsToBeEvaluated_correctOrdering() {
+    fun deadlineCategoryGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
         val list = DeadlineCategoryTaskList(name = "test", id = 0)
         val cat1 = Category(
             name = "cat1",
