@@ -99,7 +99,7 @@ class DeadlineTaskList(
     id = id
 ) {
 
-    private var maximumDeadline: Int = 0
+    private var maximumDeadline: Int = Int.MIN_VALUE
 
     private fun dateToInt(date: LocalDateTime): Int {
         return date.second + 60 * (date.minute + 60 * (date.hour + 24 * (date.dayOfYear + 365 * date.year)))
@@ -134,8 +134,27 @@ class PriorityTaskList(
     name = name,
     id = id
 ) {
+    private var maximumPriority = Int.MIN_VALUE
+
+    override fun add(task: PriorityTask): Status {
+        val status = super.add(task)
+        maximumPriority = max(super.listOfTasks.map { it.priority })
+        return status
+    }
+
+    override fun delete(task: PriorityTask): Status {
+        val status = super.delete(task)
+        maximumPriority = max(super.listOfTasks.map { it.priority })
+        return status
+    }
+
     override fun getPriority(id: Int): Double {
-        TODO("not yet implemented")
+        val currentTask = super.listOfTasks[id]
+        val currentPriority = currentTask.priority
+
+        val priority = sqrt(currentPriority/maximumPriority * 1.0) * 100
+        //evaluates priority: scales between 0 - 100 asymptotically to root function
+        return priority
     }
 }
 
