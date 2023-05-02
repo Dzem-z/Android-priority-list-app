@@ -4,6 +4,7 @@ import com.example.prioritylist.data.*
 import com.example.prioritylist.domain.DataManager
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.time.LocalDateTime
 
@@ -250,9 +251,72 @@ class DataManagerTests {
         assertTrue(hList[2].it == list[0])
         assertTrue(hList[1].it == list[1])
         assertTrue(hList[0].it == list[1])
+        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+            hList[3]
+        }
     }
 
+    @Test
+    fun deleteFromHistory_taskDeletedFromHistory() {
+        val manager = DataManager()
 
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
+
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+        )
+
+        val task3 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+        )
+
+        manager.addListUseCase(0, name1, type1)
+
+        manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
+        manager.addTaskUseCase(task3)
+
+        val list = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        manager.moveToHistoryUseCase(list[0])
+        manager.moveToHistoryUseCase(list[1])
+        manager.moveToHistoryUseCase(list[2])
+
+        manager.deleteFromHistoryUseCase(list[0].name)
+
+        val historyList = manager.getHistoryListUseCase()
+
+        assertTrue(historyList[0].it == list[1])
+        assertTrue(historyList[1].it == list[2])
+
+        manager.deleteFromHistoryUseCase(list[2].name)
+
+        val historyList2 = manager.getHistoryListUseCase()
+
+        assertTrue(historyList[0].it == list[1])
+
+        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+            historyList[1]
+        }
+
+
+    }
 
 
 
