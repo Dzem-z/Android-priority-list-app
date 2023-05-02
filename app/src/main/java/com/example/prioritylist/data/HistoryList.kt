@@ -11,7 +11,7 @@ TODO(comments)
 class HistoryList<TaskType: Task>() {
     val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>()
 
-    fun addTask(newTask: TaskType) {
+    fun pushTask(newTask: TaskType) {
         TODO("not yet implemented")
     }
     fun getTaskByID(id: Int): HistoryTask<TaskType> {
