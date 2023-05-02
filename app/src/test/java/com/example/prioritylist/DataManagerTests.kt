@@ -239,14 +239,20 @@ class DataManagerTests {
         val list = manager.getListUseCase() as MutableList<DeadlineTask>
 
         manager.moveToHistoryUseCase(list[0])
+        manager.moveToHistoryUseCase(list[1])
+        manager.moveToHistoryUseCase(list[2])
 
         val newList = manager.getListUseCase() as MutableList<DeadlineTask>
         val hList = manager.getHistoryListUseCase() as MutableList<HistoryTask<DeadlineTask>>
 
-        assertTrue(newList[0] == list[1] && newList[1] == list[2])
+        assertTrue(newList.isEmpty())
         assertTrue(hList.isNotEmpty())
-        assertTrue(hList[0].it == list[0])
+        assertTrue(hList[2].it == list[0])
+        assertTrue(hList[1].it == list[1])
+        assertTrue(hList[0].it == list[1])
     }
+
+
 
 
 
