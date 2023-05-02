@@ -33,7 +33,9 @@ abstract class TaskList<TaskType: Task>(
     }
     @VisibleForTesting
     internal open fun delete(task: TaskType): Status {
-        TODO("Not yet implemented")
+        listOfTasks.remove(task)
+        normalizeIndexes()
+        return Status(StatusEnum.SUCCESS)
     }
 
     internal fun dateToInt(date: LocalDateTime): Int {
@@ -51,8 +53,13 @@ abstract class TaskList<TaskType: Task>(
         listOfTasks.sortWith(compareBy<Task> { getPriority(it.id) }.
         thenBy { -dateToInt(it.dateOfCreation) })
         listOfTasks.reverse()
+        normalizeIndexes()
+    }
+
+    private fun normalizeIndexes() {
         listOfTasks.forEachIndexed { index, element -> element.id = index }
     }
+
     fun changeName(newName: String){
         TODO("Not yet implemented")
     }
@@ -62,9 +69,12 @@ abstract class TaskList<TaskType: Task>(
     fun getList(): MutableList<TaskType> {
         TODO("Not yet implemented")
     }
-    fun getTaskByName(name: String): TaskType? {
-
-        return listOfTasks.find { it.name == name }
+    fun getTaskByName(name: String): TaskType {
+        val element = listOfTasks.find { it.name == name }
+        if (element != null)
+            return element
+        else
+            throw NoSuchElementException()
     }
     fun getTaskByID(id: Int): TaskType {
         return listOfTasks[id]
