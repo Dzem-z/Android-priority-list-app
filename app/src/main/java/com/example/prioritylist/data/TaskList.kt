@@ -1,7 +1,9 @@
 package com.example.prioritylist.data
 
 import androidx.annotation.VisibleForTesting
+import java.lang.Math.sqrt
 import java.time.LocalDateTime
+import java.util.Collections.max
 
 
 /*
@@ -97,12 +99,31 @@ class DeadlineTaskList(
     id = id
 ) {
 
+    private var maximumDeadline: Int = 0
+
     private fun dateToInt(date: LocalDateTime): Int {
         return date.second + 60 * (date.minute + 60 * (date.hour + 24 * (date.dayOfYear + 365 * date.year)))
     }
 
+    override fun add(task: DeadlineTask): Status {
+        val status = super.add(task)
+        maximumDeadline = max(super.listOfTasks.map { dateToInt(it.deadline) })
+        return status
+    }
+
+    override fun delete(task: DeadlineTask): Status {
+        val status = super.delete(task)
+        maximumDeadline = max(super.listOfTasks.map { dateToInt(it.deadline) })
+        return status
+    }
+
     override fun getPriority(id: Int): Double {
-        TODO("not yet implemented")
+        val currentTask = super.listOfTasks[id]
+        val dateInt = dateToInt(currentTask.deadline)
+
+        val priority = sqrt(dateInt/maximumDeadline * 1.0) * 100
+        //evaluates priority: scales between 0 - 100 asymptotically to root function
+        return priority
     }
 }
 
