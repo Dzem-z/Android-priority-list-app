@@ -200,4 +200,54 @@ class DataManagerTests {
 
     }
 
+    @Test
+    fun moveToHistoryAndGetHistoryList_filePutInHistory(){
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
+
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+        )
+
+        val task3 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+        )
+
+        manager.addListUseCase(0, name1, type1)
+
+        manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
+        manager.addTaskUseCase(task3)
+
+        val list = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        manager.moveToHistoryUseCase(list[0])
+
+        val newList = manager.getListUseCase() as MutableList<DeadlineTask>
+        val hList = manager.getHistoryListUseCase() as MutableList<HistoryTask<DeadlineTask>>
+
+        assertTrue(newList[0] == list[1] && newList[1] == list[2])
+        assertTrue(hList.isNotEmpty())
+        assertTrue(hList[0].it == list[0])
+    }
+
+
+
 }
