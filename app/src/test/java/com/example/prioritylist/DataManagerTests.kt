@@ -47,24 +47,56 @@ class DataManagerTests {
     fun addTaskAndAddList_TaskAddedToTheList() {
         val manager = DataManager()
 
-        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
-        val task1 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-            name = "test_name_1",
-            description = "desc_1",
-            id = 3,
-            priority = 1
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+        )
+
+        val task3 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
 
         manager.addTaskUseCase(task1)
 
-        val list = manager.getListUseCase() as? MutableList<PriorityTask>
+        val list1 = manager.getListUseCase() as? MutableList<DeadlineTask>
 
-        assertNotNull(list)
-        assertTrue(list?.get(0) == task1)
+        assertNotNull(list1)
+        assertTrue(list1?.get(0) == task1)
+
+        manager.addTaskUseCase(task2)
+
+        val list2 = manager.getListUseCase() as? MutableList<DeadlineTask>
+
+        assertNotNull(list2)
+        assertTrue(list2?.get(0) == task2)
+
+        manager.addTaskUseCase(task3)
+
+        val list3 = manager.getListUseCase() as? MutableList<DeadlineTask>
+
+        assertNotNull(list3)
+        assertTrue(list3?.get(0) == task3)
+
+
     }
 
     @Test
@@ -81,9 +113,18 @@ class DataManagerTests {
             priority = 1
         )
 
+        val task2 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+        )
+
         manager.addListUseCase(0, name1, type1)
 
         manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
 
         val list = manager.getListUseCase() as? MutableList<PriorityTask>
 
@@ -91,10 +132,71 @@ class DataManagerTests {
 
         manager.deleteTaskUseCase(list?.get(0) as Task)
 
-        val afterDeleteList = manager.getListUseCase() as? MutableList<PriorityTask>
+        var afterDeleteList = manager.getListUseCase() as? MutableList<PriorityTask>
 
-        assertNotNull(list)
+        assertNotNull(afterDeleteList)
+        assertTrue(afterDeleteList!![0] == task1)
+
+        manager.deleteTaskUseCase(afterDeleteList?.get(0) as Task)
+
+        afterDeleteList = manager.getListUseCase() as? MutableList<PriorityTask>
+
+        assertNotNull(afterDeleteList)
         assertTrue(afterDeleteList!!.isEmpty())
+
+    }
+
+    @Test
+    fun editTaskAndAddTaskAndAddList_TaskEditedProperly() {
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
+
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+        )
+
+        val task3 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+        )
+
+        manager.addListUseCase(0, name1, type1)
+
+        manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
+        manager.addTaskUseCase(task3)
+
+        val list = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        val editedTask = DeadlineTask(
+            name = "edited task",
+            description = "edited description",
+            id = list[0].id,
+            dateOfCreation = list[0].dateOfCreation,
+            deadline = list[0].deadline
+        )
+
+        manager.editTaskUseCase(editedTask)
+
+        val modifiedList = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        assertTrue(modifiedList[0] == editedTask)
 
     }
 
