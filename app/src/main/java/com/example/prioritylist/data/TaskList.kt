@@ -1,6 +1,7 @@
 package com.example.prioritylist.data
 
 import androidx.annotation.VisibleForTesting
+import java.time.LocalDateTime
 
 
 /*
@@ -20,11 +21,11 @@ abstract class TaskList<TaskType: Task>(
     abstract fun getPriority(id: Int): Double
 
     @VisibleForTesting
-    internal fun add(task: TaskType): Status {
+    internal open fun add(task: TaskType): Status {
         TODO("Not yet implemented")
     }
     @VisibleForTesting
-    internal fun delete(task: TaskType): Status {
+    internal open fun delete(task: TaskType): Status {
         TODO("Not yet implemented")
     }
 
@@ -80,6 +81,9 @@ class CategoryTaskList(
     name = name,
     id = id
 ) {
+
+
+
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
     }
@@ -92,6 +96,11 @@ class DeadlineTaskList(
     name = name,
     id = id
 ) {
+
+    private fun dateToInt(date: LocalDateTime): Int {
+        return date.second + 60 * (date.minute + 60 * (date.hour + 24 * (date.dayOfYear + 365 * date.year)))
+    }
+
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
     }
