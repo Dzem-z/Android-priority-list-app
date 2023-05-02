@@ -397,5 +397,69 @@ class DataManagerTests {
         assertTrue(manager.getNameUseCase() == newName)
     }
 
+    @Test
+    fun undo_undoAction_previousStateRestored() {
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
+
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test2",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+        )
+
+        val task3 = DeadlineTask(
+            name = "test3",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+        )
+
+        manager.addListUseCase(0, name1, type1)
+
+        manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
+        manager.addTaskUseCase(task3)
+
+        val list1 = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        manager.deleteTaskUseCase(list1[0])
+
+        val editedTask = DeadlineTask(
+            name = "new",
+            description = "welcome",
+            id = list1[1].id,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+        )
+
+        manager.editTaskUseCase(editedTask)
+
+        manager.undoUseCase()
+
+        val list2 = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        assertTrue(list2[0] == list1[1])
+
+        manager.undoUseCase()
+
+        val list3 = manager.getListUseCase() as MutableList<DeadlineTask>
+
+        assertTrue(list3.size == 3)
+        assertTrue(list3[0] == list1[0])
+
+    }
 
 }
