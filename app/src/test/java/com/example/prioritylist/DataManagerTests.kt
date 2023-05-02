@@ -462,4 +462,33 @@ class DataManagerTests {
 
     }
 
+    @Test
+    fun changeIDprevList_IDChanged(){
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+
+        val newID = 5
+
+        manager.addListUseCase(0, name2, type2)
+        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(5, name3, type3)
+
+        manager.changeIDUseCase(newID)
+
+        manager.prevListUseCase()
+
+        val newName1 = manager.getNameUseCase()
+
+        assertTrue(newName1 == name3)
+
+        manager.prevListUseCase()
+
+        val newName2 = manager.getNameUseCase()
+        assertTrue(newName2 == name2)
+
+    }
+
 }
