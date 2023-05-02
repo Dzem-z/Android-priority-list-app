@@ -3,8 +3,9 @@ package com.example.prioritylist.data
 import androidx.annotation.VisibleForTesting
 import java.lang.Math.sqrt
 import java.time.LocalDateTime
+import java.util.Collections.list
 import java.util.Collections.max
-
+import kotlin.math.*
 
 /*
 TODO(comments)
@@ -24,11 +25,19 @@ abstract class TaskList<TaskType: Task>(
 
     @VisibleForTesting
     internal open fun add(task: TaskType): Status {
-        TODO("Not yet implemented")
+        task.id = listOfTasks.size
+        listOfTasks.add(task)
+        sort()
+        //TODO(write to database)
+        return Status(StatusEnum.SUCCESS)
     }
     @VisibleForTesting
     internal open fun delete(task: TaskType): Status {
         TODO("Not yet implemented")
+    }
+
+    internal fun dateToInt(date: LocalDateTime): Int {
+        return date.minute + 60 * (date.hour + 24 * (date.dayOfYear + 365 * date.year))
     }
 
     @JvmName("getNameTaskList")
@@ -38,8 +47,11 @@ abstract class TaskList<TaskType: Task>(
     fun getID(): Int {
         TODO("Not yet implemented")
     }
-    fun sort() {
-        TODO("Not yet implemented")
+    private fun sort() {
+        listOfTasks.sortWith(compareBy<Task> { getPriority(it.id) }.
+        thenBy { -dateToInt(it.dateOfCreation) })
+        listOfTasks.reverse()
+        listOfTasks.forEachIndexed { index, element -> element.id = index }
     }
     fun changeName(newName: String){
         TODO("Not yet implemented")
@@ -50,11 +62,12 @@ abstract class TaskList<TaskType: Task>(
     fun getList(): MutableList<TaskType> {
         TODO("Not yet implemented")
     }
-    fun getTaskByName(name: String): TaskType {
-        TODO("Not yet implemented")
+    fun getTaskByName(name: String): TaskType? {
+
+        return listOfTasks.find { it.name == name }
     }
     fun getTaskByID(id: Int): TaskType {
-        TODO("Not yet implemented")
+        return listOfTasks[id]
     }
     fun deleteTask(deletedTask: TaskType): Status {
         TODO("Not yet implemented")
@@ -101,27 +114,25 @@ class DeadlineTaskList(
 
     private var maximumDeadline: Int = Int.MIN_VALUE
 
-    private fun dateToInt(date: LocalDateTime): Int {
-        return date.second + 60 * (date.minute + 60 * (date.hour + 24 * (date.dayOfYear + 365 * date.year)))
-    }
-
     override fun add(task: DeadlineTask): Status {
-        val status = super.add(task)
-        maximumDeadline = max(super.listOfTasks.map { dateToInt(it.deadline) })
-        return status
+        maximumDeadline = max(
+            super.listOfTasks.map { dateToInt(it.deadline) }.maxOrNull() ?: Int.MIN_VALUE,
+            dateToInt(task.deadline))
+        return super.add(task)
     }
 
     override fun delete(task: DeadlineTask): Status {
-        val status = super.delete(task)
-        maximumDeadline = max(super.listOfTasks.map { dateToInt(it.deadline) })
-        return status
+        maximumDeadline = max(
+            super.listOfTasks.map { dateToInt(it.deadline) }.maxOrNull() ?: Int.MIN_VALUE,
+            dateToInt(task.deadline))
+        return super.delete(task)
     }
 
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
         val dateInt = dateToInt(currentTask.deadline)
 
-        val priority = sqrt(dateInt/maximumDeadline * 1.0) * 100
+        val priority = sqrt(1 - dateInt  * 1.0/maximumDeadline) * 100
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         return priority
     }
@@ -137,22 +148,24 @@ class PriorityTaskList(
     private var maximumPriority = Int.MIN_VALUE
 
     override fun add(task: PriorityTask): Status {
-        val status = super.add(task)
-        maximumPriority = max(super.listOfTasks.map { it.priority })
-        return status
+        maximumPriority = max(
+            super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
+            task.priority)
+        return super.add(task)
     }
 
     override fun delete(task: PriorityTask): Status {
-        val status = super.delete(task)
-        maximumPriority = max(super.listOfTasks.map { it.priority })
-        return status
+        maximumPriority = max(
+            super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
+            task.priority)
+        return super.delete(task)
     }
 
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
         val currentPriority = currentTask.priority
 
-        val priority = sqrt(currentPriority/maximumPriority * 1.0) * 100
+        val priority = sqrt(currentPriority * 1.0/maximumPriority ) * 100
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         return priority
     }
