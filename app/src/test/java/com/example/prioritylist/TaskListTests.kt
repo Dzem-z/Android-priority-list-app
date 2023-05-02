@@ -65,45 +65,45 @@ class TaskListTests {
 
 
         assertTrue(
-            returnedTask1.name == task1.name &&
-                    returnedTask1.description == task1.description &&
-                    returnedTask1.dateOfCreation == task1.dateOfCreation
+            returnedTask1!!.name == task1.name &&
+                    returnedTask1!!.description == task1.description &&
+                    returnedTask1!!.dateOfCreation == task1.dateOfCreation
         )
 
 
         assertTrue(
-            returnedTask2.name == task2.name &&
-                    returnedTask2.description == task2.description &&
-                    returnedTask2.dateOfCreation == task2.dateOfCreation
+            returnedTask2!!.name == task2.name &&
+                    returnedTask2!!.description == task2.description &&
+                    returnedTask2!!.dateOfCreation == task2.dateOfCreation
         )
 
 
         assertTrue(
-            returnedTask3.name == task3.name &&
-                    returnedTask3.description == task3.description &&
-                    returnedTask3.dateOfCreation == task3.dateOfCreation
+            returnedTask3!!.name == task3.name &&
+                    returnedTask3!!.description == task3.description &&
+                    returnedTask3!!.dateOfCreation == task3.dateOfCreation
         )
     }
 
     @Test
-    fun priorityGetPriority_whenPriorityNeedsToBeEvaluated_correctOrdering() {
+    fun priorityGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
         val list = PriorityTaskList(name = "test", id = 0)
         val taskByDate1 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-04-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-04-12T12:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3,
             priority = 1
         )
         val taskByDate2 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-03-12T12:15:35"),
             name = "test_name_2",
             description = "desc_2",
             id = 3,
             priority = 1
         )
         val taskByDate3 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation = LocalDateTime.parse("2023-03-12T12:15:30"),
             name = "test_name_3",
             description = "desc_3",
             id = 2,
@@ -121,9 +121,9 @@ class TaskListTests {
 
 
         assertTrue(
-            firstTaskByDate.name == taskByDate1.name &&
-                    firstTaskByDate.description == taskByDate1.description &&
-                    firstTaskByDate.priority == taskByDate1.priority
+            firstTaskByDate.name == taskByDate3.name &&
+                    firstTaskByDate.description == taskByDate3.description &&
+                    firstTaskByDate.priority == taskByDate3.priority
         )
         assertTrue(
             secondTaskByDate.name == taskByDate2.name &&
@@ -131,11 +131,16 @@ class TaskListTests {
                     secondTaskByDate.priority == taskByDate2.priority
         )
         assertTrue(
-            thirdTaskByDate.name == taskByDate3.name &&
-                    thirdTaskByDate.description == taskByDate3.description &&
-                    thirdTaskByDate.priority == taskByDate3.priority
+            thirdTaskByDate.name == taskByDate1.name &&
+                    thirdTaskByDate.description == taskByDate1.description &&
+                    thirdTaskByDate.priority == taskByDate1.priority
         )
 
+    }
+
+    @Test
+    fun priorityGetPriority2_whenPriorityNeedsToBeEvaluated_correctOrdering() {
+        val list = PriorityTaskList(name = "test", id = 0)
         val taskByPriority1 = PriorityTask(
             dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
             name = "test_name_1",
@@ -157,6 +162,8 @@ class TaskListTests {
             id = 2,
             priority = 2
         )
+
+
 
         list.add(taskByPriority1)
         list.add(taskByPriority2)
@@ -492,7 +499,7 @@ class TaskListTests {
             val ret3 = list.getTaskByName(task3.name)
         }
 
-        assertTrue(ret2.name == task2.name)
+        assertTrue(ret2!!.name == task2.name)
 
     }
 
@@ -582,7 +589,7 @@ class TaskListTests {
             val ret3 = list.getTaskByName(task3.name)
         }
 
-        assertTrue(ret2.name == task2.name)
+        assertTrue(ret2!!.name == task2.name)
     }
 
     @Test
