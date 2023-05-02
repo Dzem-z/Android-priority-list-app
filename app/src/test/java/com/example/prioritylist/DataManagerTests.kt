@@ -59,7 +59,7 @@ class DataManagerTests {
         )
 
         val task2 = DeadlineTask(
-            name = "test1",
+            name = "test2",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
@@ -162,7 +162,7 @@ class DataManagerTests {
         )
 
         val task2 = DeadlineTask(
-            name = "test1",
+            name = "test2",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
@@ -170,7 +170,7 @@ class DataManagerTests {
         )
 
         val task3 = DeadlineTask(
-            name = "test1",
+            name = "test3",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
@@ -216,7 +216,7 @@ class DataManagerTests {
         )
 
         val task2 = DeadlineTask(
-            name = "test1",
+            name = "test2",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
@@ -224,7 +224,7 @@ class DataManagerTests {
         )
 
         val task3 = DeadlineTask(
-            name = "test1",
+            name = "test3",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
@@ -251,9 +251,7 @@ class DataManagerTests {
         assertTrue(hList[2].it == list[0])
         assertTrue(hList[1].it == list[1])
         assertTrue(hList[0].it == list[1])
-        assertThrows(ArrayIndexOutOfBoundsException::class.java){
-            hList[3]
-        }
+        assertTrue(hList.size == 3)
     }
 
     @Test
@@ -271,7 +269,7 @@ class DataManagerTests {
         )
 
         val task2 = DeadlineTask(
-            name = "test1",
+            name = "test2",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
@@ -279,7 +277,7 @@ class DataManagerTests {
         )
 
         val task3 = DeadlineTask(
-            name = "test1",
+            name = "test3",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
@@ -310,14 +308,81 @@ class DataManagerTests {
         val historyList2 = manager.getHistoryListUseCase()
 
         assertTrue(historyList[0].it == list[1])
+        assertTrue(historyList.size == 1)
+    }
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java){
-            historyList[1]
-        }
+    @Test
+    fun deleteUntil_allTasksDeletedUntil() {
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
+
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2021-02-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test2",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2021-02-20T12:15:30"),
+        )
+
+        val task3 = DeadlineTask(
+            name = "test3",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2021-06-12T12:15:30"),
+        )
+
+        val task4 = DeadlineTask(
+            name = "test4",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2021-07-12T12:15:30"),
+        )
+
+        val task5 = DeadlineTask(
+            name = "test5",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2021-09-12T12:15:30"),
+        )
+
+        manager.addListUseCase(0, name1, type1)
+
+        manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
+        manager.addTaskUseCase(task3)
+        manager.addTaskUseCase(task4)
+        manager.addTaskUseCase(task5)
+
+        manager.moveToHistoryUseCase(task5)
+        manager.moveToHistoryUseCase(task4)
+        manager.moveToHistoryUseCase(task3)
+        manager.moveToHistoryUseCase(task2)
+        manager.moveToHistoryUseCase(task1)
+
+        val historyList = manager.getHistoryListUseCase()
+
+        manager.deleteUntilUseCase(historyList[2].completionDate)
+
+        val afterRemovalList = manager.getHistoryListUseCase()
+
+        assertTrue(afterRemovalList[0] == historyList[2])
+        assertTrue(afterRemovalList[1] == historyList[3])
+        assertTrue(afterRemovalList[2] == historyList[4])
+        assertTrue(afterRemovalList.size == 3)
 
 
     }
-
-
 
 }
