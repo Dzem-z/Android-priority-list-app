@@ -12,7 +12,7 @@ import java.util.*
 class HistoryTests {
 
     @Test
-    fun addTaskAndGetByID_onMoveToHistory_taskAdded() {
+    fun pushTaskAndGetByID_onMoveToHistory_taskAdded() {
         val historyList = HistoryList<Task> ()
 
         val task1 = Task(
@@ -34,9 +34,9 @@ class HistoryTests {
             id = 2
         )
 
-        historyList.addTask(task1)
-        historyList.addTask(task2)
-        historyList.addTask(task3)
+        historyList.pushTask(task1)
+        historyList.pushTask(task2)
+        historyList.pushTask(task3)
 
         val returnedTask1 = historyList.getTaskByID(0)
         val returnedTask2 = historyList.getTaskByID(1)
@@ -80,9 +80,9 @@ class HistoryTests {
             id = 2
         )
 
-        historyList.addTask(task1)
-        historyList.addTask(task2)
-        historyList.addTask(task3)
+        historyList.pushTask(task1)
+        historyList.pushTask(task2)
+        historyList.pushTask(task3)
 
         val returnedList = historyList.getList()
 
@@ -120,9 +120,9 @@ class HistoryTests {
             id = 2
         )
 
-        historyList.addTask(task1)
-        historyList.addTask(task2)
-        historyList.addTask(task3)
+        historyList.pushTask(task1)
+        historyList.pushTask(task2)
+        historyList.pushTask(task3)
 
         historyList.deleteTask(historyList.getTaskByID(1))
 
@@ -153,7 +153,7 @@ class HistoryTests {
                 description = "desc_$i",
                 id = 2
             ))
-            historyList.addTask(taskList.last())
+            historyList.pushTask(taskList.last())
         }
 
         historyList.deleteUntil(LocalDateTime.parse("$untilDate-03-16T12:15:30"))
