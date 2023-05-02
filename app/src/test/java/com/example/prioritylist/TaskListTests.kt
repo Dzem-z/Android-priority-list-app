@@ -499,7 +499,7 @@ class TaskListTests {
         )
 
         val task2 = DeadlineTask(
-            name = "test1",
+            name = "test2",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
@@ -507,7 +507,7 @@ class TaskListTests {
         )
 
         val task3 = DeadlineTask(
-            name = "test1",
+            name = "test3",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
@@ -520,14 +520,14 @@ class TaskListTests {
 
         list.delete(task1)
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+        assertThrows(java.util.NoSuchElementException::class.java) {
             val ret1 = list.getTaskByName(task1.name)
         }
 
         list.delete(task3)
         val ret2 = list.getTaskByName(task2.name)
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+        assertThrows(java.util.NoSuchElementException::class.java) {
             val ret3 = list.getTaskByName(task3.name)
         }
 
@@ -589,7 +589,7 @@ class TaskListTests {
         )
 
         val task2 = DeadlineTask(
-            name = "test1",
+            name = "test2",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
@@ -597,7 +597,7 @@ class TaskListTests {
         )
 
         val task3 = DeadlineTask(
-            name = "test1",
+            name = "test3",
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
@@ -610,14 +610,14 @@ class TaskListTests {
 
         list.deleteTask(task1)
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+        assertThrows(java.util.NoSuchElementException::class.java) {
             val ret1 = list.getTaskByName(task1.name)
         }
 
         list.deleteTask(task3)
         val ret2 = list.getTaskByName(task2.name)
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+        assertThrows(java.util.NoSuchElementException::class.java) {
             val ret3 = list.getTaskByName(task3.name)
         }
 
