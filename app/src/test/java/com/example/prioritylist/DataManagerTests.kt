@@ -381,8 +381,21 @@ class DataManagerTests {
         assertTrue(afterRemovalList[1] == historyList[3])
         assertTrue(afterRemovalList[2] == historyList[4])
         assertTrue(afterRemovalList.size == 3)
-
-
     }
+
+    @Test
+    fun changeName_nameChanged() {
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
+        val newName = "new"
+
+        manager.addListUseCase(0, name1, type1)
+
+        manager.changeNameUseCase(newName)
+
+        assertTrue(manager.getNameUseCase() == newName)
+    }
+
 
 }
