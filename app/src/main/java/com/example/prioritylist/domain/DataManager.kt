@@ -26,6 +26,9 @@ class DataManager {
     fun getListUseCase(): MutableList<*> {
         TODO("Not yet implemented")
     }
+    fun getNameUseCase(): String{
+        TODO("Not yet implemented")
+    }
     fun getHistoryListUseCase(): MutableList<HistoryTask<*>> {
         TODO("Not yet implemented")
     }
