@@ -86,6 +86,41 @@ class TaskListTests {
     }
 
     @Test
+    fun add_checkForUniqueness_duplicatedTaskCodeReturned() {
+        val list = PriorityTaskList(name = "test", id = 0)
+        val task1 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            priority = 1
+        )
+        val task2 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            name = "test_name_1",
+            description = "desc_2",
+            id = 3,
+            priority = 1
+        )
+        val task3 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_3",
+            description = "desc_1",
+            id = 3,
+            priority = 1
+        )
+        list.add(task1)
+        val code1 = list.add(task2)
+        val code2 = list.add(task3)
+
+        assertTrue(code1.code == StatusEnum.DUPLICATED_TASK)
+        assertTrue(code2.code == StatusEnum.SUCCESS)
+
+
+
+    }
+
+    @Test
     fun priorityGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
         val list = PriorityTaskList(name = "test", id = 0)
         val taskByDate1 = PriorityTask(
