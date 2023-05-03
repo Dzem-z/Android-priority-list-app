@@ -690,6 +690,47 @@ class TaskListTests {
     }
 
     @Test
+    fun getList_listSharingWithCopying_copyOflistOfTasksReturned() {
+        val list = DeadlineTaskList(name = "test", id = 0)
+
+        val task1 = DeadlineTask(
+            name = "test1",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-06T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-04T12:15:30")
+        )
+
+        val task2 = DeadlineTask(
+            name = "test2",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
+            deadline = LocalDateTime.parse("2026-12-11T12:15:30")
+        )
+
+        val task3 = DeadlineTask(
+            name = "test3",
+            description = "desc",
+            id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
+            deadline = LocalDateTime.parse("2023-02-12T12:15:30")
+        )
+
+        list.add(task1)
+        list.add(task2)
+        list.add(task3)
+
+        val returnedList = list.getList()
+        returnedList.sortBy { it.name }
+        returnedList.removeAt(0)
+
+        val returnedList1 = list.getList()
+        returnedList1.sortBy { it.name }
+        assertTrue(returnedList[0] != returnedList1[0])
+    }
+
+    @Test
     fun pushAndPop_onAction_ActionPushed(){
         val storage = Storage<PriorityTask>()
 
