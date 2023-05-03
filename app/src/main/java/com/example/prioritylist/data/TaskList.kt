@@ -35,6 +35,7 @@ abstract class TaskList<TaskType: Task>(
     internal open fun delete(task: TaskType): Status {
         listOfTasks.remove(task)
         normalizeIndexes()
+        //TODO(write to database)
         return Status(StatusEnum.SUCCESS)
     }
 
@@ -44,10 +45,10 @@ abstract class TaskList<TaskType: Task>(
 
     @JvmName("getNameTaskList")
     fun getName(): String {
-        TODO("Not yet implemented")
+        return name
     }
     fun getID(): Int {
-        TODO("Not yet implemented")
+        return id
     }
     private fun sort() {
         listOfTasks.sortWith(compareBy<Task> { getPriority(it.id) }.
@@ -61,13 +62,13 @@ abstract class TaskList<TaskType: Task>(
     }
 
     fun changeName(newName: String){
-        TODO("Not yet implemented")
+        name = newName
     }
     fun changeID(newID: Int) {
-        TODO("Not yet implemented")
+        id = newID
     }
     fun getList(): MutableList<TaskType> {
-        TODO("Not yet implemented")
+        return listOfTasks.toMutableList()
     }
     fun getTaskByName(name: String): TaskType {
         val element = listOfTasks.find { it.name == name }
@@ -79,23 +80,29 @@ abstract class TaskList<TaskType: Task>(
     fun getTaskByID(id: Int): TaskType {
         return listOfTasks[id]
     }
-    fun deleteTask(deletedTask: TaskType): Status {
-        TODO("Not yet implemented")
-    }
     fun undo() {
         TODO("Not yet implemented")
     }
-    fun moveToHistory(task: TaskType) {
-        TODO("Not yet implemented")
-    }
+
     fun updatePriority() {
         TODO("Not yet implemented")
     }
     fun editTask(id: Int, newTask: TaskType): Status {
-        TODO("Not yet implemented")
+        //TODO("push storage action")
+        val status = delete(getTaskByID(id))
+        if(status.code != StatusEnum.SUCCESS)
+            return status
+        return add(newTask)
     }
+
+    fun deleteTask(deletedTask: TaskType): Status {
+        //TODO("push storage action")
+        return delete(deletedTask)
+    }
+
     fun addTask(newTask: TaskType): Status {
-        TODO("Not yet implemented")
+        //TODO("push storage action")
+        return add(newTask)
     }
 }
 
