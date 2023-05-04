@@ -1,13 +1,13 @@
 package com.example.prioritylist.data
 
 class Status(
-    val code: StatusEnum,
+    val code: StatusCodes,
     val message: String = ""
 ) {
 
 }
 
-enum class StatusEnum {
+enum class StatusCodes {
     SUCCESS,
     FAILURE,
     DUPLICATED_TASK,
