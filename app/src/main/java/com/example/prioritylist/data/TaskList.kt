@@ -26,17 +26,18 @@ abstract class TaskList<TaskType: Task>(
     @VisibleForTesting
     internal open fun add(task: TaskType): Status {
         task.id = listOfTasks.size
+        //TODO(check for uniqueness)
         listOfTasks.add(task)
         sort()
         //TODO(write to database)
-        return Status(StatusEnum.SUCCESS)
+        return Status(StatusCodes.SUCCESS)
     }
     @VisibleForTesting
     internal open fun delete(task: TaskType): Status {
         listOfTasks.remove(task)
         normalizeIndexes()
         //TODO(write to database)
-        return Status(StatusEnum.SUCCESS)
+        return Status(StatusCodes.SUCCESS)
     }
 
     internal fun dateToInt(date: LocalDateTime): Int {
@@ -90,7 +91,7 @@ abstract class TaskList<TaskType: Task>(
     fun editTask(id: Int, newTask: TaskType): Status {
         //TODO("push storage action")
         val status = delete(getTaskByID(id))
-        if(status.code != StatusEnum.SUCCESS)
+        if(status.code != StatusCodes.SUCCESS)
             return status
         return add(newTask)
     }
