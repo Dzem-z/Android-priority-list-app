@@ -10,5 +10,6 @@ class Status(
 enum class StatusEnum {
     SUCCESS,
     FAILURE,
-    DUPLICATED_TASK
+    DUPLICATED_TASK,
+    NOT_FOUND
 }
