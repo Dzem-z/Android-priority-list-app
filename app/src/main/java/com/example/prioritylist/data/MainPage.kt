@@ -3,13 +3,14 @@ package com.example.prioritylist.data
 import androidx.annotation.VisibleForTesting
 
 class MainPage() {
-    private var listOfDeadlineCategoryLists: MutableList<DeadlineCategoryTaskList> = mutableListOf<DeadlineCategoryTaskList>()
-    private var listOfDeadlinePriorityLists: MutableList<DeadlinePriorityTaskList> = mutableListOf<DeadlinePriorityTaskList>()
-    private var listOfDeadlinePriorityCategoryLists: MutableList<DeadlinePriorityCategoryTaskList> = mutableListOf<DeadlinePriorityCategoryTaskList>()
-    private var listOfDeadlineLists: MutableList<DeadlineTaskList> = mutableListOf<DeadlineTaskList>()
-    private var listOfPriorityLists: MutableList<PriorityTaskList> = mutableListOf<PriorityTaskList>()
-    private var listOfCategoryLists: MutableList<CategoryTaskList> = mutableListOf<CategoryTaskList>()
+    private val listOfDeadlineCategoryLists: MutableList<DeadlineCategoryTaskList> = mutableListOf<DeadlineCategoryTaskList>()
+    private val listOfDeadlinePriorityLists: MutableList<DeadlinePriorityTaskList> = mutableListOf<DeadlinePriorityTaskList>()
+    private val listOfDeadlinePriorityCategoryLists: MutableList<DeadlinePriorityCategoryTaskList> = mutableListOf<DeadlinePriorityCategoryTaskList>()
+    private val listOfDeadlineLists: MutableList<DeadlineTaskList> = mutableListOf<DeadlineTaskList>()
+    private val listOfPriorityLists: MutableList<PriorityTaskList> = mutableListOf<PriorityTaskList>()
+    private val listOfCategoryLists: MutableList<CategoryTaskList> = mutableListOf<CategoryTaskList>()
 
+    private val listIdentifiers = mutableListOf<ListIdentifier>()
 
     var currentListID: Int = 0
         private set
@@ -44,3 +45,9 @@ class MainPage() {
     }
 
 }
+
+data class ListIdentifier(
+    var name: String,
+    var id: Int,
+    var type: TaskTypes
+)
