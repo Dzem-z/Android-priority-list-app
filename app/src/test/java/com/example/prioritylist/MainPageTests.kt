@@ -19,8 +19,9 @@ class MainPageTests {
         page.addList(TaskTypes.DEADLINE, nameID1)
 
         val list = page.getListByID(0)
+        assertNotNull(list)
 
-        assertTrue(list::class == TaskTypes.DEADLINE.listType)
+        assertTrue(list!!::class == TaskTypes.DEADLINE.listType)
 
         assertTrue((list as DeadlineTaskList).getName() == nameID0)
 
@@ -45,16 +46,54 @@ class MainPageTests {
         val list2 = page.getListByID(2)
         val list3 = page.getListByID(3)
 
-        assertTrue(list0::class == TaskTypes.PRIORITY.listType)
-        assertTrue(list1::class == TaskTypes.DEADLINE.listType)
-        assertTrue(list2::class == TaskTypes.DEADLINE_CATEGORY.listType)
-        assertTrue(list3::class == TaskTypes.DEADLINE_PRIORITY.listType)
+        assertTrue(list0!!::class == TaskTypes.PRIORITY.listType)
+        assertTrue(list1!!::class == TaskTypes.DEADLINE.listType)
+        assertTrue(list2!!::class == TaskTypes.DEADLINE_CATEGORY.listType)
+        assertTrue(list3!!::class == TaskTypes.DEADLINE_PRIORITY.listType)
 
 
         assertTrue((list0 as PriorityTaskList).getName() == nameID0)
         assertTrue((list1 as DeadlineTaskList).getName() == nameID1)
         assertTrue((list2 as DeadlineCategoryTaskList).getName() == nameID2)
         assertTrue((list3 as DeadlinePriorityTaskList).getName() == nameID3)
+
+    }
+
+    @Test
+    fun changeID_idChangedAndOthersShifted() {
+        val page = MainPage()
+
+        val nameID0 = "list1"
+        val nameID1 = "list2"
+        val nameID2 = "list3"
+        val nameID3 = "list4"
+        val nameID4 = "list5"
+
+        page.addList(TaskTypes.PRIORITY, nameID4)
+        page.addList(TaskTypes.PRIORITY, nameID3)
+        page.addList(TaskTypes.PRIORITY, nameID2)
+        page.addList(TaskTypes.PRIORITY, nameID1)
+        page.addList(TaskTypes.PRIORITY, nameID0)
+
+        page.changeIDofCurrentList(0)
+        page.nextList()
+        page.changeIDofCurrentList(4)
+        page.prevList()
+        page.changeIDofCurrentList(1)
+        page.nextList()
+        page.changeIDofCurrentList(3)
+
+        val list0 = page.getListByID(0) as PriorityTaskList
+        val list1 = page.getListByID(1) as PriorityTaskList
+        val list2 = page.getListByID(2) as PriorityTaskList
+        val list3 = page.getListByID(3) as PriorityTaskList
+        val list4 = page.getListByID(4) as PriorityTaskList
+
+        assertTrue(list0.getName() == nameID0)
+        assertTrue(list1.getName() == nameID1)
+        assertTrue(list2.getName() == nameID2)
+        assertTrue(list3.getName() == nameID3)
+        assertTrue(list4.getName() == nameID4)
 
     }
 
@@ -82,10 +121,10 @@ class MainPageTests {
         val list3 = page.getListByID(3)
 
 
-        assertTrue(list0::class == TaskTypes.PRIORITY.listType)
-        assertTrue(list1::class == TaskTypes.PRIORITY.listType)
-        assertTrue(list2::class == TaskTypes.PRIORITY.listType)
-        assertTrue(list3::class == TaskTypes.PRIORITY.listType)
+        assertTrue(list0!!::class == TaskTypes.PRIORITY.listType)
+        assertTrue(list1!!::class == TaskTypes.PRIORITY.listType)
+        assertTrue(list2!!::class == TaskTypes.PRIORITY.listType)
+        assertTrue(list3!!::class == TaskTypes.PRIORITY.listType)
 
         assertTrue((list0 as PriorityTaskList).getName() == nameID0)
         assertTrue((list1 as PriorityTaskList).getName() == nameID1)
