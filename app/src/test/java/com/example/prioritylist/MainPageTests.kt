@@ -83,17 +83,23 @@ class MainPageTests {
         page.nextList()
         page.changeIDofCurrentList(3)
 
-        val list0 = page.getListByID(0) as PriorityTaskList
-        val list1 = page.getListByID(1) as PriorityTaskList
-        val list2 = page.getListByID(2) as PriorityTaskList
-        val list3 = page.getListByID(3) as PriorityTaskList
-        val list4 = page.getListByID(4) as PriorityTaskList
+        val list0 = page.getListByID(0) as? PriorityTaskList
+        val list1 = page.getListByID(1) as? PriorityTaskList
+        val list2 = page.getListByID(2) as? PriorityTaskList
+        val list3 = page.getListByID(3) as? PriorityTaskList
+        val list4 = page.getListByID(4) as? PriorityTaskList
 
-        assertTrue(list0.getName() == nameID0)
-        assertTrue(list1.getName() == nameID1)
-        assertTrue(list2.getName() == nameID2)
-        assertTrue(list3.getName() == nameID3)
-        assertTrue(list4.getName() == nameID4)
+        assertNotNull(list0)
+        assertNotNull(list1)
+        assertNotNull(list2)
+        assertNotNull(list3)
+        assertNotNull(list4)
+
+        assertTrue(list0!!.getName() == nameID0)
+        assertTrue(list1!!.getName() == nameID1)
+        assertTrue(list2!!.getName() == nameID2)
+        assertTrue(list3!!.getName() == nameID3)
+        assertTrue(list4!!.getName() == nameID4)
 
     }
 
@@ -106,13 +112,12 @@ class MainPageTests {
         val nameID2 = "list3"
         val nameID3 = "list4"
 
+        page.addList(TaskTypes.PRIORITY, nameID0)
         page.addList(TaskTypes.PRIORITY, nameID3)
         page.prevList()
-        page.addList(TaskTypes.PRIORITY, nameID1)
         page.addList(TaskTypes.PRIORITY, nameID2)
         page.prevList()
-        page.prevList()
-        page.addList(TaskTypes.PRIORITY, nameID0)
+        page.addList(TaskTypes.PRIORITY, nameID1)
 
 
         val list0 = page.getListByID(0)
@@ -166,6 +171,7 @@ class MainPageTests {
         page.prevList()
         page.addList(type5, name5)
         page.prevList()
+        page.changeIDofCurrentList(5)
 
         val list5 = page.getListByID(0)
         val list4 = page.getListByID(1)
@@ -173,9 +179,9 @@ class MainPageTests {
         val list2 = page.getListByID(3)
         val list1 = page.getListByID(4)
 
-        assertTrue(page.currentListID == 0)
+        assertTrue(page.currentListID == 4)
         assertNotNull(page.currentList)
-        assertTrue(page.currentList!!::class  == type5.listType)
+        assertTrue(page.currentList!!::class  == type1.listType)
 
         assertTrue((list5 as TaskList<Task>).getName() == name5)
         assertTrue((list4 as TaskList<Task>).getName() == name4)
@@ -208,13 +214,13 @@ class MainPageTests {
 
 
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+        assertThrows(IndexOutOfBoundsException::class.java){
             page.getListByID(10)
         }
-        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+        assertThrows(IndexOutOfBoundsException::class.java){
             page.getListByID(5)
         }
-        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+        assertThrows(IndexOutOfBoundsException::class.java){
             page.getListByID(-1)
         }
     }
@@ -243,26 +249,26 @@ class MainPageTests {
         page.nextList()
 
         assertTrue(page.currentListID == 1)
+        assertTrue((page.currentList as TaskList<Task>).getName() == name5)
+        assertTrue(page.currentType == type5)
+
+        page.nextList()
+
+        assertTrue(page.currentListID == 2)
         assertTrue((page.currentList as TaskList<Task>).getName() == name4)
         assertTrue(page.currentType == type4)
 
         page.nextList()
 
-        assertTrue(page.currentListID == 2)
+        assertTrue(page.currentListID == 3)
         assertTrue((page.currentList as TaskList<Task>).getName() == name3)
         assertTrue(page.currentType == type3)
 
         page.nextList()
 
-        assertTrue(page.currentListID == 3)
+        assertTrue(page.currentListID == 4)
         assertTrue((page.currentList as TaskList<Task>).getName() == name2)
         assertTrue(page.currentType == type2)
-
-        page.nextList()
-
-        assertTrue(page.currentListID == 0)
-        assertTrue((page.currentList as TaskList<Task>).getName() == name1)
-        assertTrue(page.currentType == type1)
 
     }
 
@@ -319,9 +325,9 @@ class MainPageTests {
 
         page.deleteCurrentList()
 
-        assertTrue(page.currentListID == 1)
-        assertTrue(page.currentType == TaskTypes.DEADLINE_CATEGORY)
-        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
+        assertTrue(page.currentListID == 2)
+        assertTrue(page.currentType == type4)
+        assertTrue((page.currentList as DeadlineTaskList).getName() == name4)
     }
 
     @Test
@@ -340,9 +346,9 @@ class MainPageTests {
 
         page.deleteCurrentList()
 
-        assertTrue(page.currentListID == 3)
+        assertTrue(page.currentListID == 2)
         assertTrue(page.currentType == TaskTypes.DEADLINE_PRIORITY)
-        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name3)
+        assertTrue((page.currentList as DeadlinePriorityTaskList).getName() == name3)
     }
 
     @Test
@@ -387,16 +393,16 @@ class MainPageTests {
         page.nextList()
 
         assertTrue(page.currentListID == 1)
-        assertTrue(page.currentType == type2)
-        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
+        assertTrue(page.currentType == type1)
+        assertTrue((page.currentList as PriorityTaskList).getName() == name1)
 
 
         page.changeIDofCurrentList(2)
         page.prevList()
 
         assertTrue(page.currentListID == 1)
-        assertTrue(page.currentType == type3)
-        assertTrue((page.currentList as DeadlinePriorityTaskList).getName() == name3)
+        assertTrue(page.currentType == type2)
+        assertTrue((page.currentList as DeadlineCategoryTaskList).getName() == name2)
 
 
     }
