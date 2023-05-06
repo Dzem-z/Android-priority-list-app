@@ -113,8 +113,8 @@ class TaskListTests {
         val code1 = list.add(task2)
         val code2 = list.add(task3)
 
-        assertTrue(code1.code == StatusEnum.DUPLICATED_TASK)
-        assertTrue(code2.code == StatusEnum.SUCCESS)
+        assertTrue(code1.code == StatusCodes.DUPLICATED_TASK)
+        assertTrue(code2.code == StatusCodes.SUCCESS)
 
 
 
