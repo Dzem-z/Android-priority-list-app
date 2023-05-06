@@ -6,7 +6,7 @@ source code of this project.
 This project was created as the final project of a software engineering course. Idea behind the todo list app was to create easy to use, fast and compact android app that allows users to easily manage their daily tasks and reminders in one place.
 
 ## General description
-This section will be filled in future releases.
+Android priority list app is an app that allows users to create lists based on various types of prioritization such as prioritizing by deadline, type, customly set priorities etc. User has ability to create various types of lists, add tasks to these lists and remove or edit them. User is also able to see the history of completed tasks.
 
 ## Legal
 This project is distributed under MIT license. See [LICENSE.md](https://github.com/Dzem-z/Android-priority-list-app/blob/master/LICENSE.md "LICENSE.md") for details.
