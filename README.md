@@ -12,7 +12,7 @@ This section will be filled in future releases.
 This project is distributed under MIT license. See [LICENSE.md](https://github.com/Dzem-z/Android-priority-list-app/blob/master/LICENSE.md "LICENSE.md") for details.
 
 ## Build Status
-Because this project is being created with respect to the TDD process, currently there are only unit tests and backbone of project classes. It won't compile nor run at the moment.
+Currently only backend is implemented
 
 ## Full documentation
 Uml diagrams and other documentation files will be placed in doc directory.
