@@ -63,7 +63,7 @@ class DataManagerTests {
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+            deadline = LocalDateTime.parse("2023-12-11T12:15:30"),
         )
 
         val task3 = DeadlineTask(
@@ -71,7 +71,7 @@ class DataManagerTests {
             description = "desc",
             id = 0,
             dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+            deadline = LocalDateTime.parse("2022-02-12T12:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -104,22 +104,22 @@ class DataManagerTests {
     fun deleteTaskAndAddTaskAndAddList_TaskDeletedFromTheList() {
         val manager = DataManager()
 
-        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
-        val task1 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-            name = "test_name_1",
-            description = "desc_1",
-            id = 3,
-            priority = 1
-        )
-
-        val task2 = DeadlineTask(
+        val task1 = DeadlineTask(
             name = "test1",
             description = "desc",
             id = 0,
+            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
+            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+        )
+
+        val task2 = DeadlineTask(
+            name = "test2",
+            description = "desc",
+            id = 0,
             dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+            deadline = LocalDateTime.parse("2023-12-11T12:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -127,20 +127,20 @@ class DataManagerTests {
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
 
-        val list = manager.getListUseCase() as? MutableList<PriorityTask>
+        val list = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(list)
 
-        manager.deleteTaskUseCase(list?.get(0) as Task)
+        manager.deleteTaskUseCase(list!!.get(0))
 
-        var afterDeleteList = manager.getListUseCase() as? MutableList<PriorityTask>
+        var afterDeleteList = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(afterDeleteList)
         assertTrue(afterDeleteList!![0] == task1)
 
-        manager.deleteTaskUseCase(afterDeleteList?.get(0) as Task)
+        manager.deleteTaskUseCase(afterDeleteList!!.get(0))
 
-        afterDeleteList = manager.getListUseCase() as? MutableList<PriorityTask>
+        afterDeleteList = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(afterDeleteList)
         assertTrue(afterDeleteList!!.isEmpty())
