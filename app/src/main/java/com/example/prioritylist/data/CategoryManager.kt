@@ -7,7 +7,7 @@ TODO(comments)
  */
 
 class CategoryManager(
-    listOfCategories: MutableList<Category>
+    listOfCategories: MutableList<Category> = mutableListOf<Category>()
 ) {
     fun deleteCategory(category: Category) {}
     fun addCategory(category: Category) {}
