@@ -8,6 +8,8 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.time.LocalDateTime
 
+
+
 class DataManagerTests {
 
     @Test
@@ -81,7 +83,8 @@ class DataManagerTests {
         val list1 = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(list1)
-        assertTrue(list1?.get(0) == task1)
+        val retTask = list1?.get(0)
+        assertTrue(retTask == task1)
 
         manager.addTaskUseCase(task2)
 
@@ -193,7 +196,7 @@ class DataManagerTests {
             deadline = list[0].deadline
         )
 
-        manager.editTaskUseCase(editedTask)
+        manager.editTaskUseCase(list[0].id, editedTask)
 
         val modifiedList = manager.getListUseCase() as MutableList<DeadlineTask>
 
@@ -445,7 +448,7 @@ class DataManagerTests {
             deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
         )
 
-        manager.editTaskUseCase(editedTask)
+        manager.editTaskUseCase(list1[1].id, editedTask)
 
         manager.undoUseCase()
 
@@ -474,13 +477,13 @@ class DataManagerTests {
         manager.addListUseCase(1, name2, type2)
         manager.addListUseCase(2, name3, type3)
 
-        manager.prevListUseCase()
+        assertTrue(manager.prevListUseCase() == TaskTypes.DEADLINE)
 
         val newName1 = manager.getNameUseCase()
 
         assertTrue(newName1 == name2)
 
-        manager.prevListUseCase()
+        assertTrue(manager.prevListUseCase() == TaskTypes.PRIORITY)
 
         val newName2 = manager.getNameUseCase()
 
@@ -530,13 +533,13 @@ class DataManagerTests {
         manager.addListUseCase(0, name2, type2)
         manager.addListUseCase(0, name1, type1)
 
-        manager.nextListUseCase()
+        assertTrue(manager.nextListUseCase() == TaskTypes.DEADLINE)
 
         val newName1 = manager.getNameUseCase()
 
         assertTrue(newName1 == name2)
 
-        manager.nextListUseCase()
+        assertTrue(manager.nextListUseCase() == TaskTypes.DEADLINE_PRIORITY)
 
         val newName2 = manager.getNameUseCase()
 
