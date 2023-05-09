@@ -12,9 +12,7 @@ class DataManager(
     private val settings: Settings = Settings()
 ) {
 
-    fun prevListUseCase(): TaskTypes {
-        TODO("Not yet implemented")
-    }
+
     fun addTaskUseCase(task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
@@ -32,6 +30,7 @@ class DataManager(
         }
         return Status(StatusCodes.SUCCESS)
     }
+
     fun editTaskUseCase(oldId: Int, task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
@@ -49,6 +48,7 @@ class DataManager(
         }
         return Status(StatusCodes.SUCCESS)
     }
+
     fun deleteTaskUseCase(task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
@@ -66,40 +66,67 @@ class DataManager(
         }
         return Status(StatusCodes.SUCCESS)
     }
+
     fun moveToHistoryUseCase(task: Task): Status {
         TODO("Not yet implemented")
     }
+
     fun getListUseCase(): MutableList<out Task> {
         return mainPage.currentList?.getList()?: mutableListOf<Task>()
     }
+
     fun getNameUseCase(): String{
-        TODO("Not yet implemented")
+        val list = mainPage.currentList
+        if (list != null)
+            return list.getName()
+        else
+            throw NullPointerException()
     }
+
     fun getHistoryListUseCase(): MutableList<HistoryTask<*>> {
         TODO("Not yet implemented")
     }
+
     fun deleteFromHistoryUseCase(name: String): Status {
         TODO("Not yet implemented")
     }
+
     fun deleteUntilUseCase(date: Date): Status {
         TODO("Not yet implemented")
     }
+
     fun changeNameUseCase(name: String) {
-        TODO("Not yet implemented")
+        val list = mainPage.currentList
+        if (list != null) {
+            list.changeName(name)
+        } else {
+            throw NullPointerException()
+        }
     }
+
     fun undoUseCase() {
         TODO("Not yet implemented")
     }
+
     fun changeIDUseCase(newId: Int) {
-        TODO("Not yet implemented")
+        //mainPage.changeIDofCurrentList(newId)
     }
-    fun nextListUseCase(): TaskTypes {
-        TODO("Not yet implemented")
+
+    fun prevListUseCase(): TaskTypes? {
+        mainPage.prevList()
+        return mainPage.currentType
     }
+
+    fun nextListUseCase(): TaskTypes? {
+        mainPage.nextList()
+        return mainPage.currentType
+    }
+
     fun addListUseCase(id: Int, name: String, type: TaskTypes) {
         mainPage.addList(type, name)
         mainPage.changeIDofCurrentList(id)
     }
+
     fun deleteCurrentListUseCase(): Status {
         TODO("Not yet implemented")
     }
