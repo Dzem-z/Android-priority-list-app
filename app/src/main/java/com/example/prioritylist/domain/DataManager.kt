@@ -32,8 +32,22 @@ class DataManager(
         }
         return Status(StatusCodes.SUCCESS)
     }
-    fun editTaskUseCase(task: Task): Status {
-        TODO("Not yet implemented")
+    fun editTaskUseCase(oldId: Int, task: Task): Status {
+        val list = mainPage.currentList
+        val currentType = mainPage.currentType
+        if (currentType != null && list != null) {
+            when (currentType) {
+                TaskTypes.PRIORITY -> (list as PriorityTaskList).editTask(oldId, task as PriorityTask)
+                TaskTypes.CATEGORY -> (list as CategoryTaskList).editTask(oldId, task as CategoryTask)
+                TaskTypes.DEADLINE -> (list as DeadlineTaskList).editTask(oldId, task as DeadlineTask)
+                TaskTypes.DEADLINE_PRIORITY -> (list as DeadlinePriorityTaskList).editTask(oldId, task as DeadlinePriorityTask)
+                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> (list as DeadlinePriorityCategoryTaskList).editTask(oldId, task as DeadlinePriorityCategoryTask)
+                TaskTypes.DEADLINE_CATEGORY -> (list as DeadlineCategoryTaskList).editTask(oldId, task as DeadlineCategoryTask)
+            }
+        } else{
+            return Status(StatusCodes.FAILURE, "error: adding task to null list")
+        }
+        return Status(StatusCodes.SUCCESS)
     }
     fun deleteTaskUseCase(task: Task): Status {
         val list = mainPage.currentList
