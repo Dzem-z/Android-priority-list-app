@@ -39,7 +39,7 @@ data class CategoryTask(
 ) {
     override fun equals(task: Any?)
             = (task is CategoryTask)
-            && (this as Task).equals(task)
+            && super.equals(task)
             && category == task.category
 }
 
@@ -59,7 +59,7 @@ data class DeadlineTask(
 ){
     override fun equals(task: Any?)
             = (task is DeadlineTask)
-            && (this as Task).equals(task)
+            && super.equals(task)
             && deadline == task.deadline
 }
 
@@ -80,7 +80,7 @@ data class PriorityTask(
 ){
     override fun equals(task: Any?)
             = (task is PriorityTask)
-            && (this as Task).equals(task)
+            && super.equals(task)
             && priority == task.priority
 }
 
@@ -102,7 +102,7 @@ data class DeadlinePriorityTask(
 ){
     override fun equals(task: Any?)
             = (task is DeadlinePriorityTask)
-            && (this as Task).equals(task)
+            && super.equals(task)
             && deadline == task.deadline
             && priority == task.priority
 }
@@ -124,7 +124,7 @@ data class DeadlineCategoryTask(
 ){
     override fun equals(task: Any?)
             = (task is DeadlineCategoryTask)
-            && (this as Task).equals(task)
+            && super.equals(task)
             && deadline == task.deadline
             && category == task.category
 }
@@ -148,7 +148,7 @@ data class DeadlinePriorityCategoryTask(
 ){
     override fun equals(task: Any?)
             = (task is DeadlinePriorityCategoryTask)
-            && (this as Task).equals(task)
+            && super.equals(task)
             && deadline == task.deadline
             && priority == task.priority
             && category == task.category
