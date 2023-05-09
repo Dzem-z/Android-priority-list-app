@@ -10,7 +10,7 @@ TODO(comments)
  */
 
 class StateHolder(
-    private var editedTask: Task,
+    private var editedTask: Task? = null,
     var currentType: TaskTypes,
     var displayingList: List<Task>
     ) : ViewModel() {
