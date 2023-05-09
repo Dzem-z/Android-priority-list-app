@@ -14,7 +14,14 @@ open class Task(
     open var id: Int = 0,
     open val description: String,
     open val name: String
-)
+){
+    override operator fun equals(task: Any?)
+        = (task is Task)
+            && dateOfCreation == task.dateOfCreation
+            && id == task.id
+            && description == task.description
+            && name == task.name
+}
 
 data class CategoryTask(
     val category: Category,
@@ -29,7 +36,12 @@ data class CategoryTask(
     id = id,
     description = description,
     name = name
-)
+) {
+    override fun equals(task: Any?)
+            = (task is CategoryTask)
+            && (this as Task).equals(task)
+            && category == task.category
+}
 
 data class DeadlineTask(
     val deadline: LocalDateTime,
@@ -44,7 +56,13 @@ data class DeadlineTask(
     id = id,
     description = description,
     name = name
-)
+){
+    override fun equals(task: Any?)
+            = (task is DeadlineTask)
+            && (this as Task).equals(task)
+            && deadline == task.deadline
+}
+
 
 data class PriorityTask(
     val priority: Int,
@@ -59,7 +77,13 @@ data class PriorityTask(
     id = id,
     description = description,
     name = name
-)
+){
+    override fun equals(task: Any?)
+            = (task is PriorityTask)
+            && (this as Task).equals(task)
+            && priority == task.priority
+}
+
 
 data class DeadlinePriorityTask(
     val priority: Int,
@@ -75,7 +99,13 @@ data class DeadlinePriorityTask(
     id = id,
     description = description,
     name = name
-)
+){
+    override fun equals(task: Any?)
+            = (task is DeadlinePriorityTask)
+            && (this as Task).equals(task)
+            && deadline == task.deadline
+            && priority == task.priority
+}
 
 data class DeadlineCategoryTask(
     val deadline: LocalDateTime,
@@ -91,7 +121,14 @@ data class DeadlineCategoryTask(
     id = id,
     description = description,
     name = name
-)
+){
+    override fun equals(task: Any?)
+            = (task is DeadlineCategoryTask)
+            && (this as Task).equals(task)
+            && deadline == task.deadline
+            && category == task.category
+}
+
 
 data class DeadlinePriorityCategoryTask(
     val deadline: LocalDateTime,
@@ -108,4 +145,11 @@ data class DeadlinePriorityCategoryTask(
     id = id,
     description = description,
     name = name
-)
+){
+    override fun equals(task: Any?)
+            = (task is DeadlinePriorityCategoryTask)
+            && (this as Task).equals(task)
+            && deadline == task.deadline
+            && priority == task.priority
+            && category == task.category
+}
