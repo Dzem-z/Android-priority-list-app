@@ -128,7 +128,7 @@ class DataManager(
     }
 
     fun deleteCurrentListUseCase(): Status {
-        TODO("Not yet implemented")
+        return mainPage.deleteCurrentList()
     }
 
 }
