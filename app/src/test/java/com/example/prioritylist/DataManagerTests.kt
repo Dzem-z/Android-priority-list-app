@@ -549,4 +549,36 @@ class DataManagerTests {
         assertTrue(newName2 == name3)
     }
 
+    @Test
+    fun deleteCurrentList_listRemovedAndCurrentSetToPrevious() {
+        val manager = DataManager()
+
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+        val name2 = "name2"; val type2 = TaskTypes.DEADLINE
+        val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
+
+        manager.addListUseCase(0, name3, type3)
+        manager.addListUseCase(0, name2, type2)
+        manager.addListUseCase(0, name1, type1)
+
+        manager.deleteCurrentListUseCase()
+
+        val newName = manager.getNameUseCase()
+
+        assertTrue(newName == name2)
+
+        manager.deleteCurrentListUseCase()
+
+        val newName1 = manager.getNameUseCase()
+
+        assertTrue(newName1 == name3)
+
+        manager.deleteCurrentListUseCase()
+
+        assertThrows(NullPointerException::class.java){
+            manager.getNameUseCase()
+        }
+
+    }
+
 }
