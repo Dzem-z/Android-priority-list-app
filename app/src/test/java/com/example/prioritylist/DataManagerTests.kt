@@ -506,6 +506,9 @@ class DataManagerTests {
         manager.addListUseCase(0, name1, type1)
         manager.addListUseCase(5, name3, type3)
 
+        manager.prevListUseCase()
+        manager.prevListUseCase()
+
         manager.changeIDUseCase(newID)
 
         manager.prevListUseCase()
