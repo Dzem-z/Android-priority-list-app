@@ -109,7 +109,7 @@ class DataManager(
     }
 
     fun changeIDUseCase(newId: Int) {
-        //mainPage.changeIDofCurrentList(newId)
+        mainPage.changeIDofCurrentList(newId)
     }
 
     fun prevListUseCase(): TaskTypes? {
