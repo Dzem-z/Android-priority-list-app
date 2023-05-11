@@ -117,13 +117,12 @@ fun ListPreview() {
         priority = 1
     )
 
+    val holder = StateHolder()
+    holder.displayingList.value = mutableListOf<PriorityTask>(
+        task1, task2, task3, task4, task5, task6, task7, task8, task9
+    )
 
     PriorityList(
-        StateHolder(
-            currentType = TaskTypes.PRIORITY,
-            displayingList = listOf<PriorityTask>(
-                task1, task2, task3, task4, task5, task6, task7, task8, task9
-            )
-        )
+        holder
     )
 }

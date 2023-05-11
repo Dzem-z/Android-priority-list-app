@@ -153,3 +153,15 @@ data class DeadlinePriorityCategoryTask(
             && priority == task.priority
             && category == task.category
 }
+
+
+data class ModifiableTask(
+    var deadline: LocalDateTime? = null,
+    var category: Category? = null,
+    var priority: Int? = null,
+    var dateOfCreation: LocalDateTime = LocalDateTime.now(),
+    var evaluatedPriority: Double = 0.0,
+    var id: Int = 0,
+    var description: String = "",
+    var name: String = ""
+)
