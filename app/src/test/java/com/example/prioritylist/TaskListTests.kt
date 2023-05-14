@@ -882,5 +882,99 @@ class TaskListTests {
 
     }
 
+    @Test
+    fun delete_tasksDeleted() {
+        val list = PriorityTaskList("name",0)
+
+        //-------------------------testing values
+        val task1 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            priority = 3
+        )
+        val task2 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            name = "test_name_2",
+            description = "desc_2",
+            id = 3,
+            priority = 2
+        )
+        val task3 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_3",
+            description = "desc_1",
+            id = 3,
+            priority = 1
+        )
+        val task4 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_4",
+            description = "desc_1",
+            id = 3,
+            priority = 12
+        )
+        val task5 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            name = "test_name_5",
+            description = "desc_2",
+            id = 3,
+            priority = 2
+        )
+        val task6 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_6",
+            description = "desc_1",
+            id = 3,
+            priority = 6
+        )
+        val task7 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_7",
+            description = "desc_1",
+            id = 3,
+            priority = 3
+        )
+        val task8 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            name = "test_name_8",
+            description = "desc_2",
+            id = 3,
+            priority = 2
+        )
+        val task9 = PriorityTask(
+            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            name = "test_name_9",
+            description = "desc_1",
+            id = 3,
+            priority = 1
+        )
+
+        list.addTask(task1)
+        list.addTask(task2)
+        list.addTask(task3)
+        list.addTask(task4)
+        list.addTask(task5)
+        list.addTask(task6)
+        list.addTask(task7)
+        list.addTask(task8)
+        list.addTask(task9)
+
+        val returnedList = list.getList()
+
+        list.deleteTask(returnedList[0])
+        list.deleteTask(returnedList[1])
+        list.deleteTask(returnedList[2])
+        list.deleteTask(returnedList[3])
+        list.deleteTask(returnedList[4])
+        list.deleteTask(returnedList[5])
+        list.deleteTask(returnedList[6])
+        list.deleteTask(returnedList[7])
+        list.deleteTask(returnedList[8])
+
+
+    }
+
 
 }
