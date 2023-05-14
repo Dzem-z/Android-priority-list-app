@@ -156,9 +156,9 @@ data class DeadlinePriorityCategoryTask(
 
 
 data class ModifiableTask(
-    var deadline: LocalDateTime? = null,
+    var deadline: LocalDateTime = LocalDateTime.now(),
     var category: Category? = null,
-    var priority: Int? = null,
+    var priority: Int = 0,
     var dateOfCreation: LocalDateTime = LocalDateTime.now(),
     var evaluatedPriority: Double = 0.0,
     var id: Int = 0,
