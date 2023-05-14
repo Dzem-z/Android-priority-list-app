@@ -56,8 +56,12 @@ abstract class TaskList<TaskType: Task>(
         return id
     }
     private fun sort() {
-        listOfTasks.sortWith(compareBy<Task> { getPriority(it.id) }.
-        thenBy { -dateToInt(it.dateOfCreation) })
+        for(i in listOfTasks) {
+            getPriority(i.id)
+        }
+
+        listOfTasks.sortBy{ it.evaluatedPriority }//.
+        //thenBy { -dateToInt(it.dateOfCreation) })
         listOfTasks.reverse()
         normalizeIndexes()
     }
@@ -154,9 +158,9 @@ class DeadlineTaskList(
         val currentTask = super.listOfTasks[id]
         val dateInt = dateToInt(currentTask.deadline)
 
-        val priority = sqrt(1 - dateInt  * 1.0/maximumDeadline) * 100
+        currentTask.evaluatedPriority = sqrt(1 - dateInt  * 1.0/maximumDeadline) * 100
         //evaluates priority: scales between 0 - 100 asymptotically to root function
-        return priority
+        return currentTask.evaluatedPriority
     }
 }
 
@@ -171,10 +175,12 @@ class PriorityTaskList(
 
 
     override fun add(task: PriorityTask): Status {
-        maximumPriority = max(
-            super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
-            task.priority)
-        return super.add(task)
+        val status = super.add(task)
+        if (status.code == StatusCodes.SUCCESS)
+            maximumPriority = max(
+                super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
+                task.priority)
+        return status
     }
 
     override fun delete(task: PriorityTask): Status {
@@ -188,9 +194,9 @@ class PriorityTaskList(
         val currentTask = super.listOfTasks[id]
         val currentPriority = currentTask.priority
 
-        val priority = sqrt(currentPriority * 1.0/maximumPriority ) * 100
+        currentTask.evaluatedPriority = sqrt(currentPriority * 1.0/maximumPriority ) * 100
         //evaluates priority: scales between 0 - 100 asymptotically to root function
-        return priority
+        return currentTask.evaluatedPriority
     }
 }
 
