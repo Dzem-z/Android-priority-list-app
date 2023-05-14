@@ -17,11 +17,12 @@ abstract class TaskList<TaskType: Task>(
 ) {
 
 
-
     protected open val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>()
     protected open val storage: Storage<TaskType> = Storage<TaskType>()
     protected open val history: HistoryList<TaskType> = HistoryList<TaskType>()
     abstract fun getPriority(id: Int): Double
+
+
 
     @VisibleForTesting
     internal open fun add(task: TaskType): Status {
@@ -34,6 +35,9 @@ abstract class TaskList<TaskType: Task>(
     }
     @VisibleForTesting
     internal open fun delete(task: TaskType): Status {
+        if (listOfTasks.find { it == task } == null){
+            throw NoSuchElementException()
+        }
         listOfTasks.remove(task)
         normalizeIndexes()
         //TODO(write to database)
@@ -164,6 +168,7 @@ class PriorityTaskList(
     id = id
 ) {
     private var maximumPriority = Int.MIN_VALUE
+
 
     override fun add(task: PriorityTask): Status {
         maximumPriority = max(
