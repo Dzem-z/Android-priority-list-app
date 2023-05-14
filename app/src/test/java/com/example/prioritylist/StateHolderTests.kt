@@ -36,12 +36,12 @@ class StateHolderTests {
         val holder = StateHolder()
 
 
-        holder.displayingList.value = mutableListOf<PriorityTask>(
+        holder.displayingList = mutableListOf<PriorityTask>(
             task1, task2, task3
         )
 
         assertTrue(holder.currentType.value == TaskTypes.PRIORITY)
-        assertTrue(holder.displayingList.value[0] == task1 && holder.displayingList.value[1] == task2 && holder.displayingList.value[2] == task3)
+        assertTrue(holder.displayingList[0] == task1 && holder.displayingList[1] == task2 && holder.displayingList[2] == task3)
 
     }
 
