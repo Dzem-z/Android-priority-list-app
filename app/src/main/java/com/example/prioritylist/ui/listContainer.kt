@@ -8,13 +8,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.TextButton
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,145 +38,104 @@ import com.example.prioritylist.data.TaskTypes
 import java.time.LocalDateTime
 
 @Composable
-fun ListContainer(modifier: Modifier = Modifier) {
+fun ListContainer( modifier: Modifier = Modifier, holder: StateHolder = StateHolder(), onAddTask: () -> Unit = {}) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     //val currentScreen
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { /*TODO*/ },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { /*TODO*/ }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Menu,
+                            contentDescription = "Drawer Icon"
+                        )
+                    }
+                },
+                actions = {
+                    /*TODO*/
+                }
+            )
 
-    Column{
-        Row(
-            Modifier.padding(0.dp),
-        ){
-            TextButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
-                onClick = {/*TODO*/},
 
-                shape = RectangleShape
-            ) {
+        },
+
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddTask) {
                 Icon(
-                    imageVector =  Icons.Outlined.ArrowBack,
+                    imageVector = Icons.Rounded.Add,
                     contentDescription = "Drawer Icon"
                 )
             }
-
-            TextButton(
-                modifier = Modifier
-                    .weight(2f)
-                    .height(48.dp),
-                onClick = {/*TODO*/},
-                shape = RectangleShape
-            ) {
-                Text(
-                    "screen 1"
-                )
-            }
-
-            TextButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp),
-                onClick = {/*TODO*/},
-                shape = RectangleShape
-            ) {
-                Icon(
-                    imageVector =  Icons.Outlined.ArrowForward,
-                    contentDescription = "Drawer Icon"
-                )
-            }
-
         }
 
-        NavHost(
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            Row(
+                Modifier.padding(0.dp),
+            ) {
+                TextButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    onClick = {/*TODO*/ },
+
+                    shape = RectangleShape
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Drawer Icon"
+                    )
+                }
+
+                TextButton(
+                    modifier = Modifier
+                        .weight(2f)
+                        .height(48.dp),
+                    onClick = {/*TODO*/ },
+                    shape = RectangleShape
+                ) {
+                    Text(
+                        "screen 1"
+                    )
+                }
+
+                TextButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    onClick = {/*TODO*/ },
+                    shape = RectangleShape
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowForward,
+                        contentDescription = "Drawer Icon"
+                    )
+                }
+
+            }
+
+            NavHost(
             navController = navController,
             startDestination = "PriorityTask",
             modifier = modifier
         ){
             composable(route = "PriorityTask"){
-                //-------------------------testing values
-                val task1 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-                    name = "test_name_1",
-                    description = "desc_1",
-                    id = 3,
-                    priority = 3
-                )
-                val task2 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
-                    name = "test_name_2",
-                    description = "desc_2",
-                    id = 3,
-                    priority = 2
-                )
-                val task3 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-                    name = "test_name_3",
-                    description = "desc_1",
-                    id = 3,
-                    priority = 1
-                )
-                val task4 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-                    name = "test_name_1",
-                    description = "desc_1",
-                    id = 3,
-                    priority = 3
-                )
-                val task5 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
-                    name = "test_name_2",
-                    description = "desc_2",
-                    id = 3,
-                    priority = 2
-                )
-                val task6 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-                    name = "test_name_3",
-                    description = "desc_1",
-                    id = 3,
-                    priority = 1
-                )
-                val task7 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-                    name = "test_name_1",
-                    description = "desc_1",
-                    id = 3,
-                    priority = 3
-                )
-                val task8 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
-                    name = "test_name_2",
-                    description = "desc_2",
-                    id = 3,
-                    priority = 2
-                )
-                val task9 = PriorityTask(
-                    dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
-                    name = "test_name_3",
-                    description = "desc_1",
-                    id = 3,
-                    priority = 1
-                )
-
-                val holder = StateHolder()
-
-                holder.displayingList.value = mutableListOf<PriorityTask>(
-                    task1, task2, task3, task4, task5, task6, task7, task8, task9
-                )
-
                 PriorityList(
                     holder
                 )
-                //-------------------------testing values end
             }
 
             composable(route = "DeadlineTask"){
 
             }
         }
+        }
     }
-
 
 }
 
