@@ -16,8 +16,9 @@ class DataManager(
     fun addTaskUseCase(task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
+        var status: Status
         if (currentType != null && list != null) {
-            when (currentType) {
+           status =  when (currentType) {
                 TaskTypes.PRIORITY -> (list as PriorityTaskList).addTask(task as PriorityTask)
                 TaskTypes.CATEGORY -> (list as CategoryTaskList).addTask(task as CategoryTask)
                 TaskTypes.DEADLINE -> (list as DeadlineTaskList).addTask(task as DeadlineTask)
@@ -28,7 +29,7 @@ class DataManager(
         } else{
             return Status(StatusCodes.FAILURE, "error: adding task to null list")
         }
-        return Status(StatusCodes.SUCCESS)
+        return status
     }
 
     fun editTaskUseCase(oldId: Int, task: Task): Status {
@@ -113,13 +114,19 @@ class DataManager(
     }
 
     fun prevListUseCase(): TaskTypes? {
-        mainPage.prevList()
-        return mainPage.currentType
+        if(mainPage.prevList().code == StatusCodes.FAILURE)
+            return null
+        else {
+            return mainPage.currentType
+        }
     }
 
     fun nextListUseCase(): TaskTypes? {
-        mainPage.nextList()
-        return mainPage.currentType
+        if(mainPage.nextList().code == StatusCodes.FAILURE)
+            return null
+        else {
+            return mainPage.currentType
+        }
     }
 
     fun addListUseCase(id: Int, name: String, type: TaskTypes) {
