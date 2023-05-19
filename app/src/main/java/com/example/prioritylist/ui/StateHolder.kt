@@ -1,5 +1,6 @@
 package com.example.prioritylist.ui
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import com.example.prioritylist.data.ModifiableTask
 import com.example.prioritylist.data.Status
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.prioritylist.data.Category
 import com.example.prioritylist.data.CategoryTask
@@ -32,78 +34,220 @@ TODO(comments)
 class StateHolder : ViewModel() {
 
     var editedTask by mutableStateOf(ModifiableTask())
-    private val _currentType: MutableStateFlow<TaskTypes> = MutableStateFlow(TaskTypes.PRIORITY)
-    val currentType: StateFlow<TaskTypes> = _currentType.asStateFlow()
-    var displayingList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
+    var firstType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
+    var secondType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
+    var firstList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
+    var secondList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
+    var isPrevList by mutableStateOf(false)
+    var isNextList by mutableStateOf(false)
+
+    var currentListIndex = 0
+
     private val dataManager = DataManager()
+    private var badName by mutableStateOf(false)
+
+    var duplicatedName by mutableStateOf(false)
+    var emptyName by mutableStateOf(false)
+
     init{
-        displayingList = dataManager.getListUseCase()
+        updateList()
     }
 
-    fun getType(): TaskTypes{
-        return currentType.value
+    private fun incrementIndex() {
+        currentListIndex = (currentListIndex + 1) % 2
     }
 
-    fun updateNameOfEditedTask(newName: String){
+    fun setDuplicatedTaskError() {
+        duplicatedName = true
+        badName = true
+    }
+
+    fun setEmptyNameError() {
+        badName = true
+        emptyName = true
+    }
+
+    fun clearNameErrorFlags() {
+        badName = false
+        emptyName = false
+        duplicatedName = false
+    }
+
+
+
+    fun isDuplicatedTask(): Boolean {
+        return badName
+    }
+
+    @VisibleForTesting
+    internal fun setList(list: MutableList<out Task>) {
+        if (currentListIndex == 0){
+            firstList = list
+        } else {
+            secondList = list
+        }
+    }
+
+    fun updateList() {
+        setList(dataManager.getListUseCase())
+        isPrevList = isPrevListPresent()
+        isNextList = isNextListPresent()
+    }
+
+    fun getList(): MutableList<out Task> {
+        return if (currentListIndex == 0)
+            firstList
+        else
+            secondList
+    }
+
+    fun getCurrentType(): TaskTypes{
+        return if (currentListIndex == 0)
+            firstType
+        else
+            secondType
+    }
+
+    fun setCurrentType(type: TaskTypes) {
+        if (currentListIndex == 0)
+            firstType = type
+        else
+            secondType = type
+    }
+
+    fun getName(): String{
+        return dataManager.getNameUseCase()
+    }
+
+    fun isNextListPresent(): Boolean{
+        return if(dataManager.nextListUseCase() != null){
+            dataManager.prevListUseCase()
+            true
+        } else {
+            false
+        }
+    }
+
+    fun isPrevListPresent(): Boolean{
+        return if(dataManager.prevListUseCase() != null){
+            dataManager.nextListUseCase()
+            true
+        } else {
+            false
+        }
+    }
+
+    fun resetEditedTask() {
+        editedTask = ModifiableTask()
+    }
+
+
+    fun updateNameOfEditedTask(newName: String) {
         val newTask = editedTask.copy()
         newTask.name = newName
+        clearNameErrorFlags()
         editedTask = newTask
     }
 
-    fun updateDescriptionOfEditedTask(newDescription: String){
+    fun updateDescriptionOfEditedTask(newDescription: String) {
         val newTask = editedTask.copy()
         newTask.description = newDescription
         editedTask = newTask
     }
 
-    fun updatePriorityOfEditedTask(newPriority: String){
+    fun updatePriorityOfEditedTask(newPriority: String) {
         val newTask = editedTask.copy()
-        newTask.priority = newPriority.toInt()
+        newTask.priority = if(newPriority.isEmpty()) 0 else newPriority.toInt()
         editedTask = newTask
     }
 
     fun onAddTask(){
-
+        resetEditedTask()
     }
 
-    fun onDeleteTask(task: Task){
-        TODO("Not yet implemented")
+    fun onEditTask(){
+    }
+
+    fun onDeleteTask(): Status{
+        val status = when(getCurrentType()){
+            TaskTypes.PRIORITY -> dataManager.deleteTaskUseCase(PriorityTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, priority = editedTask.priority))
+            TaskTypes.DEADLINE -> dataManager.deleteTaskUseCase(DeadlineTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline))
+            TaskTypes.CATEGORY -> dataManager.deleteTaskUseCase(CategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, category = editedTask.category!!))
+            TaskTypes.DEADLINE_CATEGORY -> dataManager.deleteTaskUseCase(DeadlineCategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, category = editedTask.category!!))
+            TaskTypes.DEADLINE_PRIORITY -> dataManager.deleteTaskUseCase(DeadlinePriorityTask(name = editedTask.name, description =  editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, priority = editedTask.priority))
+            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.deleteTaskUseCase(DeadlinePriorityCategoryTask(name  = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, priority = editedTask.priority, category = editedTask.category!!))
+        }
+
+        updateList()
+        return status
     }
     fun onUndo(){
         TODO("Not yet implemented")
 
     }
     fun nextList(){
-        TODO("Not yet implemented")
+        val returnedType = dataManager.nextListUseCase()
+        if(returnedType == null){
+            throw Exception()
+        } else {
+            incrementIndex()
+            setCurrentType(returnedType)
+            updateList()
+        }
+
+
     }
     fun prevList(){
-        TODO("Not yet implemented")
+        val returnedType = dataManager.prevListUseCase()
+        if(returnedType == null){
+            throw Exception()
+        } else {
+            incrementIndex()
+            setCurrentType(returnedType)
+            updateList()
+        }
+
+
     }
 
     fun onDelete(task: Task) {
-        dataManager.deleteTaskUseCase(task)
-        displayingList = dataManager.getListUseCase()
+
     }
 
     fun onDone(task: Task) {
-        dataManager.moveToHistoryUseCase(task)
-        displayingList = dataManager.getListUseCase()
+        //dataManager.moveToHistoryUseCase(task)
+        updateList()
     }
     fun updateTask(task: Task){
         TODO("Not yet implemented")
     }
     fun addTask(): Status {
 
-        val status = when(currentType.value){
-            TaskTypes.PRIORITY -> dataManager.addTaskUseCase(PriorityTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, priority = editedTask.priority!!))
-            TaskTypes.DEADLINE -> dataManager.addTaskUseCase(DeadlineTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline!!))
+        val status = when(getCurrentType()){
+            TaskTypes.PRIORITY -> dataManager.addTaskUseCase(PriorityTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, priority = editedTask.priority))
+            TaskTypes.DEADLINE -> dataManager.addTaskUseCase(DeadlineTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline))
             TaskTypes.CATEGORY -> dataManager.addTaskUseCase(CategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, category = editedTask.category!!))
-            TaskTypes.DEADLINE_CATEGORY -> dataManager.addTaskUseCase(DeadlineCategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline!!, category = editedTask.category!!))
-            TaskTypes.DEADLINE_PRIORITY -> dataManager.addTaskUseCase(DeadlinePriorityTask(name = editedTask.name, description =  editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline!!, priority = editedTask.priority!!))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.addTaskUseCase(DeadlinePriorityCategoryTask(name  = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline!!, priority = editedTask.priority!!, category = editedTask.category!!))
+            TaskTypes.DEADLINE_CATEGORY -> dataManager.addTaskUseCase(DeadlineCategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, category = editedTask.category!!))
+            TaskTypes.DEADLINE_PRIORITY -> dataManager.addTaskUseCase(DeadlinePriorityTask(name = editedTask.name, description =  editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, priority = editedTask.priority))
+            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.addTaskUseCase(DeadlinePriorityCategoryTask(name  = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, priority = editedTask.priority, category = editedTask.category!!))
         }
 
-        displayingList = dataManager.getListUseCase()
+        updateList()
         return status
     }
+
+    fun confirmEditingTask() : Status {
+        val status = when(getCurrentType()){
+            TaskTypes.PRIORITY -> dataManager.editTaskUseCase(editedTask.id, PriorityTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, priority = editedTask.priority))
+            TaskTypes.DEADLINE -> dataManager.editTaskUseCase(editedTask.id, DeadlineTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline))
+            TaskTypes.CATEGORY -> dataManager.editTaskUseCase(editedTask.id, CategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, category = editedTask.category!!))
+            TaskTypes.DEADLINE_CATEGORY -> dataManager.editTaskUseCase(editedTask.id, DeadlineCategoryTask(name = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, category = editedTask.category!!))
+            TaskTypes.DEADLINE_PRIORITY -> dataManager.editTaskUseCase(editedTask.id, DeadlinePriorityTask(name = editedTask.name, description =  editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, priority = editedTask.priority))
+            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.editTaskUseCase(editedTask.id, DeadlinePriorityCategoryTask(name  = editedTask.name, description = editedTask.description, dateOfCreation = editedTask.dateOfCreation, deadline = editedTask.deadline, priority = editedTask.priority, category = editedTask.category!!))
+        }
+
+        updateList()
+        return status
+    }
+
 }
