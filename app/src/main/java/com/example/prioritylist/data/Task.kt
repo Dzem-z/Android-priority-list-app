@@ -1,6 +1,6 @@
 package com.example.prioritylist.data
 
-import java.time.LocalDateTime
+import java.util.Calendar
 import java.util.Date
 
 /*
@@ -9,7 +9,7 @@ TODO(comments)
 
 
 open class Task(
-    open val dateOfCreation: LocalDateTime,
+    open val dateOfCreation: Date,
     open var evaluatedPriority: Double = 0.0,
     open var id: Int = 0,
     open val description: String,
@@ -18,14 +18,13 @@ open class Task(
     override operator fun equals(task: Any?)
         = (task is Task)
             && dateOfCreation == task.dateOfCreation
-            && id == task.id
             && description == task.description
             && name == task.name
 }
 
 data class CategoryTask(
     val category: Category,
-    override val dateOfCreation: LocalDateTime,
+    override val dateOfCreation: Date,
     override var evaluatedPriority: Double = 0.0,
     override var id: Int = 0,
     override val description: String,
@@ -44,8 +43,8 @@ data class CategoryTask(
 }
 
 data class DeadlineTask(
-    val deadline: LocalDateTime,
-    override val dateOfCreation: LocalDateTime,
+    val deadline: Date,
+    override val dateOfCreation: Date,
     override var evaluatedPriority: Double = 0.0,
     override var id: Int = 0,
     override val description: String,
@@ -66,7 +65,7 @@ data class DeadlineTask(
 
 data class PriorityTask(
     val priority: Int,
-    override val dateOfCreation: LocalDateTime,
+    override val dateOfCreation: Date,
     override var evaluatedPriority: Double = 0.0,
     override var id: Int = 0,
     override val description: String,
@@ -87,8 +86,8 @@ data class PriorityTask(
 
 data class DeadlinePriorityTask(
     val priority: Int,
-    val deadline: LocalDateTime,
-    override val dateOfCreation: LocalDateTime,
+    val deadline: Date,
+    override val dateOfCreation: Date,
     override var evaluatedPriority: Double = 0.0,
     override var id: Int = 0,
     override val description: String,
@@ -108,9 +107,9 @@ data class DeadlinePriorityTask(
 }
 
 data class DeadlineCategoryTask(
-    val deadline: LocalDateTime,
+    val deadline: Date,
     val category: Category,
-    override val dateOfCreation: LocalDateTime,
+    override val dateOfCreation: Date,
     override var evaluatedPriority: Double = 0.0,
     override var id: Int = 0,
     override val description: String,
@@ -131,10 +130,10 @@ data class DeadlineCategoryTask(
 
 
 data class DeadlinePriorityCategoryTask(
-    val deadline: LocalDateTime,
+    val deadline: Date,
     val category: Category,
     val priority: Int,
-    override val dateOfCreation: LocalDateTime,
+    override val dateOfCreation: Date,
     override var evaluatedPriority: Double = 0.0,
     override var id: Int = 0,
     override val description: String,
@@ -156,10 +155,10 @@ data class DeadlinePriorityCategoryTask(
 
 
 data class ModifiableTask(
-    var deadline: LocalDateTime = LocalDateTime.now(),
+    var deadline: Date = Calendar.getInstance().time,
     var category: Category? = null,
     var priority: Int = 0,
-    var dateOfCreation: LocalDateTime = LocalDateTime.now(),
+    var dateOfCreation: Date = Calendar.getInstance().time,
     var evaluatedPriority: Double = 0.0,
     var id: Int = 0,
     var description: String = "",
