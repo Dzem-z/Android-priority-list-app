@@ -1,17 +1,22 @@
 package com.example.prioritylist.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -24,41 +29,99 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.prioritylist.data.DeadlineTask
 import com.example.prioritylist.data.PriorityTask
+import com.example.prioritylist.data.Task
 import com.example.prioritylist.data.TaskTypes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun PriorityList(viewModel: StateHolder, modifier: Modifier = Modifier) {
-
-        //val list = viewModel.displayingList as List<PriorityTask>
+fun PriorityList(
+    viewModel: StateHolder,
+    list: MutableList<PriorityTask>,
+    onLongPress: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
         LazyColumn(
-
+            modifier = Modifier
+                .padding(end = 10.dp)
+                .fillMaxHeight()
         ){
             items(
-                viewModel.displayingList
+                list,
+                key = { it.name }
             ) {item->
                 PriorityTaskTile(
                     tile = item as PriorityTask,
-                    modifier = Modifier.pointerInput(item) {
+                    modifier = Modifier
+                        .animateItemPlacement()
+                        .pointerInput(item) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
-                            onDoubleTap = { /**/ },
-                            onLongPress = { viewModel.onDelete(item) },
+                            onDoubleTap = { viewModel.onDone(item) },
+                            onLongPress = {
+                                viewModel.resetEditedTask()
+                                viewModel.updateDescriptionOfEditedTask(item.description)
+                                viewModel.updateNameOfEditedTask(item.name)
+                                viewModel.editedTask.id = item.id
+                                viewModel.editedTask.dateOfCreation = item.dateOfCreation
+                                viewModel.updatePriorityOfEditedTask(item.priority.toString())
+                                onLongPress()
+                                          },
                             onTap = { /* Called on Tap */ }
                         )
                     }
+
                 )
             }
         }
+}
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@Composable
+fun DeadlineList(
+    viewModel: StateHolder,
+    list: MutableList<DeadlineTask>,
+    onLongPress: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(end = 10.dp)
+            .fillMaxHeight()
+    ){
+        items(
+            list,
+            key = { it.name }
+        ) {item->
+            DeadlineTaskTile(
+                tile = item as DeadlineTask,
+                modifier = Modifier
+                    .animateItemPlacement()
+                    .pointerInput(item) {
+                        detectTapGestures(
+                            onPress = { /* Called when the gesture starts */ },
+                            onDoubleTap = { viewModel.onDone(item) },
+                            onLongPress = {
+                                viewModel.resetEditedTask()
+                                viewModel.updateDescriptionOfEditedTask(item.description)
+                                viewModel.updateNameOfEditedTask(item.name)
+                                viewModel.editedTask.dateOfCreation = item.dateOfCreation
+                                viewModel.editedTask.id = item.id
+                                viewModel.editedTask.deadline = item.deadline
+                                onLongPress()
+                                          },
+                            onTap = { /* Called on Tap */ }
+                        )
+                    }
 
-
-
-
-
-
+            )
+        }
+    }
 }
 
 @Composable
@@ -70,7 +133,7 @@ fun PriorityTaskTile(tile: PriorityTask, modifier: Modifier = Modifier) {
             .fillMaxWidth()
     ){
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = modifier.padding(12.dp)
         ) {
             Text(text = tile.name)
 
@@ -83,12 +146,36 @@ fun PriorityTaskTile(tile: PriorityTask, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
+    Card(
+        elevation = 10.dp,
+        modifier = modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ){
+        Column(
+            modifier = modifier.padding(12.dp)
+        ) {
+            Text(text = tile.name)
+
+            Row{
+                Text(text = "deadline: " + tile.deadline)
+            }
+
+        }
+    }
+}
+/*
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
 @Preview
 fun ListPreview() {
 
     val holder = StateHolder()
 
     PriorityList(
-        holder
+        holder,
+        mutableListOf<PriorityTask>()
+        //holder.displayingList as MutableList<PriorityTask>
     )
-}
+}*/
