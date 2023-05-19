@@ -11,5 +11,6 @@ enum class StatusCodes {
     SUCCESS,
     FAILURE,
     DUPLICATED_TASK,
-    NOT_FOUND
+    NOT_FOUND,
+    EMPTY_NAME
 }
