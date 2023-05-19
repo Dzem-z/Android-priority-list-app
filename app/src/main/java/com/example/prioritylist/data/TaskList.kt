@@ -2,7 +2,6 @@ package com.example.prioritylist.data
 
 import androidx.annotation.VisibleForTesting
 import java.lang.Math.sqrt
-import java.time.LocalDateTime
 import java.util.Collections.list
 import java.util.Collections.max
 import kotlin.math.*
@@ -26,8 +25,12 @@ abstract class TaskList<TaskType: Task>(
 
     @VisibleForTesting
     internal open fun add(task: TaskType): Status {
+        if (listOfTasks.find{ task.name == it.name  } != null){
+            return Status(StatusCodes.DUPLICATED_TASK)
+        } else if (task.name.isEmpty()) {
+            return Status(StatusCodes.EMPTY_NAME)
+        }
         task.id = listOfTasks.size
-        //TODO(check for uniqueness)
         listOfTasks.add(task)
         sort()
         //TODO(write to database)
@@ -44,10 +47,6 @@ abstract class TaskList<TaskType: Task>(
         return Status(StatusCodes.SUCCESS)
     }
 
-    internal fun dateToInt(date: LocalDateTime): Int {
-        return date.minute + 60 * (date.hour + 24 * (date.dayOfYear + 365 * date.year))
-    }
-
     @JvmName("getNameTaskList")
     fun getName(): String {
         return name
@@ -60,8 +59,7 @@ abstract class TaskList<TaskType: Task>(
             getPriority(i.id)
         }
 
-        listOfTasks.sortBy{ it.evaluatedPriority }//.
-        //thenBy { -dateToInt(it.dateOfCreation) })
+        listOfTasks.sortBy{ it.evaluatedPriority }
         listOfTasks.reverse()
         normalizeIndexes()
     }
@@ -138,25 +136,25 @@ class DeadlineTaskList(
     id = id
 ) {
 
-    private var maximumDeadline: Int = Int.MIN_VALUE
+    private var maximumDeadline: Long = Long.MIN_VALUE
 
     override fun add(task: DeadlineTask): Status {
         maximumDeadline = max(
-            super.listOfTasks.map { dateToInt(it.deadline) }.maxOrNull() ?: Int.MIN_VALUE,
-            dateToInt(task.deadline))
+            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
+            task.deadline.toInstant().toEpochMilli())
         return super.add(task)
     }
 
     override fun delete(task: DeadlineTask): Status {
         maximumDeadline = max(
-            super.listOfTasks.map { dateToInt(it.deadline) }.maxOrNull() ?: Int.MIN_VALUE,
-            dateToInt(task.deadline))
+            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
+            task.deadline.toInstant().toEpochMilli())
         return super.delete(task)
     }
 
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
-        val dateInt = dateToInt(currentTask.deadline)
+        val dateInt = currentTask.deadline.toInstant().toEpochMilli()
 
         currentTask.evaluatedPriority = sqrt(1 - dateInt  * 1.0/maximumDeadline) * 100
         //evaluates priority: scales between 0 - 100 asymptotically to root function
