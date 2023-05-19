@@ -1,7 +1,9 @@
 package com.example.prioritylist.data
 
 import androidx.annotation.VisibleForTesting
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class MainPage() {
     private val listOfDeadlineCategoryLists: MutableList<DeadlineCategoryTaskList> = mutableListOf<DeadlineCategoryTaskList>()
@@ -52,67 +54,89 @@ class MainPage() {
     init{
         //-------------------------testing values
         val task1 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation =   SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3,
             priority = 3
         )
         val task2 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
             name = "test_name_2",
             description = "desc_2",
             id = 3,
             priority = 2
         )
         val task3 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_3",
             description = "desc_1",
             id = 3,
             priority = 1
         )
         val task4 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_4",
             description = "desc_1",
             id = 3,
             priority = 12
         )
         val task5 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
             name = "test_name_5",
             description = "desc_2",
             id = 3,
             priority = 2
         )
         val task6 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_6",
             description = "desc_1",
             id = 3,
             priority = 6
         )
         val task7 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_7",
             description = "desc_1",
             id = 3,
             priority = 3
         )
         val task8 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-24T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
             name = "test_name_8",
             description = "desc_2",
             id = 3,
             priority = 2
         )
         val task9 = PriorityTask(
-            dateOfCreation =  LocalDateTime.parse("2023-03-12T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_9",
             description = "desc_1",
             id = 3,
             priority = 1
+        )
+
+        val deadlineTask1 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1212:15:30")
+        )
+        val deadlineTask2 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
+            name = "test_name_2",
+            description = "desc_2",
+            id = 3,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-05-1212:15:30")
+        )
+        val deadlineTask3 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_3",
+            description = "desc_3",
+            id = 2,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
         )
 
         addList(TaskTypes.PRIORITY, "test")
@@ -127,6 +151,12 @@ class MainPage() {
         (list as PriorityTaskList).add(task8)
         (list as PriorityTaskList).add(task9)
 
+        addList(TaskTypes.DEADLINE, "test deadline")
+        val listDeadline = currentList
+        (listDeadline as DeadlineTaskList).add(deadlineTask1)
+        (listDeadline as DeadlineTaskList).add(deadlineTask2)
+        (listDeadline as DeadlineTaskList).add(deadlineTask3)
+        prevList()
     }
     //testing
 
