@@ -6,6 +6,7 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertThrows
 import org.junit.Test
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 
 
@@ -56,24 +57,24 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2024-11-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2023-12-11T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-12-1112:15:30"),
         )
 
         val task3 = DeadlineTask(
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2022-02-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-02-1212:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -113,16 +114,16 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2024-11-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2023-12-11T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-12-1112:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -160,24 +161,24 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2024-11-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2026-12-1112:15:30"),
         )
 
         val task3 = DeadlineTask(
             name = "test3",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -205,6 +206,138 @@ class DataManagerTests {
     }
 
     @Test
+    fun editTask_TaskModifiedWithoutChangingItsName_TaskProperlyEdited(){
+        val manager = DataManager()
+
+        val task1 = PriorityTask(
+            dateOfCreation =   SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            priority = 12
+        )
+        val task2 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
+            name = "test_name_2",
+            description = "desc_2",
+            id = 3,
+            priority = 11
+        )
+        val task3 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_3",
+            description = "desc_1",
+            id = 3,
+            priority = 10
+        )
+        val task4 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_4",
+            description = "desc_1",
+            id = 3,
+            priority = 9
+        )
+        val task5 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
+            name = "test_name_5",
+            description = "desc_2",
+            id = 3,
+            priority = 8
+        )
+        val task6 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_6",
+            description = "desc_1",
+            id = 3,
+            priority = 7
+        )
+        val task7 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_7",
+            description = "desc_1",
+            id = 3,
+            priority = 6
+        )
+        val task8 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
+            name = "test_name_8",
+            description = "desc_2",
+            id = 3,
+            priority = 5
+        )
+        val task9 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_9",
+            description = "desc_1",
+            id = 3,
+            priority = 4
+        )
+
+        val deadlineTask1 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1212:15:30")
+        )
+        val deadlineTask2 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
+            name = "test_name_2",
+            description = "desc_2",
+            id = 3,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-05-1212:15:30")
+        )
+        val deadlineTask3 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_3",
+            description = "desc_3",
+            id = 2,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
+        )
+
+        manager.addListUseCase(0, "test", TaskTypes.PRIORITY)
+
+        manager.addTaskUseCase(task1)
+        manager.addTaskUseCase(task2)
+        manager.addTaskUseCase(task3)
+        manager.addTaskUseCase(task4)
+        manager.addTaskUseCase(task5)
+        manager.addTaskUseCase(task6)
+        manager.addTaskUseCase(task7)
+        manager.addTaskUseCase(task8)
+        manager.addTaskUseCase(task9)
+
+        manager.addListUseCase(1, "test deadline", TaskTypes.DEADLINE)
+        manager.addTaskUseCase(deadlineTask1)
+        manager.addTaskUseCase(deadlineTask2)
+        manager.addTaskUseCase(deadlineTask3)
+
+        manager.prevListUseCase()
+
+        val oldList = manager.getListUseCase() as MutableList<PriorityTask>
+
+        val newTask = PriorityTask(id = oldList[0].id, name = oldList[0].name, description = oldList[0].description, priority = oldList[0].priority, dateOfCreation = oldList[0].dateOfCreation)
+
+        manager.editTaskUseCase(newTask.id, newTask)
+
+        val list = manager.getListUseCase()
+
+
+
+        assertTrue(list[0] == oldList[0])
+        assertTrue(list[1] == oldList[1])
+        assertTrue(list[2] == oldList[2])
+        assertTrue(list[3] == oldList[3])
+        assertTrue(list[4] == oldList[4])
+        assertTrue(list[5] == oldList[5])
+        assertTrue(list[6] == oldList[6])
+        assertTrue(list[7] == oldList[7])
+        assertTrue(list[8] == oldList[8])
+
+
+    }
+
+    @Test
     fun moveToHistoryAndGetHistoryList_filePutInHistory(){
         val manager = DataManager()
 
@@ -214,24 +347,24 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2024-11-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2026-12-1112:15:30"),
         )
 
         val task3 = DeadlineTask(
             name = "test3",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -267,24 +400,24 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2024-11-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2026-12-1112:15:30"),
         )
 
         val task3 = DeadlineTask(
             name = "test3",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -324,40 +457,40 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2021-02-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-02-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2021-02-20T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-02-2012:15:30"),
         )
 
         val task3 = DeadlineTask(
             name = "test3",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2021-06-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-06-1212:15:30"),
         )
 
         val task4 = DeadlineTask(
             name = "test4",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2021-07-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-07-1212:15:30"),
         )
 
         val task5 = DeadlineTask(
             name = "test5",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2021-09-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-09-1212:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -410,24 +543,24 @@ class DataManagerTests {
             name = "test1",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-16T12:15:30"),
-            deadline = LocalDateTime.parse("2024-11-16T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2024-11-1612:15:30"),
         )
 
         val task2 = DeadlineTask(
             name = "test2",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-12-12T12:15:30"),
-            deadline = LocalDateTime.parse("2026-12-11T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1212:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2026-12-1112:15:30"),
         )
 
         val task3 = DeadlineTask(
             name = "test3",
             description = "desc",
             id = 0,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
         manager.addListUseCase(0, name1, type1)
@@ -444,8 +577,8 @@ class DataManagerTests {
             name = "new",
             description = "welcome",
             id = list1[1].id,
-            dateOfCreation = LocalDateTime.parse("2022-08-06T12:15:30"),
-            deadline = LocalDateTime.parse("2023-02-12T12:15:30"),
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
         manager.editTaskUseCase(list1[1].id, editedTask)
