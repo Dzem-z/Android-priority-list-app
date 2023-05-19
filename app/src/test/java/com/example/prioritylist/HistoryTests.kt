@@ -6,6 +6,7 @@ import com.example.prioritylist.data.Task
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
 
@@ -16,19 +17,19 @@ class HistoryTests {
         val historyList = HistoryList<Task> ()
 
         val task1 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-01-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3
         )
         val task2 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-02-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"),
             name = "test_name_2",
             description = "desc_2",
             id = 3
         )
         val task3 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-03-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"),
             name = "test_name_3",
             description = "desc_3",
             id = 2
@@ -62,19 +63,19 @@ class HistoryTests {
         val name3 = "test_name_3"
 
         val task1 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-01-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"),
             name = name1,
             description = "desc_1",
             id = 3
         )
         val task2 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-02-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"),
             name = name2,
             description = "desc_2",
             id = 3
         )
         val task3 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-03-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"),
             name = name3,
             description = "desc_3",
             id = 2
@@ -102,19 +103,19 @@ class HistoryTests {
         val name3 = "test_name_3"
 
         val task1 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-01-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"),
             name = name1,
             description = "desc_1",
             id = 3
         )
         val task2 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-02-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"),
             name = name2,
             description = "desc_2",
             id = 3
         )
         val task3 = Task(
-            dateOfCreation =  LocalDateTime.parse("2023-03-16T12:15:30"),
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"),
             name = name3,
             description = "desc_3",
             id = 2
@@ -148,7 +149,7 @@ class HistoryTests {
         val range = 100
         for(i in 1..range){
             taskList.add(Task(
-                dateOfCreation =  LocalDateTime.parse("${startingDate + i}-03-16T12:15:30"),
+                dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("${startingDate + i}-03-1612:15:30"),
                 name = "test_name$i",
                 description = "desc_$i",
                 id = 2
@@ -156,12 +157,12 @@ class HistoryTests {
             historyList.pushTask(taskList.last())
         }
 
-        historyList.deleteUntil(LocalDateTime.parse("$untilDate-03-16T12:15:30"))
+        historyList.deleteUntil(SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("$untilDate-03-1612:15:30"))
 
         val lastTask = historyList.getTaskByID(range - untilDate + startingDate)
 
         assertNotNull(lastTask)
-        assertTrue(lastTask.it.dateOfCreation == LocalDateTime.parse("$untilDate-03-16T12:15:30"))
+        assertTrue(lastTask.it.dateOfCreation == SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("$untilDate-03-1612:15:30"))
 
     }
 

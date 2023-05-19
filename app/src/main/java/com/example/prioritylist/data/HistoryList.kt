@@ -1,6 +1,5 @@
 package com.example.prioritylist.data
 
-import java.time.LocalDateTime
 import java.util.Date
 
 /*
@@ -23,7 +22,7 @@ class HistoryList<TaskType: Task>() {
     fun deleteTask(deletedTask: HistoryTask<TaskType>) {
         TODO("not yet implemented")
     }
-    fun deleteUntil(date: LocalDateTime) {
+    fun deleteUntil(date: Date) {
         TODO("not yet implemented")
     }
 
