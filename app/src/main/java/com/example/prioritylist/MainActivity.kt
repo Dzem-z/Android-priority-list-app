@@ -10,7 +10,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.ui.AddListScreen
+import com.example.prioritylist.ui.EditTaskScreen
 import com.example.prioritylist.ui.MainPageScreen
+import com.example.prioritylist.ui.StateHolder
 import com.example.prioritylist.ui.theme.PriorityListTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,16 +27,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainPageScreen()
+                    MainPageScreen(holder = StateHolder())
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)
