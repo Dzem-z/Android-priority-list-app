@@ -84,6 +84,14 @@ class DataManager(
             throw NullPointerException()
     }
 
+    fun getDateOfCreationUseCase(): Date{
+        val list = mainPage.currentList
+        if (list != null)
+            return list.getDateOfCreation()
+        else
+            throw NullPointerException()
+    }
+
     fun getHistoryListUseCase(): MutableList<HistoryTask<*>> {
         TODO("Not yet implemented")
     }
@@ -96,13 +104,14 @@ class DataManager(
         TODO("Not yet implemented")
     }
 
-    fun changeNameUseCase(name: String) {
+    fun changeNameUseCase(name: String): Status {
         val list = mainPage.currentList
         if (list != null) {
             list.changeName(name)
         } else {
             throw NullPointerException()
         }
+        return Status(StatusCodes.SUCCESS)
     }
 
     fun undoUseCase() {
@@ -111,6 +120,10 @@ class DataManager(
 
     fun changeIDUseCase(newId: Int) {
         mainPage.changeIDofCurrentList(newId)
+    }
+
+    fun getIDUseCase(): Int {
+        return mainPage.currentListID
     }
 
     fun prevListUseCase(): TaskTypes? {
@@ -129,13 +142,16 @@ class DataManager(
         }
     }
 
-    fun addListUseCase(id: Int, name: String, type: TaskTypes) {
-        mainPage.addList(type, name)
+    fun addListUseCase(id: Int, name: String, type: TaskTypes, dateOfCreation: Date) {
+        mainPage.addList(type, name, dateOfCreation)
         mainPage.changeIDofCurrentList(id)
     }
 
-    fun deleteCurrentListUseCase(): Status {
-        return mainPage.deleteCurrentList()
+    fun deleteCurrentListUseCase(): TaskTypes? {
+        if (mainPage.deleteCurrentList().code != StatusCodes.SUCCESS)
+            return null
+        else
+            return mainPage.currentType
     }
 
 }
