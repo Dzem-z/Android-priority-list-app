@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import java.lang.Math.sqrt
 import java.util.Collections.list
 import java.util.Collections.max
+import java.util.Date
 import kotlin.math.*
 
 /*
@@ -12,7 +13,8 @@ TODO(comments)
 
 abstract class TaskList<TaskType: Task>(
     protected open var name: String,
-    protected open var id: Int
+    protected open var id: Int,
+    protected open var dateOfCreation: Date
 ) {
 
 
@@ -74,6 +76,12 @@ abstract class TaskList<TaskType: Task>(
     fun changeID(newID: Int) {
         id = newID
     }
+
+    @JvmName("getDateOfCreationTaskList")
+    fun getDateOfCreation(): Date {
+        return dateOfCreation
+    }
+
     fun getList(): MutableList<TaskType> {
         return listOfTasks.toMutableList()
     }
@@ -116,9 +124,11 @@ abstract class TaskList<TaskType: Task>(
 class CategoryTaskList(
     override var name: String,
     override var id: Int,
+    override var dateOfCreation: Date
 ): TaskList<CategoryTask>(
     name = name,
-    id = id
+    id = id,
+    dateOfCreation = dateOfCreation
 ) {
 
 
@@ -131,9 +141,11 @@ class CategoryTaskList(
 class DeadlineTaskList(
     override var name: String,
     override var id: Int,
+    override var dateOfCreation: Date
 ): TaskList<DeadlineTask>(
     name = name,
-    id = id
+    id = id,
+    dateOfCreation = dateOfCreation
 ) {
 
     private var maximumDeadline: Long = Long.MIN_VALUE
@@ -165,9 +177,11 @@ class DeadlineTaskList(
 class PriorityTaskList(
     override var name: String,
     override var id: Int,
+    override var dateOfCreation: Date
 ): TaskList<PriorityTask>(
     name = name,
-    id = id
+    id = id,
+    dateOfCreation = dateOfCreation
 ) {
     private var maximumPriority = Int.MIN_VALUE
 
@@ -200,10 +214,12 @@ class PriorityTaskList(
 
 class DeadlineCategoryTaskList(
     override var name: String,
-    override var id: Int
+    override var id: Int,
+    override var dateOfCreation: Date
 ): TaskList<DeadlineCategoryTask>(
     name = name,
-    id = id
+    id = id,
+    dateOfCreation = dateOfCreation
 ) {
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
@@ -212,10 +228,12 @@ class DeadlineCategoryTaskList(
 
 class DeadlinePriorityTaskList(
     override var name: String,
-    override var id: Int
+    override var id: Int,
+    override var dateOfCreation: Date
 ): TaskList<DeadlinePriorityTask>(
     name = name,
-    id = id
+    id = id,
+    dateOfCreation = dateOfCreation
 ) {
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
@@ -224,10 +242,12 @@ class DeadlinePriorityTaskList(
 
 class DeadlinePriorityCategoryTaskList(
     override var name: String,
-    override var id: Int
+    override var id: Int,
+    override var dateOfCreation: Date
 ): TaskList<DeadlinePriorityCategoryTask>(
     name = name,
-    id = id
+    id = id,
+    dateOfCreation = dateOfCreation
 ) {
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")

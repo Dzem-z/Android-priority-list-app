@@ -14,7 +14,7 @@ class TaskListTests {
 
     @Test
     fun addAndGetTaskByID_taskAddedAndRead_CorrectTaskRememberedAndProperIDSet() {
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -32,7 +32,7 @@ class TaskListTests {
 
     @Test
     fun addAndGetTaskByName_taskAddedAndRead_CorrectTaskRemembered(){
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -88,7 +88,7 @@ class TaskListTests {
 
     @Test
     fun add_checkForUniqueness_duplicatedTaskCodeReturned() {
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -123,7 +123,7 @@ class TaskListTests {
 
     @Test
     fun priorityGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val taskByDate1 = PriorityTask(
             dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1212:15:30"),
             name = "test_name_1",
@@ -176,7 +176,7 @@ class TaskListTests {
 
     @Test
     fun priorityGetPriority2_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val taskByPriority1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -232,7 +232,7 @@ class TaskListTests {
 
     @Test
     fun deadlineGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = DeadlineTaskList(name = "test", id = 0)
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val taskByDate1 = DeadlineTask(
             dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
             name = "test_name_1",
@@ -274,7 +274,7 @@ class TaskListTests {
     @Test
     fun deadlineGetPriority2__whenPriorityNeedsToBeEvaluated_correctOrdering(){
 
-        val list = DeadlineTaskList(name = "test", id = 0)
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val taskByDeadline1 = DeadlineTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
@@ -317,7 +317,7 @@ class TaskListTests {
 
     @Test
     fun categoryGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = CategoryTaskList(name = "test", id = 0)
+        val list = CategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val cat1 = Category(
             name = "cat1",
             priority = 1,
@@ -377,7 +377,7 @@ class TaskListTests {
 
     @Test
     fun categoryGetPriority2_whenPriorityNeedsToBeEvaluated_correctOrdering(){
-        val list = CategoryTaskList(name = "test", id = 0)
+        val list = CategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val cat1 = Category(
             name = "cat1",
@@ -450,7 +450,7 @@ class TaskListTests {
 
     @Test
     fun deadlineCategoryGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = DeadlineCategoryTaskList(name = "test", id = 0)
+        val list = DeadlineCategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val cat1 = Category(
             name = "cat1",
             priority = 1,
@@ -524,7 +524,7 @@ class TaskListTests {
 
     @Test
     fun delete_onDeleteOrEdit_taskDeleted() {
-        val list = DeadlineTaskList(name = "test", id = 0)
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -573,7 +573,7 @@ class TaskListTests {
 
     @Test
     fun addTask_taskAdded_CorrectTaskAdded() {
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val task = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -588,7 +588,7 @@ class TaskListTests {
 
     @Test
     fun editTask_taskEdited_taskProperlyEdited() {
-        val list = PriorityTaskList(name = "test", id = 0)
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         val task = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -614,7 +614,7 @@ class TaskListTests {
 
     @Test
     fun deleteTask_taskDeleted_properTaskDeleted() {
-        val list = DeadlineTaskList(name = "test", id = 0)
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -664,7 +664,8 @@ class TaskListTests {
     fun changeID_onIDChange_IDChanged() {
         val list = PriorityTaskList(
             name = "test1",
-            id = 0
+            id = 0,
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
         )
         val newId = 12
         list.changeID(newId)
@@ -676,7 +677,8 @@ class TaskListTests {
     fun changeName_onNameChange_nameChanged() {
         val list = PriorityTaskList(
             name = "old",
-            id = 0
+            id = 0,
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
         )
         val new = "new"
         list.changeName(new)
@@ -686,7 +688,7 @@ class TaskListTests {
 
     @Test
     fun getList_listSharing_listOfTasksReturned() {
-        val list = DeadlineTaskList(name = "test", id = 0)
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -727,7 +729,7 @@ class TaskListTests {
 
     @Test
     fun getList_listSharingWithCopying_copyOflistOfTasksReturned() {
-        val list = DeadlineTaskList(name = "test", id = 0)
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -793,7 +795,8 @@ class TaskListTests {
     fun undoAdd_onUndoingAdding_taskReverseDeleted() {
         val list = PriorityTaskList(
             name = "test",
-            id = 0
+            id = 0,
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
         )
 
         val addedTask = PriorityTask(
@@ -818,7 +821,8 @@ class TaskListTests {
     fun undoDelete_onRestoringTask_taskRestored() {
         val list = PriorityTaskList(
             name = "test",
-            id = 0
+            id = 0,
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
         )
 
         val addedTask = PriorityTask(
@@ -847,7 +851,8 @@ class TaskListTests {
     fun undoEdit_onRestoringPreviousVersionOfTask_taskVersionRestored() {
         val list = PriorityTaskList(
             name = "test",
-            id = 0
+            id = 0,
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
         )
 
         val addedTask = PriorityTask(
@@ -885,7 +890,7 @@ class TaskListTests {
 
     @Test
     fun delete_tasksDeleted() {
-        val list = PriorityTaskList("name",0)
+        val list = PriorityTaskList("name", 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
@@ -978,7 +983,7 @@ class TaskListTests {
 
     @Test
     fun addTasks_properOrder() {
-        val list = PriorityTaskList("name",0)
+        val list = PriorityTaskList("name", 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
