@@ -5,6 +5,7 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertThrows
 import org.junit.Test
+import java.text.SimpleDateFormat
 
 class MainPageTests {
 
@@ -15,8 +16,8 @@ class MainPageTests {
         val nameID0 = "list1"
         val nameID1 = "list2"
 
-        page.addList(TaskTypes.DEADLINE, nameID0)
-        page.addList(TaskTypes.DEADLINE, nameID1)
+        page.addList(TaskTypes.DEADLINE, nameID0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.DEADLINE, nameID1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val list = page.getListByID(0)
         assertNotNull(list)
@@ -36,10 +37,10 @@ class MainPageTests {
         val nameID2 = "list3"
         val nameID3 = "list4"
 
-        page.addList(TaskTypes.PRIORITY, nameID0)
-        page.addList(TaskTypes.DEADLINE, nameID1)
-        page.addList(TaskTypes.DEADLINE_CATEGORY, nameID2)
-        page.addList(TaskTypes.DEADLINE_PRIORITY, nameID3)
+        page.addList(TaskTypes.PRIORITY, nameID0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.DEADLINE, nameID1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.DEADLINE_CATEGORY, nameID2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.DEADLINE_PRIORITY, nameID3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val list0 = page.getListByID(0)
         val list1 = page.getListByID(1)
@@ -69,11 +70,11 @@ class MainPageTests {
         val nameID3 = "list4"
         val nameID4 = "list5"
 
-        page.addList(TaskTypes.PRIORITY, nameID4)
-        page.addList(TaskTypes.PRIORITY, nameID3)
-        page.addList(TaskTypes.PRIORITY, nameID2)
-        page.addList(TaskTypes.PRIORITY, nameID1)
-        page.addList(TaskTypes.PRIORITY, nameID0)
+        page.addList(TaskTypes.PRIORITY, nameID4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.PRIORITY, nameID3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.PRIORITY, nameID2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.PRIORITY, nameID1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.PRIORITY, nameID0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         page.changeIDofCurrentList(0)
         page.nextList()
@@ -112,12 +113,12 @@ class MainPageTests {
         val nameID2 = "list3"
         val nameID3 = "list4"
 
-        page.addList(TaskTypes.PRIORITY, nameID0)
-        page.addList(TaskTypes.PRIORITY, nameID3)
+        page.addList(TaskTypes.PRIORITY, nameID0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(TaskTypes.PRIORITY, nameID3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(TaskTypes.PRIORITY, nameID2)
+        page.addList(TaskTypes.PRIORITY, nameID2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(TaskTypes.PRIORITY, nameID1)
+        page.addList(TaskTypes.PRIORITY, nameID1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
 
         val list0 = page.getListByID(0)
@@ -143,7 +144,7 @@ class MainPageTests {
 
         val name = "name"
 
-        page.addList(TaskTypes.PRIORITY, name)
+        page.addList(TaskTypes.PRIORITY, name, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         assertTrue(page.currentType == TaskTypes.PRIORITY)
         assertTrue((page.currentList as PriorityTaskList).getName() == name)
@@ -161,15 +162,15 @@ class MainPageTests {
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
         val name5 = "name5"; val type5 = TaskTypes.CATEGORY
 
-        page.addList(type1, name1)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type2, name2)
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type3, name3)
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type4, name4)
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type5, name5)
+        page.addList(type5, name5, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
         page.changeIDofCurrentList(5)
 
@@ -201,15 +202,15 @@ class MainPageTests {
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
         val name5 = "name5"; val type5 = TaskTypes.CATEGORY
 
-        page.addList(type1, name1)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type2, name2)
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type3, name3)
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type4, name4)
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type5, name5)
+        page.addList(type5, name5, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
 
 
@@ -235,15 +236,15 @@ class MainPageTests {
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
         val name5 = "name5"; val type5 = TaskTypes.CATEGORY
 
-        page.addList(type1, name1)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type2, name2)
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type3, name3)
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type4, name4)
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
-        page.addList(type5, name5)
+        page.addList(type5, name5, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
 
         page.nextList()
@@ -279,8 +280,8 @@ class MainPageTests {
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
 
-        page.addList(type1, name1)
-        page.addList(type2, name2)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         page.nextList()
 
@@ -296,8 +297,8 @@ class MainPageTests {
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE_CATEGORY
 
-        page.addList(type1, name1)
-        page.addList(type2, name2)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         page.prevList()
         page.prevList()
@@ -317,10 +318,10 @@ class MainPageTests {
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
 
-        page.addList(type1, name1)
-        page.addList(type2, name2)
-        page.addList(type3, name3)
-        page.addList(type4, name4)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
 
         page.deleteCurrentList()
@@ -339,10 +340,10 @@ class MainPageTests {
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
 
-        page.addList(type1, name1)
-        page.addList(type2, name2)
-        page.addList(type3, name3)
-        page.addList(type4, name4)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         page.deleteCurrentList()
 
@@ -360,10 +361,10 @@ class MainPageTests {
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
 
-        page.addList(type1, name1)
-        page.addList(type2, name2)
-        page.addList(type3, name3)
-        page.addList(type4, name4)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         page.prevList()
         page.prevList()
         page.prevList()
@@ -384,10 +385,10 @@ class MainPageTests {
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
         val name4 = "name4"; val type4 = TaskTypes.DEADLINE
 
-        page.addList(type1, name1)
-        page.addList(type2, name2)
-        page.addList(type3, name3)
-        page.addList(type4, name4)
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type2, name2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type3, name3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.addList(type4, name4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         page.changeIDofCurrentList(0)
         page.nextList()
