@@ -42,3 +42,7 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
     abstract fun hasCategory(): Boolean
     abstract fun hasDeadline(): Boolean
 }
+
+val listOfTypes = arrayOf(
+    TaskTypes.PRIORITY, TaskTypes.DEADLINE
+)
