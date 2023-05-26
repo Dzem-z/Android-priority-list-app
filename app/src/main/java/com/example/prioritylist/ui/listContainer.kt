@@ -64,10 +64,12 @@ fun ListContainer(
     holder: StateHolder = StateHolder(),
     onAddTask: () -> Unit = {},
     onEditTask: () -> Unit = {},
-    onDeleteTask: () -> Unit = {}
+    onDeleteTask: () -> Unit = {},
+    onAddList:() -> Unit = {},
+    onRemoveList: () -> Unit = {}
     ) {
 
-    //var visible by remember{ mutableStateOf(true) }
+
     val coroutineScope = rememberCoroutineScope()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -77,6 +79,8 @@ fun ListContainer(
 
     val roundedCornerRadius = 12.dp
 
+
+
     BackHandler(modalSheetState.isVisible) {
         coroutineScope.launch { modalSheetState.hide() }
     }
@@ -85,39 +89,27 @@ fun ListContainer(
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(topStart = roundedCornerRadius, topEnd = roundedCornerRadius),
-        sheetContent = {
-            Row(
-                modifier = Modifier.height(96.dp)
-            ){
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(12.dp),
-                    onClick = {
-                        coroutineScope.launch { modalSheetState.hide() }
-                        onEditTask()
-                    }
-                ) {
-                    Text(text = "edit task")
-                }
+        sheetContent = if (holder.taskBottomSheetExpanded) {
+            { TaskOptionsSheet(
+                hide = { coroutineScope.launch { modalSheetState.hide() } },
+                onEditTask = onEditTask,
+                onDeleteTask = onDeleteTask
+            ) }
 
-                Spacer(modifier = Modifier.padding(6.dp))
-
-                Button(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(12.dp),
-                    onClick = {
-                        coroutineScope.launch { modalSheetState.hide() }
-                        onDeleteTask()
-                    }
-                ) {
-                    Text(text = "delete task")
+        } else {
+            { ListOptionsSheet(
+                viewModel = holder,
+                removeList = {
+                    onRemoveList()
+                    coroutineScope.launch { modalSheetState.hide() }
+                },
+                addList = {
+                    coroutineScope.launch { modalSheetState.hide() }
+                    onAddList()
                 }
+            ) }
             }
-        }
+
     ) {
 
         Scaffold(
@@ -184,7 +176,12 @@ fun ListContainer(
                         modifier = Modifier
                             .weight(2f)
                             .height(48.dp),
-                        onClick = { },
+                        onClick = {
+                            holder.taskBottomSheetExpanded = false
+                            coroutineScope.launch {
+                                modalSheetState.show()
+                            }
+                                  },
                         shape = RectangleShape
                     ) {
                         Text(
@@ -216,13 +213,13 @@ fun ListContainer(
 
                 }
 
-
-                AnimatedVisibility(visible = (holder.currentListIndex == 0)) {
+                AnimatedVisibility(visible = holder.visible) {
                     if (holder.firstType == TaskTypes.PRIORITY) {
                         PriorityList(
                             holder,
                             holder.firstList as MutableList<PriorityTask>,
                         {
+                            holder.taskBottomSheetExpanded = true
                             coroutineScope.launch {
                                 modalSheetState.show()
                             }
@@ -232,6 +229,7 @@ fun ListContainer(
                             holder,
                             holder.firstList as MutableList<DeadlineTask>,
                         {
+                            holder.taskBottomSheetExpanded = true
                             coroutineScope.launch {
                                 modalSheetState.show()
                             }
@@ -239,12 +237,13 @@ fun ListContainer(
                     }
                 }
 
-                AnimatedVisibility(visible = (holder.currentListIndex == 1)) {
+                AnimatedVisibility(visible = !holder.visible) {
                     if (holder.secondType == TaskTypes.PRIORITY) {
                         PriorityList(
                             holder,
                             holder.secondList as MutableList<PriorityTask>,
                         {
+                            holder.taskBottomSheetExpanded = true
                             coroutineScope.launch {
                                 modalSheetState.show()
                             }
@@ -254,6 +253,7 @@ fun ListContainer(
                             holder,
                             holder.secondList as MutableList<DeadlineTask>,
                         {
+                            holder.taskBottomSheetExpanded = true
                             coroutineScope.launch {
                                 modalSheetState.show()
                             }
@@ -266,6 +266,8 @@ fun ListContainer(
         }
     }
 }
+
+
 
 @Preview
 @Composable
