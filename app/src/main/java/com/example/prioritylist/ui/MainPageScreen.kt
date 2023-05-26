@@ -67,6 +67,12 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                 onDeleteTask = {
                     holder.onDeleteTask()
                 },
+                onAddList = {
+                    navController.navigate("AddList")
+                },
+                onRemoveList = {
+                    holder.removeList()
+                }
             )
         }
 
@@ -109,6 +115,22 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                             },
                 onCancel = {
                     holder.resetEditedTask()
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(
+            route = "AddList"
+        ) {
+            AddListScreen(
+                holder = holder,
+                onCancel = {
+                    holder.resetAddListParameters()
+                    navController.popBackStack()
+                },
+                onConfirm = {
+                    holder.addList()
                     navController.popBackStack()
                 }
             )
