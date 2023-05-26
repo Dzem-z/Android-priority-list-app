@@ -25,7 +25,8 @@ import com.example.prioritylist.data.DeadlineTask
 import com.example.prioritylist.data.PriorityTask
 import com.example.prioritylist.data.StatusCodes
 import com.example.prioritylist.domain.DataManager
-import java.time.LocalDateTime
+import java.util.Calendar
+import java.util.Date
 
 /*
 TODO(comments)
@@ -34,27 +35,47 @@ TODO(comments)
 class StateHolder : ViewModel() {
 
     var editedTask by mutableStateOf(ModifiableTask())
+
     var firstType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
     var secondType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
+
     var firstList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
     var secondList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
+
     var isPrevList by mutableStateOf(false)
     var isNextList by mutableStateOf(false)
 
-    var currentListIndex = 0
+    //private var _currentListIndex
+
+    var currentListIndex = MutableStateFlow(0)
+
+    var index = currentListIndex.asStateFlow()
+        private set
+
+    var visible by mutableStateOf(true)
+
+    var currentListName by mutableStateOf("")
+
+    var newListName by mutableStateOf("")
+    var selectedTypeText by mutableStateOf("priority-based tasks")
+    var selectedType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
 
     private val dataManager = DataManager()
     private var badName by mutableStateOf(false)
 
+
     var duplicatedName by mutableStateOf(false)
     var emptyName by mutableStateOf(false)
 
-    init{
-        updateList()
-    }
+    var taskBottomSheetExpanded by mutableStateOf(true)
+
+
 
     private fun incrementIndex() {
-        currentListIndex = (currentListIndex + 1) % 2
+        //_currentListIndex = (_currentListIndex + 1) % 2
+        currentListIndex.value = (currentListIndex.value + 1) % 2
+        index = currentListIndex.asStateFlow()
+        visible = !visible
     }
 
     fun setDuplicatedTaskError() {
@@ -73,15 +94,17 @@ class StateHolder : ViewModel() {
         duplicatedName = false
     }
 
-
-
     fun isDuplicatedTask(): Boolean {
         return badName
     }
 
+    init{
+        updateList()
+    }
+
     @VisibleForTesting
     internal fun setList(list: MutableList<out Task>) {
-        if (currentListIndex == 0){
+        if (currentListIndex.value.equals(0)){
             firstList = list
         } else {
             secondList = list
@@ -92,49 +115,41 @@ class StateHolder : ViewModel() {
         setList(dataManager.getListUseCase())
         isPrevList = isPrevListPresent()
         isNextList = isNextListPresent()
+        currentListName = dataManager.getNameUseCase()
     }
 
     fun getList(): MutableList<out Task> {
-        return if (currentListIndex == 0)
+        return if (currentListIndex.value.equals(0))
             firstList
         else
             secondList
     }
 
     fun getCurrentType(): TaskTypes{
-        return if (currentListIndex == 0)
+        return if (currentListIndex.value.equals(0))
             firstType
         else
             secondType
     }
 
     fun setCurrentType(type: TaskTypes) {
-        if (currentListIndex == 0)
+        if (currentListIndex.value.equals(0))
             firstType = type
         else
             secondType = type
     }
 
     fun getName(): String{
-        return dataManager.getNameUseCase()
+        currentListName = dataManager.getNameUseCase()
+        return currentListName
     }
 
-    fun isNextListPresent(): Boolean{
-        return if(dataManager.nextListUseCase() != null){
-            dataManager.prevListUseCase()
-            true
-        } else {
-            false
-        }
+    fun getDateOfCreation(): Date{
+        return dataManager.getDateOfCreationUseCase()
     }
 
-    fun isPrevListPresent(): Boolean{
-        return if(dataManager.prevListUseCase() != null){
-            dataManager.nextListUseCase()
-            true
-        } else {
-            false
-        }
+    fun setName(): Status{
+        return dataManager.changeNameUseCase(currentListName)
     }
 
     fun resetEditedTask() {
@@ -194,9 +209,9 @@ class StateHolder : ViewModel() {
             setCurrentType(returnedType)
             updateList()
         }
-
-
     }
+
+
     fun prevList(){
         val returnedType = dataManager.prevListUseCase()
         if(returnedType == null){
@@ -206,9 +221,56 @@ class StateHolder : ViewModel() {
             setCurrentType(returnedType)
             updateList()
         }
-
-
     }
+
+    fun isNextListPresent(): Boolean{
+        return if(dataManager.nextListUseCase() != null){
+            dataManager.prevListUseCase()
+            true
+        } else {
+            false
+        }
+    }
+
+    fun isPrevListPresent(): Boolean{
+        return if(dataManager.prevListUseCase() != null){
+            dataManager.nextListUseCase()
+            true
+        } else {
+            false
+        }
+    }
+
+    fun addList() {
+        dataManager.addListUseCase(
+            dataManager.getIDUseCase() + 1,
+            newListName,
+            selectedType,
+            Calendar.getInstance().time
+        )
+
+        incrementIndex()
+        updateList()
+        resetAddListParameters()
+    }
+
+    fun resetAddListParameters() {
+        selectedType = TaskTypes.PRIORITY
+        newListName = ""
+        selectedTypeText = "priority-based tasks"
+    }
+
+    fun removeList() {
+        val returnedType = dataManager.deleteCurrentListUseCase()
+        if( returnedType != null ){
+            incrementIndex()
+            setCurrentType(returnedType)
+            updateList()
+        } else {
+            /*TODO(empty screen)*/
+        }
+    }
+
 
     fun onDelete(task: Task) {
 
