@@ -4,6 +4,8 @@ import androidx.annotation.VisibleForTesting
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.Calendar
+import java.util.Date
 
 class MainPage() {
     private val listOfDeadlineCategoryLists: MutableList<DeadlineCategoryTaskList> = mutableListOf<DeadlineCategoryTaskList>()
@@ -139,7 +141,7 @@ class MainPage() {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
         )
 
-        addList(TaskTypes.PRIORITY, "test")
+        addList(TaskTypes.PRIORITY, "test", Calendar.getInstance().time)
         val list = currentList
         (list as PriorityTaskList).add(task1)
         (list as PriorityTaskList).add(task2)
@@ -151,18 +153,20 @@ class MainPage() {
         (list as PriorityTaskList).add(task8)
         (list as PriorityTaskList).add(task9)
 
-        addList(TaskTypes.DEADLINE, "test deadline")
-        val listDeadline = currentList
-        (listDeadline as DeadlineTaskList).add(deadlineTask1)
-        (listDeadline as DeadlineTaskList).add(deadlineTask2)
-        (listDeadline as DeadlineTaskList).add(deadlineTask3)
+        addList(TaskTypes.PRIORITY, "test deadline", Calendar.getInstance().time)
+        //val listDeadline = currentList
+        //(listDeadline as DeadlineTaskList).add(deadlineTask1)
+        //(listDeadline as DeadlineTaskList).add(deadlineTask2)
+        //(listDeadline as DeadlineTaskList).add(deadlineTask3)
         prevList()
+        //testing
     }
-    //testing
+
 
     fun addList(
         type: TaskTypes,
-        name: String
+        name: String,
+        dateOfCreation: Date
     ): Status {
         currentListID += 1
         listIdentifiers.add(currentListID, ListIdentifier(name, type))
@@ -170,12 +174,12 @@ class MainPage() {
         shift(currentListID, 1)
 
         when (type) {
-            TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(name, currentListID))
-            TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(name, currentListID))
-            TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(name, currentListID))
-            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(name, currentListID))
-            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(name, currentListID))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(DeadlinePriorityCategoryTaskList(name, currentListID))
+            TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation))
         }
 
         currentList = getListByID(currentListID)
