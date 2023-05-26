@@ -30,15 +30,15 @@ class DataManagerTests {
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val returnedList1 = manager.getListUseCase() as? MutableList<PriorityTask>
 
-        manager.addListUseCase(0, name2, type2)
+        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val returnedList2 = manager.getListUseCase() as? MutableList<DeadlineTask>
 
-        manager.addListUseCase(5, name3, type3)
+        manager.addListUseCase(5, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         val returnedList3 = manager.getListUseCase() as? MutableList<DeadlinePriorityTask>
 
@@ -77,7 +77,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
 
@@ -126,7 +126,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-12-1112:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -181,7 +181,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -295,7 +295,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
         )
 
-        manager.addListUseCase(0, "test", TaskTypes.PRIORITY)
+        manager.addListUseCase(0, "test", TaskTypes.PRIORITY, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -307,7 +307,7 @@ class DataManagerTests {
         manager.addTaskUseCase(task8)
         manager.addTaskUseCase(task9)
 
-        manager.addListUseCase(1, "test deadline", TaskTypes.DEADLINE)
+        manager.addListUseCase(1, "test deadline", TaskTypes.DEADLINE, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
         manager.addTaskUseCase(deadlineTask1)
         manager.addTaskUseCase(deadlineTask2)
         manager.addTaskUseCase(deadlineTask3)
@@ -367,7 +367,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -420,7 +420,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -493,7 +493,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-09-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -526,7 +526,7 @@ class DataManagerTests {
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
         val newName = "new"
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.changeNameUseCase(newName)
 
@@ -563,7 +563,7 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.addTaskUseCase(task1)
         manager.addTaskUseCase(task2)
@@ -606,9 +606,9 @@ class DataManagerTests {
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name1, type1)
-        manager.addListUseCase(1, name2, type2)
-        manager.addListUseCase(2, name3, type3)
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(1, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(2, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         assertTrue(manager.prevListUseCase() == TaskTypes.DEADLINE)
 
@@ -635,9 +635,9 @@ class DataManagerTests {
 
         val newID = 5
 
-        manager.addListUseCase(0, name2, type2)
-        manager.addListUseCase(0, name1, type1)
-        manager.addListUseCase(5, name3, type3)
+        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(5, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.prevListUseCase()
         manager.prevListUseCase()
@@ -665,9 +665,9 @@ class DataManagerTests {
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name3, type3)
-        manager.addListUseCase(0, name2, type2)
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         assertTrue(manager.nextListUseCase() == TaskTypes.DEADLINE)
 
@@ -690,9 +690,9 @@ class DataManagerTests {
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name3, type3)
-        manager.addListUseCase(0, name2, type2)
-        manager.addListUseCase(0, name1, type1)
+        manager.addListUseCase(0, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
 
         manager.deleteCurrentListUseCase()
 
