@@ -207,6 +207,8 @@ class MainPage() {
 
         if (newID > listIdentifiers.size - 1)
             newID = listIdentifiers.size - 1
+        else if(newID < 0)
+            newID = 0
         return if (list != null) {
             shift(currentListID, -1)
             shift(newID, 1)
