@@ -30,14 +30,18 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.prioritylist.R
 import com.example.prioritylist.data.TaskTypes
 
 
@@ -93,7 +97,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
 
     Column(
         modifier = Modifier
-            .height(208.dp),
+            .height(228.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -111,6 +115,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                     onValueChange = {
                         textFieldValueState = it
                         viewModel.currentListName = it.text
+                        viewModel.setName()
                     },
                     textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -170,16 +175,61 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
             },
             textAlign = TextAlign.Center
         )
-        OutlinedButton(
-            onClick = removeList
-        ) {
-            Text(text = "remove this list")
-        }
 
-        OutlinedButton(
-            onClick = addList
+        Row(
+            modifier = Modifier.padding(12.dp)
         ) {
-            Text(text = "add new list")
+
+            Button(
+                onClick = { viewModel.swapWithLeft() },
+                enabled = viewModel.isPrevList,
+                modifier = Modifier.weight(1f)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.swap_horiz_48px),
+                        contentDescription = "drawer icon"
+                    )
+                    Text(text = "swap with left")
+                }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(2f)
+            ) {
+                OutlinedButton(
+                    onClick = removeList
+                ) {
+                    Text(text = "remove this list")
+                }
+
+                OutlinedButton(
+                    onClick = addList
+                ) {
+                    Text(text = "add new list")
+                }
+            }
+
+            Button(
+                onClick = { viewModel.swapWithRight() },
+                enabled = viewModel.isNextList,
+                modifier = Modifier.weight(1f)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.swap_horiz_48px),
+                        contentDescription = "drawer icon"
+                    )
+
+                    Text(text = "swap with right")
+                }
+            }
+
         }
 
     }

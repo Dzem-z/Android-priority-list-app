@@ -271,6 +271,15 @@ class StateHolder : ViewModel() {
         }
     }
 
+    fun swapWithLeft() {
+        dataManager.changeIDUseCase(dataManager.getIDUseCase() - 1)
+        updateList()
+    }
+
+    fun swapWithRight() {
+        dataManager.changeIDUseCase(dataManager.getIDUseCase() + 1)
+        updateList()
+    }
 
     fun onDelete(task: Task) {
 
