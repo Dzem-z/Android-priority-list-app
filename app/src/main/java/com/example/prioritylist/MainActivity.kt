@@ -38,6 +38,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     PriorityListTheme {
-        Greeting("Android")
+        MainPageScreen(holder = StateHolder())
     }
 }
