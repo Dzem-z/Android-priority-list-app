@@ -81,7 +81,7 @@ fun TaskOptionsSheet(modifier: Modifier = Modifier, hide: () -> Unit = {}, onEdi
 }
 
 @Composable
-fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, removeList: () -> Unit = {}, addList: () -> Unit = {}) {
+fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, removeList: () -> Unit = {}, addList: () -> Unit = {}, launchSnackbar: (String) -> Unit = {}) {
 
     var isEdited by remember{ mutableStateOf(false) }
 
@@ -181,7 +181,10 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
         ) {
 
             Button(
-                onClick = { viewModel.swapWithLeft() },
+                onClick = {
+                    viewModel.swapWithLeft()
+                    launchSnackbar("swaped with list on the left")
+                          },
                 enabled = viewModel.isPrevList,
                 modifier = Modifier.weight(1f)
             ) {
@@ -214,7 +217,10 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
             }
 
             Button(
-                onClick = { viewModel.swapWithRight() },
+                onClick = {
+                    viewModel.swapWithRight()
+                    launchSnackbar("swaped with list on the right")
+                          },
                 enabled = viewModel.isNextList,
                 modifier = Modifier.weight(1f)
             ) {

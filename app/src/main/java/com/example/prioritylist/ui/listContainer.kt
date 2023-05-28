@@ -8,6 +8,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,10 +27,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Snackbar
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.rounded.Add
@@ -41,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -69,20 +74,31 @@ fun ListContainer(
     onRemoveList: () -> Unit = {}
     ) {
 
-
+    val snackbarPosition = remember { Animatable(164f) }
     val coroutineScope = rememberCoroutineScope()
+
+    val scaffoldState = rememberScaffoldState()
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
         skipHalfExpanded = true
     )
 
+
+    LaunchedEffect(modalSheetState.isVisible){
+        coroutineScope.launch{
+            snackbarPosition.animateTo(if (modalSheetState.isVisible) 164f else 0f)
+        }
+    }
+
     val roundedCornerRadius = 12.dp
 
 
 
     BackHandler(modalSheetState.isVisible) {
-        coroutineScope.launch { modalSheetState.hide() }
+        coroutineScope.launch {
+            modalSheetState.hide()
+        }
     }
 
 
@@ -91,7 +107,9 @@ fun ListContainer(
         sheetShape = RoundedCornerShape(topStart = roundedCornerRadius, topEnd = roundedCornerRadius),
         sheetContent = if (holder.taskBottomSheetExpanded) {
             { TaskOptionsSheet(
-                hide = { coroutineScope.launch { modalSheetState.hide() } },
+                hide = {
+                    coroutineScope.launch { modalSheetState.hide() }
+                       },
                 onEditTask = onEditTask,
                 onDeleteTask = onDeleteTask
             ) }
@@ -106,13 +124,32 @@ fun ListContainer(
                 addList = {
                     coroutineScope.launch { modalSheetState.hide() }
                     onAddList()
+                },
+                launchSnackbar = { message ->
+                    coroutineScope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(message)
+                    }
                 }
+
             ) }
             }
 
     ) {
 
         Scaffold(
+            scaffoldState = scaffoldState,
+
+            snackbarHost = {
+                // reuse default SnackbarHost to have default animation and timing handling
+                SnackbarHost(it) { data ->
+                    Snackbar(
+                        modifier = Modifier.padding(vertical = snackbarPosition.value.dp),
+                        snackbarData = data
+                    )
+                }
+            },
+
+
             topBar = {
                 TopAppBar(
                     title = { /*TODO*/ },
@@ -178,9 +215,7 @@ fun ListContainer(
                             .height(48.dp),
                         onClick = {
                             holder.taskBottomSheetExpanded = false
-                            coroutineScope.launch {
-                                modalSheetState.show()
-                            }
+                            coroutineScope.launch { modalSheetState.show() }
                                   },
                         shape = RectangleShape
                     ) {
@@ -220,9 +255,7 @@ fun ListContainer(
                             holder.firstList as MutableList<PriorityTask>,
                         {
                             holder.taskBottomSheetExpanded = true
-                            coroutineScope.launch {
-                                modalSheetState.show()
-                            }
+                            coroutineScope.launch { modalSheetState.show() }
                         })
                     } else if (holder.firstType == TaskTypes.DEADLINE) {
                         DeadlineList(
@@ -230,9 +263,7 @@ fun ListContainer(
                             holder.firstList as MutableList<DeadlineTask>,
                         {
                             holder.taskBottomSheetExpanded = true
-                            coroutineScope.launch {
-                                modalSheetState.show()
-                            }
+                            coroutineScope.launch { modalSheetState.show() }
                         })
                     }
                 }
@@ -244,9 +275,7 @@ fun ListContainer(
                             holder.secondList as MutableList<PriorityTask>,
                         {
                             holder.taskBottomSheetExpanded = true
-                            coroutineScope.launch {
-                                modalSheetState.show()
-                            }
+                            coroutineScope.launch { modalSheetState.show() }
                         })
                     } else if (holder.secondType == TaskTypes.DEADLINE) {
                         DeadlineList(
@@ -254,9 +283,7 @@ fun ListContainer(
                             holder.secondList as MutableList<DeadlineTask>,
                         {
                             holder.taskBottomSheetExpanded = true
-                            coroutineScope.launch {
-                                modalSheetState.show()
-                            }
+                            coroutineScope.launch { modalSheetState.show() }
                         })
                     }
                 }
