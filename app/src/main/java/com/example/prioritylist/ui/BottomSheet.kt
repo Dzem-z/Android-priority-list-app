@@ -214,6 +214,12 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                 ) {
                     Text(text = "add new list")
                 }
+
+                Button(
+                    onClick = {}
+                ) {
+                    Text(text = "go to history")
+                }
             }
 
             Button(
