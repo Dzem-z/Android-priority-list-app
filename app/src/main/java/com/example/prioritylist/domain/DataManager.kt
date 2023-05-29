@@ -68,8 +68,43 @@ class DataManager(
         return Status(StatusCodes.SUCCESS)
     }
 
-    fun moveToHistoryUseCase(task: Task): Status {
-        TODO("Not yet implemented")
+    fun moveToHistoryUseCase(task: Task, dateOfCompletion: Date): Status {
+        val list = mainPage.currentList
+        val currentType = mainPage.currentType
+        var status = Status(StatusCodes.FAILURE)
+        var hstatus = Status(StatusCodes.SUCCESS)
+        if (currentType != null && list != null) {
+            when(currentType) {
+                TaskTypes.PRIORITY -> {
+                    status = (list as PriorityTaskList).deleteTask(task as PriorityTask)
+                    hstatus = list.history.pushTask(task, dateOfCompletion)
+                }
+                TaskTypes.CATEGORY -> {
+                    status = (list as CategoryTaskList).deleteTask(task as CategoryTask)
+                    hstatus = list.history.pushTask(task, dateOfCompletion)
+                }
+                TaskTypes.DEADLINE -> {
+                    status = (list as DeadlineTaskList).deleteTask(task as DeadlineTask)
+                    hstatus = list.history.pushTask(task, dateOfCompletion)
+                }
+                TaskTypes.DEADLINE_PRIORITY -> {
+                    status = (list as DeadlinePriorityTaskList).deleteTask(task as DeadlinePriorityTask)
+                    hstatus = list.history.pushTask(task, dateOfCompletion)
+                }
+                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> {
+                    status = (list as DeadlinePriorityCategoryTaskList).deleteTask(task as DeadlinePriorityCategoryTask)
+                    hstatus = list.history.pushTask(task, dateOfCompletion)
+                }
+                TaskTypes.DEADLINE_CATEGORY -> {
+                    status = (list as DeadlineCategoryTaskList).deleteTask(task as DeadlineCategoryTask)
+                    hstatus = list.history.pushTask(task, dateOfCompletion)
+                }
+            }
+        }
+        if(status.code == StatusCodes.SUCCESS && hstatus.code == StatusCodes.SUCCESS)
+            return Status(StatusCodes.SUCCESS)
+        else
+            return Status(StatusCodes.FAILURE)
     }
 
     fun getListUseCase(): MutableList<out Task> {
@@ -92,8 +127,13 @@ class DataManager(
             throw NullPointerException()
     }
 
-    fun getHistoryListUseCase(): MutableList<HistoryTask<*>> {
-        TODO("Not yet implemented")
+    fun getHistoryListUseCase(): MutableList<out HistoryTask<out Task>> {
+        val list = mainPage.currentList
+        if (list == null){
+            throw NoSuchElementException()
+        } else {
+            return list.history.getList()
+        }
     }
 
     fun deleteFromHistoryUseCase(name: String): Status {
@@ -142,9 +182,10 @@ class DataManager(
         }
     }
 
-    fun addListUseCase(id: Int, name: String, type: TaskTypes, dateOfCreation: Date) {
+    fun addListUseCase(id: Int, name: String, type: TaskTypes, dateOfCreation: Date): TaskTypes {
         mainPage.addList(type, name, dateOfCreation)
         mainPage.changeIDofCurrentList(id)
+        return type
     }
 
     fun deleteCurrentListUseCase(): TaskTypes? {
