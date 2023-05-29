@@ -22,6 +22,7 @@ import com.example.prioritylist.data.DeadlinePriorityCategoryTask
 import com.example.prioritylist.data.DeadlinePriorityCategoryTaskList
 import com.example.prioritylist.data.DeadlinePriorityTask
 import com.example.prioritylist.data.DeadlineTask
+import com.example.prioritylist.data.HistoryTask
 import com.example.prioritylist.data.PriorityTask
 import com.example.prioritylist.data.StatusCodes
 import com.example.prioritylist.domain.DataManager
@@ -45,10 +46,7 @@ class StateHolder : ViewModel() {
     var isPrevList by mutableStateOf(false)
     var isNextList by mutableStateOf(false)
 
-    //private var _currentListIndex
-
     var currentListIndex = MutableStateFlow(0)
-
     var index = currentListIndex.asStateFlow()
         private set
 
@@ -72,7 +70,6 @@ class StateHolder : ViewModel() {
 
 
     private fun incrementIndex() {
-        //_currentListIndex = (_currentListIndex + 1) % 2
         currentListIndex.value = (currentListIndex.value + 1) % 2
         index = currentListIndex.asStateFlow()
         visible = !visible
@@ -123,6 +120,10 @@ class StateHolder : ViewModel() {
             firstList
         else
             secondList
+    }
+
+    fun getHistoryList(): MutableList<out HistoryTask<out Task>> {
+        return mutableListOf()
     }
 
     fun getCurrentType(): TaskTypes{
@@ -251,6 +252,7 @@ class StateHolder : ViewModel() {
 
         incrementIndex()
         updateList()
+        setCurrentType(selectedType)
         resetAddListParameters()
     }
 
