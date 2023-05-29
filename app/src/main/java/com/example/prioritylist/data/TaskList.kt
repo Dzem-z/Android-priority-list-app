@@ -20,7 +20,7 @@ abstract class TaskList<TaskType: Task>(
 
     protected open val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>()
     protected open val storage: Storage<TaskType> = Storage<TaskType>()
-    protected open val history: HistoryList<TaskType> = HistoryList<TaskType>()
+    open val history: HistoryList<TaskType> = HistoryList<TaskType>()
     abstract fun getPriority(id: Int): Double
 
 
