@@ -139,6 +139,9 @@ fun AddListScreen(
                                     TaskTypes.DEADLINE_CATEGORY -> "deadline-category-based tasks"
                                     TaskTypes.CATEGORY -> "category based tasks"
                                 }
+
+                                holder.selectedType = item
+
                                 expanded = false
 
                             }
