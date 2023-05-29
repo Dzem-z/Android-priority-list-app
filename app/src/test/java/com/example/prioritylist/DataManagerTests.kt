@@ -375,9 +375,9 @@ class DataManagerTests {
 
         val list = manager.getListUseCase() as MutableList<DeadlineTask>
 
-        manager.moveToHistoryUseCase(list[0])
-        manager.moveToHistoryUseCase(list[1])
-        manager.moveToHistoryUseCase(list[2])
+        manager.moveToHistoryUseCase(list[0], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-08-0612:15:30"))
+        manager.moveToHistoryUseCase(list[1], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-09-0612:15:30"))
+        manager.moveToHistoryUseCase(list[2], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-10-0612:15:30"))
 
         val newList = manager.getListUseCase() as MutableList<DeadlineTask>
         val hList = manager.getHistoryListUseCase() as MutableList<HistoryTask<DeadlineTask>>
@@ -428,9 +428,9 @@ class DataManagerTests {
 
         val list = manager.getListUseCase() as MutableList<DeadlineTask>
 
-        manager.moveToHistoryUseCase(list[0])
-        manager.moveToHistoryUseCase(list[1])
-        manager.moveToHistoryUseCase(list[2])
+        manager.moveToHistoryUseCase(list[0], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-08-0612:15:30"))
+        manager.moveToHistoryUseCase(list[1], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-09-0612:15:30"))
+        manager.moveToHistoryUseCase(list[2], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-10-0612:15:30"))
 
         manager.deleteFromHistoryUseCase(list[0].name)
 
@@ -501,11 +501,11 @@ class DataManagerTests {
         manager.addTaskUseCase(task4)
         manager.addTaskUseCase(task5)
 
-        manager.moveToHistoryUseCase(task5)
-        manager.moveToHistoryUseCase(task4)
-        manager.moveToHistoryUseCase(task3)
-        manager.moveToHistoryUseCase(task2)
-        manager.moveToHistoryUseCase(task1)
+        manager.moveToHistoryUseCase(task5, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        manager.moveToHistoryUseCase(task4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
+        manager.moveToHistoryUseCase(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
+        manager.moveToHistoryUseCase(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+        manager.moveToHistoryUseCase(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
 
         val historyList = manager.getHistoryListUseCase()
 
