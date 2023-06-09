@@ -43,6 +43,9 @@ class StateHolder : ViewModel() {
     var firstList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
     var secondList by mutableStateOf<MutableList<out Task>>(mutableListOf<Task>())
 
+    var firstHistoryList by mutableStateOf<MutableList<out HistoryTask<out Task>>>(mutableListOf<HistoryTask<Task>>())
+    var secondHistoryList by mutableStateOf<MutableList<out HistoryTask<out Task>>>(mutableListOf<HistoryTask<Task>>())
+
     var isPrevList by mutableStateOf(false)
     var isNextList by mutableStateOf(false)
 
@@ -95,6 +98,14 @@ class StateHolder : ViewModel() {
         return badName
     }
 
+    fun isEmpty(): Boolean {
+        return dataManager.isEmptyUseCase()
+    }
+
+    fun isAlmostEmpty(): Boolean {
+        return !isNextListPresent() && !isPrevListPresent()
+    }
+
     init{
         updateList()
     }
@@ -108,8 +119,17 @@ class StateHolder : ViewModel() {
         }
     }
 
+    internal fun setHistoryList(list: MutableList<out HistoryTask<out Task>>){
+        if(currentListIndex.value.equals(0)){
+            firstHistoryList = list
+        } else {
+            secondHistoryList = list
+        }
+    }
+
     fun updateList() {
         setList(dataManager.getListUseCase())
+        setHistoryList(dataManager.getHistoryListUseCase())
         isPrevList = isPrevListPresent()
         isNextList = isNextListPresent()
         currentListName = dataManager.getNameUseCase()
@@ -123,7 +143,7 @@ class StateHolder : ViewModel() {
     }
 
     fun getHistoryList(): MutableList<out HistoryTask<out Task>> {
-        return mutableListOf()
+        return dataManager.getHistoryListUseCase()
     }
 
     fun getCurrentType(): TaskTypes{
