@@ -1,5 +1,6 @@
 package com.example.prioritylist
 
+import com.example.prioritylist.data.DeadlineTask
 import com.example.prioritylist.data.HistoryList
 import com.example.prioritylist.data.HistoryTask
 import com.example.prioritylist.data.PriorityTask
@@ -44,6 +45,59 @@ class HistoryTests {
         historyList.pushTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
         historyList.pushTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
         historyList.pushTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+
+        val returnedTask1 = historyList.getTaskByPos(0)
+        val returnedTask2 = historyList.getTaskByPos(1)
+        val returnedTask3 = historyList.getTaskByPos(2)
+
+        assertThrows(IndexOutOfBoundsException::class.java){
+            val returnedTask4 = historyList.getTaskByPos(10)
+        }
+
+
+
+        assertNotNull(returnedTask1)
+        assertNotNull(returnedTask2)
+        assertNotNull(returnedTask3)
+
+        assertTrue(returnedTask3 == historyTask3)
+        assertTrue(returnedTask2 == historyTask2)
+        assertTrue(returnedTask1 == historyTask1)
+    }
+
+    @Test
+    fun pushDeadlineTaskAndGetByID_onMoveToHistory_DeadlineTaskAdded() {
+        val historyList = HistoryList<Task> ()
+
+        val deadlineTask1 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1212:15:30")
+        )
+        val deadlineTask2 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
+            name = "test_name_2",
+            description = "desc_2",
+            id = 3,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-05-1212:15:30")
+        )
+        val deadlineTask3 = DeadlineTask(
+            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_3",
+            description = "desc_3",
+            id = 2,
+            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
+        )
+
+        val historyTask1 = HistoryTask(deadlineTask1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
+        val historyTask2 = HistoryTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+        val historyTask3 = HistoryTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
+
+        historyList.pushTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
+        historyList.pushTask(deadlineTask1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
+        historyList.pushTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
 
         val returnedTask1 = historyList.getTaskByPos(0)
         val returnedTask2 = historyList.getTaskByPos(1)
