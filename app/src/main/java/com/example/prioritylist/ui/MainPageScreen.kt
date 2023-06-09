@@ -24,11 +24,10 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
 
 
     val navController = rememberNavController()
-    val backStackEntry by navController.currentBackStackEntryAsState()
 
     NavHost(
         navController = navController,
-        startDestination = "ListContainer",
+        startDestination = if (holder.isEmpty()) "EmptyScreen" else "ListContainer",
         modifier = modifier
     ){
         composable(
@@ -50,7 +49,16 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                     navController.navigate("AddList")
                 },
                 onRemoveList = {
-                    holder.removeList()
+
+                    if(holder.isAlmostEmpty())
+                        navController.navigate("EmptyScreen"){
+                            popUpTo(0)
+                        }
+                    else
+                        holder.removeList()
+                },
+                onGoToHistory = {
+                    navController.navigate("historyScreen")
                 }
             )
         }
@@ -110,7 +118,34 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                 },
                 onConfirm = {
                     holder.addList()
-                    navController.popBackStack()
+                    navController.navigate("ListContainer"){
+                        popUpTo(0)
+                    }
+                    //navController.popBackStack()
+
+                }
+            )
+        }
+
+        composable(
+            route = "historyScreen"
+        ) {
+            HistoryListContainer(
+                holder = holder,
+                goToListScreen = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = "EmptyScreen"
+        ) {
+
+            EmptyScreen(
+                holder = holder,
+                onAddList = {
+                    if (!holder.isEmpty())
+                        holder.removeList()
+                    navController.navigate("AddList")
                 }
             )
         }
