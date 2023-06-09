@@ -9,10 +9,10 @@ class Storage<TaskType: Task>() {
     private val listOfActions: MutableList<Action<TaskType>> = mutableListOf<Action<TaskType>>()
 
    fun pop(): Action<TaskType> {
-        TODO("Not yet implemented")
+        return listOfActions.removeLast()
     }
     fun push(action: Action<TaskType>) {
-        TODO("Not yet implemented")
+        listOfActions.add(action)
     }
 }
 
