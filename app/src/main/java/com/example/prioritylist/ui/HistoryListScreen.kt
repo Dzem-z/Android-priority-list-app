@@ -1,5 +1,6 @@
 package com.example.prioritylist.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TextButton
 import androidx.compose.material.Icon
@@ -25,12 +27,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.prioritylist.data.DeadlineTask
+import com.example.prioritylist.data.PriorityTask
+import com.example.prioritylist.data.TaskTypes
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun HistoryListContainer(
     modifier: Modifier = Modifier,
     holder: StateHolder = StateHolder(),
+    goToListScreen: () -> Unit = {}
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -123,10 +130,30 @@ fun HistoryListContainer(
 
             }
 
+            Column(modifier = modifier.weight(1f)) {
+                this@Column.AnimatedVisibility(
+                    visible = holder.visible
+                ) {
+                   HistoryList(
+                       viewModel = holder,
+                       list = holder.firstHistoryList,
+                       type = holder.firstType
+                   )
+                }
 
+                this@Column.AnimatedVisibility(
+                    visible = !holder.visible
+                ) {
+                    HistoryList(
+                        viewModel = holder,
+                        list = holder.secondHistoryList,
+                        type = holder.secondType
+                    )
+                }
+            }
 
             Button(
-                onClick = {},
+                onClick = { goToListScreen() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp),
@@ -134,7 +161,10 @@ fun HistoryListContainer(
                 Row(
                     verticalAlignment = Alignment.Bottom
                 ) {
-
+                    Icon(
+                        imageVector = Icons.Outlined.ArrowBack,
+                        contentDescription = "Drawer Icon"
+                    )
                 }
             }
         }
