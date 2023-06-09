@@ -377,6 +377,19 @@ class MainPageTests {
     }
 
     @Test
+    fun addAndDeleteList_EmptyPage() {
+        val page = MainPage()
+        val name1 = "name1"; val type1 = TaskTypes.PRIORITY
+
+        page.addList(type1, name1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        page.deleteCurrentList()
+
+        assertTrue(page.currentList == null)
+        assertTrue(page.currentType == null)
+
+    }
+
+    @Test
     fun changeIDofCurrentList_onListOrderChange_listIDAndOrderChanged() {
         val page = MainPage()
 
