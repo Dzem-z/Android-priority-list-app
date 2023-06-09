@@ -81,7 +81,7 @@ fun TaskOptionsSheet(modifier: Modifier = Modifier, hide: () -> Unit = {}, onEdi
 }
 
 @Composable
-fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, removeList: () -> Unit = {}, addList: () -> Unit = {}, launchSnackbar: (String) -> Unit = {}) {
+fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, removeList: () -> Unit = {}, addList: () -> Unit = {}, goToHistory: () -> Unit = {}, launchSnackbar: (String) -> Unit = {}) {
 
     var isEdited by remember{ mutableStateOf(false) }
 
@@ -97,7 +97,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
 
     Column(
         modifier = Modifier
-            .height(228.dp),
+            .height(258.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -216,7 +216,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                 }
 
                 Button(
-                    onClick = {}
+                    onClick = goToHistory
                 ) {
                     Text(text = "go to history")
                 }
