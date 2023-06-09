@@ -55,6 +55,7 @@ class MainPage() {
     //testing
     init{
         //-------------------------testing values
+
         val task1 = PriorityTask(
             dateOfCreation =   SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -152,12 +153,13 @@ class MainPage() {
         (list as PriorityTaskList).add(task7)
         (list as PriorityTaskList).add(task8)
         (list as PriorityTaskList).add(task9)
+        list.history.pushTask(task8, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
 
-        addList(TaskTypes.PRIORITY, "test deadline", Calendar.getInstance().time)
-        //val listDeadline = currentList
-        //(listDeadline as DeadlineTaskList).add(deadlineTask1)
-        //(listDeadline as DeadlineTaskList).add(deadlineTask2)
-        //(listDeadline as DeadlineTaskList).add(deadlineTask3)
+        addList(TaskTypes.DEADLINE, "test deadline", Calendar.getInstance().time)
+        val listDeadline = currentList
+        (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
+        (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
+        (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
         prevList()
         //testing
     }
@@ -272,6 +274,10 @@ class MainPage() {
             currentType = listIdentifiers[currentListID].type
         }
         return Status(StatusCodes.SUCCESS)
+    }
+
+    fun undo(): Status {
+        TODO("not yet implemented")
     }
 
 
