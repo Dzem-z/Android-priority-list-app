@@ -8,10 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Text
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,6 +39,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
@@ -56,21 +60,20 @@ fun PriorityList(
     onLongPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-        LazyColumn(
-            modifier = Modifier
-                .padding(end = 10.dp)
-                .fillMaxHeight()
-        ){
-            items(
-                list,
-                key = { it.name }
-            ) {item->
-                PriorityTaskTile(
-                    tile = item as PriorityTask,
-                    modifier = Modifier
-                        .animateItemPlacement()
-                        .pointerInput(item) {
+    LazyColumn(
+                modifier = modifier
+                    .padding(end = 10.dp)
+                    .fillMaxHeight()
+            ) {
+        items(
+            list,
+            key = { it.name }
+        ) { item ->
+            PriorityTaskTile(
+                tile = item as PriorityTask,
+                modifier = Modifier
+                    .animateItemPlacement()
+                    .pointerInput(item) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
                             onDoubleTap = { viewModel.onDone(item) },
@@ -82,14 +85,15 @@ fun PriorityList(
                                 viewModel.editedTask.dateOfCreation = item.dateOfCreation
                                 viewModel.updatePriorityOfEditedTask(item.priority.toString())
                                 onLongPress()
-                                          },
+                            },
                             onTap = { /* Called on Tap */ }
                         )
                     }
 
-                )
-            }
+            )
         }
+    }
+
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -101,14 +105,14 @@ fun DeadlineList(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier
-            .padding(end = 10.dp)
-            .fillMaxHeight()
-    ){
+            modifier = modifier
+                .padding(end = 10.dp)
+                .fillMaxHeight()
+        ) {
         items(
             list,
             key = { it.name }
-        ) {item->
+        ) { item ->
             DeadlineTaskTile(
                 tile = item as DeadlineTask,
                 modifier = Modifier
@@ -125,7 +129,7 @@ fun DeadlineList(
                                 viewModel.editedTask.id = item.id
                                 viewModel.editedTask.deadline = item.deadline
                                 onLongPress()
-                                          },
+                            },
                             onTap = { /* Called on Tap */ }
                         )
                     }
@@ -133,6 +137,7 @@ fun DeadlineList(
             )
         }
     }
+
 }
 
 @Composable
@@ -225,7 +230,7 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
                 }
             }
             Row{
-                Text(text = "deadline: " + tile.deadline)
+                Text(text = "deadline: " + dateFormatter(tile.deadline))
             }
 
             if(expanded){
