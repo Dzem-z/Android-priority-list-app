@@ -71,10 +71,11 @@ fun ListContainer(
     onEditTask: () -> Unit = {},
     onDeleteTask: () -> Unit = {},
     onAddList:() -> Unit = {},
-    onRemoveList: () -> Unit = {}
+    onRemoveList: () -> Unit = {},
+    onGoToHistory: () -> Unit = {}
     ) {
 
-    val snackbarPosition = remember { Animatable(164f) }
+    val snackbarPosition = remember { Animatable(180f) }
     val coroutineScope = rememberCoroutineScope()
 
     val scaffoldState = rememberScaffoldState()
@@ -87,7 +88,7 @@ fun ListContainer(
 
     LaunchedEffect(modalSheetState.isVisible){
         coroutineScope.launch{
-            snackbarPosition.animateTo(if (modalSheetState.isVisible) 164f else 0f)
+            snackbarPosition.animateTo(if (modalSheetState.isVisible) 180f else 0f)
         }
     }
 
@@ -118,12 +119,16 @@ fun ListContainer(
             { ListOptionsSheet(
                 viewModel = holder,
                 removeList = {
-                    onRemoveList()
                     coroutineScope.launch { modalSheetState.hide() }
+                    onRemoveList()
                 },
                 addList = {
                     coroutineScope.launch { modalSheetState.hide() }
                     onAddList()
+                },
+                goToHistory = {
+                    coroutineScope.launch { modalSheetState.hide() }
+                    onGoToHistory()
                 },
                 launchSnackbar = { message ->
                     coroutineScope.launch {
