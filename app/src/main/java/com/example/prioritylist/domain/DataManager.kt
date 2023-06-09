@@ -32,6 +32,14 @@ class DataManager(
         return status
     }
 
+    fun isEmptyUseCase(): Boolean {
+        return if (mainPage.currentList == null) {
+            true
+        } else {
+            false
+        }
+    }
+
     fun editTaskUseCase(oldId: Int, task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
@@ -116,7 +124,7 @@ class DataManager(
         if (list != null)
             return list.getName()
         else
-            throw NullPointerException()
+            return ""
     }
 
     fun getDateOfCreationUseCase(): Date{
@@ -130,7 +138,7 @@ class DataManager(
     fun getHistoryListUseCase(): MutableList<out HistoryTask<out Task>> {
         val list = mainPage.currentList
         if (list == null){
-            throw NoSuchElementException()
+            return mutableListOf<HistoryTask<Task>>()
         } else {
             return list.history.getList()
         }
