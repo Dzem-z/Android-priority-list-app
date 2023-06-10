@@ -162,8 +162,12 @@ class DataManager(
         return Status(StatusCodes.SUCCESS)
     }
 
-    fun undoUseCase() {
-        TODO("Not yet implemented")
+    fun undoUseCase(): Status {
+        return mainPage.undo()
+    }
+
+    fun isStorageEmptyUseCase(): Boolean {
+        return mainPage.isStorageEmpty()
     }
 
     fun changeIDUseCase(newId: Int) {
