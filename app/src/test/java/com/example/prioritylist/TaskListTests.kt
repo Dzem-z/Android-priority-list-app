@@ -811,7 +811,7 @@ class TaskListTests {
         list.addTask(addedTask)
         list.undo()
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+        assertThrows(IndexOutOfBoundsException::class.java) {
             val returnedTask = list.getTaskByID(0)
         }
 
@@ -842,7 +842,7 @@ class TaskListTests {
 
         assertTrue(task == addedTask)
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java){
+        assertThrows(IndexOutOfBoundsException::class.java){
             val nonexistentTask = list.getTaskByID(1)
         }
     }
@@ -882,9 +882,107 @@ class TaskListTests {
 
         assertTrue(returnedTask == addedTask)
 
-        assertThrows(ArrayIndexOutOfBoundsException::class.java) {
+        assertThrows(IndexOutOfBoundsException::class.java) {
             val nonexistentTask = list.getTaskByID(1)
         }
+
+    }
+
+    @Test
+    fun undoMix() {
+        val list = PriorityTaskList(
+            name = "test",
+            id = 0,
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+        )
+
+        val task1 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_1",
+            description = "desc_1",
+            id = 3,
+            priority = 3
+        )
+        val task2 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
+            name = "test_name_2",
+            description = "desc_2",
+            id = 3,
+            priority = 4
+        )
+        val task3 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_3",
+            description = "desc_1",
+            id = 3,
+            priority = 5
+        )
+        val task4 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_4",
+            description = "desc_1",
+            id = 3,
+            priority = 6
+        )
+        val task5 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
+            name = "test_name_5",
+            description = "desc_2",
+            id = 3,
+            priority = 7
+        )
+        val task6 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_6",
+            description = "desc_1",
+            id = 3,
+            priority = 8
+        )
+        val task7 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_7",
+            description = "desc_1",
+            id = 3,
+            priority = 9
+        )
+        val task8 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
+            name = "test_name_8",
+            description = "desc_2",
+            id = 3,
+            priority = 10
+        )
+        val task9 = PriorityTask(
+            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
+            name = "test_name_9",
+            description = "desc_1",
+            id = 3,
+            priority = 11
+        )
+
+        list.addTask(task1)
+        list.addTask(task2)
+        list.undo()
+
+        assertTrue((list.getList().size == 1) and (list.getList()[0] == task1))
+
+        list.addTask(task3)
+        list.addTask(task2)
+        list.editTask(0, task4)
+        list.undo()
+
+        assertTrue(list.getList()[0] == task3)
+
+        list.deleteTask(task1)
+        list.addTask(task5)
+        list.undo()
+
+        assertTrue((list.getList().size == 2) and (list.getList()[0] != task5))
+
+        list.undo()
+
+        assertTrue((list.getList().size == 3) and (list.getList()[2] == task1))
+
 
     }
 
