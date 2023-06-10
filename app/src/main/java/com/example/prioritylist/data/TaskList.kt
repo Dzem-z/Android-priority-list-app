@@ -95,28 +95,50 @@ abstract class TaskList<TaskType: Task>(
     fun getTaskByID(id: Int): TaskType {
         return listOfTasks[id]
     }
-    fun undo() {
-        TODO("Not yet implemented")
+    fun undo(): Status {
+        if (storage.isEmpty())
+            throw Exception()
+        else {
+            val action = storage.pop()
+            if(action is Add){
+                return delete(action.oldTask)
+            } else if (action is Edit) {
+                val status = delete(getTaskByName(action.newTask.name))
+                if (status.code != StatusCodes.SUCCESS)
+                    return status
+                return add(action.oldTask)
+            } else if (action is Delete) {
+                return add(action.oldTask)
+            }
+        }
+        return Status(StatusCodes.FAILURE)
+    }
+
+    fun isStorageEmpty(): Boolean {
+        return storage.isEmpty()
     }
 
     fun updatePriority() {
         TODO("Not yet implemented")
     }
     fun editTask(id: Int, newTask: TaskType): Status {
-        //TODO("push storage action")
-        val status = delete(getTaskByID(id))
-        if(status.code != StatusCodes.SUCCESS)
+        val oldTask = getTaskByID(id)
+        val status = delete(oldTask)
+        if (status.code != StatusCodes.SUCCESS)
             return status
+        storage.push(Edit(oldTask, newTask))
         return add(newTask)
     }
 
     fun deleteTask(deletedTask: TaskType): Status {
-        //TODO("push storage action")
-        return delete(deletedTask)
+        val status = delete(deletedTask)
+        if (status.code == StatusCodes.SUCCESS)
+            storage.push(Delete(deletedTask))
+        return status
     }
 
     fun addTask(newTask: TaskType): Status {
-        //TODO("push storage action")
+        storage.push(Add(newTask))
         return add(newTask)
     }
 }
