@@ -14,10 +14,14 @@ class Storage<TaskType: Task>() {
     fun push(action: Action<TaskType>) {
         listOfActions.add(action)
     }
+
+    fun isEmpty(): Boolean {
+        return listOfActions.size == 0
+    }
 }
 
 open class Action<TaskType: Task>(
-    protected open val oldTask: TaskType
+    open val oldTask: TaskType
 ){
 }
 
@@ -29,7 +33,8 @@ class Delete<TaskType: Task>(
 }
 
 class Edit<TaskType: Task>(
-    override val oldTask: TaskType
+    override val oldTask: TaskType,
+    val newTask: TaskType
 ) : Action<TaskType>(
     oldTask = oldTask
 ) {
