@@ -70,6 +70,8 @@ class StateHolder : ViewModel() {
 
     var taskBottomSheetExpanded by mutableStateOf(true)
 
+    var isStorageEmpty by mutableStateOf(false)
+
 
 
     private fun incrementIndex() {
@@ -133,6 +135,7 @@ class StateHolder : ViewModel() {
         isPrevList = isPrevListPresent()
         isNextList = isNextListPresent()
         currentListName = dataManager.getNameUseCase()
+        isStorageEmpty = dataManager.isStorageEmptyUseCase()
     }
 
     fun getList(): MutableList<out Task> {
@@ -218,9 +221,10 @@ class StateHolder : ViewModel() {
         return status
     }
     fun onUndo(){
-        TODO("Not yet implemented")
-
+        dataManager.undoUseCase()
+        updateList()
     }
+
     fun nextList(){
         val returnedType = dataManager.nextListUseCase()
         if(returnedType == null){
