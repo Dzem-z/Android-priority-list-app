@@ -48,7 +48,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,6 +59,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.prioritylist.R
 import com.example.prioritylist.data.DeadlineTask
 import com.example.prioritylist.data.PriorityTask
 import com.example.prioritylist.data.TaskTypes
@@ -169,7 +173,17 @@ fun ListContainer(
                         }
                     },
                     actions = {
-                        /*TODO*/
+                        IconButton(
+                            onClick = { holder.onUndo() },
+                            enabled = !holder.isStorageEmpty
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.undo_48px),
+                                tint = if (!holder.isStorageEmpty) Color.White else Color.Transparent,
+                                modifier = Modifier.scale(0.85f),
+                                contentDescription = "Drawer Icon"
+                            )
+                        }
                     }
                 )
 
