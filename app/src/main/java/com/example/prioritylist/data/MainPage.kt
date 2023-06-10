@@ -277,7 +277,13 @@ class MainPage() {
     }
 
     fun undo(): Status {
-        TODO("not yet implemented")
+        val list = currentList
+        return list?.undo() ?: Status(StatusCodes.FAILURE)
+    }
+
+    fun isStorageEmpty(): Boolean {
+        val list = currentList
+        return list?.isStorageEmpty() ?: true
     }
 
 
