@@ -41,12 +41,18 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
-import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.data.backend.TaskTypes
 
 
 @Composable
-fun TaskOptionsSheet(modifier: Modifier = Modifier, hide: () -> Unit = {}, onEditTask: () -> Unit = {}, onDeleteTask: () -> Unit = {}) {
+fun TaskOptionsSheet(
+    modifier: Modifier = Modifier,
+    hide: () -> Unit = {},
+    onEditTask: () -> Unit = {},
+    onDeleteTask: () -> Unit = {}
+) {
     Row(
         modifier = Modifier.height(96.dp)
     ){
@@ -81,7 +87,14 @@ fun TaskOptionsSheet(modifier: Modifier = Modifier, hide: () -> Unit = {}, onEdi
 }
 
 @Composable
-fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, removeList: () -> Unit = {}, addList: () -> Unit = {}, goToHistory: () -> Unit = {}, launchSnackbar: (String) -> Unit = {}) {
+fun ListOptionsSheet(
+    viewModel: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
+    modifier: Modifier = Modifier,
+    removeList: () -> Unit = {},
+    addList: () -> Unit = {},
+    goToHistory: () -> Unit = {},
+    launchSnackbar: (String) -> Unit = {}
+) {
 
     var isEdited by remember{ mutableStateOf(false) }
 
@@ -256,5 +269,5 @@ fun TaskOptionsSheetPreview() {
 @Preview(showBackground = true)
 @Composable
 fun ListOptionsSheetPreview() {
-    ListOptionsSheet(StateHolder())
+    ListOptionsSheet()
 }

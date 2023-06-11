@@ -59,10 +59,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
-import com.example.prioritylist.data.DeadlineTask
-import com.example.prioritylist.data.PriorityTask
-import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -70,7 +71,7 @@ import java.time.LocalDateTime
 @Composable
 fun ListContainer(
     modifier: Modifier = Modifier,
-    holder: StateHolder = StateHolder(),
+    holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
     onAddTask: () -> Unit = {},
     onEditTask: () -> Unit = {},
     onDeleteTask: () -> Unit = {},

@@ -27,16 +27,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.prioritylist.data.DeadlineTask
-import com.example.prioritylist.data.PriorityTask
-import com.example.prioritylist.data.TaskTypes
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun HistoryListContainer(
     modifier: Modifier = Modifier,
-    holder: StateHolder = StateHolder(),
+    holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
     goToListScreen: () -> Unit = {}
 ) {
     val scaffoldState = rememberScaffoldState()

@@ -8,18 +8,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.prioritylist.data.StatusCodes
+import com.example.prioritylist.data.backend.StatusCodes
 
 
 val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Modifier) {
+fun MainPageScreen(
+    holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
+    modifier: Modifier = Modifier) {
 
 
 
@@ -141,7 +143,6 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
         ) {
 
             EmptyScreen(
-                holder = holder,
                 onAddList = {
                     if (!holder.Read.isEmpty())
                         holder.removeList()

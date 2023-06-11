@@ -36,13 +36,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.prioritylist.data.TaskTypes
-import com.example.prioritylist.data.listOfTypes
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.data.backend.listOfTypes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddListScreen(
-    UIholder: StateHolder.UiViewModel = StateHolder().UI,
+    UIholder: StateHolder.UiViewModel = viewModel(factory = AppViewModelProvider.Factory),
     onCancel: () -> Unit = {},
     onConfirm: () ->Unit = {}
 ) {
