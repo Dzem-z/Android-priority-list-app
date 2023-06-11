@@ -27,7 +27,7 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
 
     NavHost(
         navController = navController,
-        startDestination = if (holder.isEmpty()) "EmptyScreen" else "ListContainer",
+        startDestination = if (holder.Read.isEmpty()) "EmptyScreen" else "ListContainer",
         modifier = modifier
     ){
         composable(
@@ -50,7 +50,7 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                 },
                 onRemoveList = {
 
-                    if(holder.isAlmostEmpty())
+                    if(holder.Read.isAlmostEmpty())
                         navController.navigate("EmptyScreen"){
                             popUpTo(0)
                         }
@@ -72,17 +72,17 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                 onConfirm = {
                     val code = holder.addTask().code
                     if (code == StatusCodes.DUPLICATED_TASK) {
-                        holder.setDuplicatedTaskError()
+                        holder.UI.setDuplicatedTaskError()
                     } else if (code == StatusCodes.EMPTY_NAME){
-                        holder.setEmptyNameError()
+                        holder.UI.setEmptyNameError()
                     }
                     else {
-                        holder.resetEditedTask()
+                        holder.UI.resetEditedTask()
                         navController.popBackStack()
                     }
                             },
                 onCancel = {
-                    holder.resetEditedTask()
+                    holder.UI.resetEditedTask()
                     navController.popBackStack()
                 }
             )
@@ -97,11 +97,11 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
                 onConfirmMessage = "confirm",
                 onConfirm = {
                     holder.confirmEditingTask()
-                    holder.resetEditedTask()
+                    holder.UI.resetEditedTask()
                     navController.popBackStack()
                             },
                 onCancel = {
-                    holder.resetEditedTask()
+                    holder.UI.resetEditedTask()
                     navController.popBackStack()
                 }
             )
@@ -111,9 +111,9 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
             route = "AddList"
         ) {
             AddListScreen(
-                holder = holder,
+                UIholder = holder.UI,
                 onCancel = {
-                    holder.resetAddListParameters()
+                    holder.UI.resetAddListParameters()
                     navController.popBackStack()
                 },
                 onConfirm = {
@@ -143,7 +143,7 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
             EmptyScreen(
                 holder = holder,
                 onAddList = {
-                    if (!holder.isEmpty())
+                    if (!holder.Read.isEmpty())
                         holder.removeList()
                     navController.navigate("AddList")
                 }
@@ -160,7 +160,6 @@ fun MainPageScreen(holder: StateHolder = StateHolder(), modifier: Modifier = Mod
 fun TopBar(modifier: Modifier = Modifier) {
 
 }
-
 
 @Preview
 @Composable

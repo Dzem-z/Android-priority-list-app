@@ -42,7 +42,7 @@ import com.example.prioritylist.data.listOfTypes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddListScreen(
-    holder: StateHolder = StateHolder(),
+    UIholder: StateHolder.UiViewModel = StateHolder().UI,
     onCancel: () -> Unit = {},
     onConfirm: () ->Unit = {}
 ) {
@@ -79,11 +79,11 @@ fun AddListScreen(
                 .padding(24.dp)
         ) {
             OutlinedTextField(
-                value = holder.newListName,
+                value = UIholder.newListName,
                 singleLine = true,
                 label = { Text(text = "list name") },
                 onValueChange = {
-                    holder.newListName = it
+                    UIholder.newListName = it
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next
@@ -105,7 +105,7 @@ fun AddListScreen(
                 }
             ) {
                 TextField(
-                    value = holder.selectedTypeText,
+                    value = UIholder.selectedTypeText,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -131,7 +131,7 @@ fun AddListScreen(
                                 )
                             },
                             onClick = {
-                                holder.selectedTypeText = when (item) {
+                                UIholder.selectedTypeText = when (item) {
                                     TaskTypes.DEADLINE -> "deadline-based tasks"
                                     TaskTypes.PRIORITY -> "priority-based tasks"
                                     TaskTypes.DEADLINE_PRIORITY_CATEGORY -> "deadline-priority-category-based tasks"
@@ -140,7 +140,7 @@ fun AddListScreen(
                                     TaskTypes.CATEGORY -> "category based tasks"
                                 }
 
-                                holder.selectedType = item
+                                UIholder.selectedType = item
 
                                 expanded = false
 

@@ -110,7 +110,7 @@ fun ListContainer(
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(topStart = roundedCornerRadius, topEnd = roundedCornerRadius),
-        sheetContent = if (holder.taskBottomSheetExpanded) {
+        sheetContent = if (holder.UI.taskBottomSheetExpanded) {
             { TaskOptionsSheet(
                 hide = {
                     coroutineScope.launch { modalSheetState.hide() }
@@ -175,11 +175,11 @@ fun ListContainer(
                     actions = {
                         IconButton(
                             onClick = { holder.onUndo() },
-                            enabled = !holder.isStorageEmpty
+                            enabled = !holder.Read.isStorageEmpty
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.undo_48px),
-                                tint = if (!holder.isStorageEmpty) Color.White else Color.Transparent,
+                                tint = if (!holder.Read.isStorageEmpty) Color.White else Color.Transparent,
                                 modifier = Modifier.scale(0.85f),
                                 contentDescription = "Drawer Icon"
                             )
@@ -204,7 +204,7 @@ fun ListContainer(
                 Row(
                     Modifier.padding(0.dp),
                 ) {
-                    if (holder.isPrevList) {
+                    if (holder.Read.isPrevList) {
                         TextButton(
                             modifier = Modifier
                                 .weight(1f)
@@ -233,17 +233,17 @@ fun ListContainer(
                             .weight(2f)
                             .height(48.dp),
                         onClick = {
-                            holder.taskBottomSheetExpanded = false
+                            holder.UI.taskBottomSheetExpanded = false
                             coroutineScope.launch { modalSheetState.show() }
                                   },
                         shape = RectangleShape
                     ) {
                         Text(
-                            holder.getName()
+                            holder.Read.getName()
                         )
                     }
 
-                    if (holder.isNextList) {
+                    if (holder.Read.isNextList) {
                         TextButton(
                             modifier = Modifier
                                 .weight(1f)
@@ -267,41 +267,41 @@ fun ListContainer(
 
                 }
 
-                AnimatedVisibility(visible = holder.visible) {
-                    if (holder.firstType == TaskTypes.PRIORITY) {
+                AnimatedVisibility(visible = holder.UI.visible) {
+                    if (holder.Read.firstType == TaskTypes.PRIORITY) {
                         PriorityList(
                             holder,
-                            holder.firstList as MutableList<PriorityTask>,
+                            holder.Read.firstList as MutableList<PriorityTask>,
                         {
-                            holder.taskBottomSheetExpanded = true
+                            holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
-                    } else if (holder.firstType == TaskTypes.DEADLINE) {
+                    } else if (holder.Read.firstType == TaskTypes.DEADLINE) {
                         DeadlineList(
                             holder,
-                            holder.firstList as MutableList<DeadlineTask>,
+                            holder.Read.firstList as MutableList<DeadlineTask>,
                         {
-                            holder.taskBottomSheetExpanded = true
+                            holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
                     }
                 }
 
-                AnimatedVisibility(visible = !holder.visible) {
-                    if (holder.secondType == TaskTypes.PRIORITY) {
+                AnimatedVisibility(visible = !holder.UI.visible) {
+                    if (holder.Read.secondType == TaskTypes.PRIORITY) {
                         PriorityList(
                             holder,
-                            holder.secondList as MutableList<PriorityTask>,
+                            holder.Read.secondList as MutableList<PriorityTask>,
                         {
-                            holder.taskBottomSheetExpanded = true
+                            holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
-                    } else if (holder.secondType == TaskTypes.DEADLINE) {
+                    } else if (holder.Read.secondType == TaskTypes.DEADLINE) {
                         DeadlineList(
                             holder,
-                            holder.secondList as MutableList<DeadlineTask>,
+                            holder.Read.secondList as MutableList<DeadlineTask>,
                         {
-                            holder.taskBottomSheetExpanded = true
+                            holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
                     }

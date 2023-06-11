@@ -78,12 +78,12 @@ fun PriorityList(
                             onPress = { /* Called when the gesture starts */ },
                             onDoubleTap = { viewModel.onDone(item) },
                             onLongPress = {
-                                viewModel.resetEditedTask()
-                                viewModel.updateDescriptionOfEditedTask(item.description)
-                                viewModel.updateNameOfEditedTask(item.name)
-                                viewModel.editedTask.id = item.id
-                                viewModel.editedTask.dateOfCreation = item.dateOfCreation
-                                viewModel.updatePriorityOfEditedTask(item.priority.toString())
+                                viewModel.UI.resetEditedTask()
+                                viewModel.UI.updateDescriptionOfEditedTask(item.description)
+                                viewModel.UI.updateNameOfEditedTask(item.name)
+                                viewModel.UI.editedTask.id = item.id
+                                viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
+                                viewModel.UI.updatePriorityOfEditedTask(item.priority.toString())
                                 onLongPress()
                             },
                             onTap = { /* Called on Tap */ }
@@ -122,12 +122,12 @@ fun DeadlineList(
                             onPress = { /* Called when the gesture starts */ },
                             onDoubleTap = { viewModel.onDone(item) },
                             onLongPress = {
-                                viewModel.resetEditedTask()
-                                viewModel.updateDescriptionOfEditedTask(item.description)
-                                viewModel.updateNameOfEditedTask(item.name)
-                                viewModel.editedTask.dateOfCreation = item.dateOfCreation
-                                viewModel.editedTask.id = item.id
-                                viewModel.editedTask.deadline = item.deadline
+                                viewModel.UI.resetEditedTask()
+                                viewModel.UI.updateDescriptionOfEditedTask(item.description)
+                                viewModel.UI.updateNameOfEditedTask(item.name)
+                                viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
+                                viewModel.UI.editedTask.id = item.id
+                                viewModel.UI.editedTask.deadline = item.deadline
                                 onLongPress()
                             },
                             onTap = { /* Called on Tap */ }

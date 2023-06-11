@@ -147,5 +147,5 @@ fun HistoryTaskTile(tile: HistoryTask<out Task>, modifier: Modifier = Modifier, 
 @Composable
 fun HistoryListPreview(){
     val viewModel = StateHolder()
-    HistoryList(viewModel, viewModel.getHistoryList(), type = viewModel.getCurrentType())
+    HistoryList(viewModel, viewModel.Read.getHistoryList(), type = viewModel.Read.getCurrentType())
 }

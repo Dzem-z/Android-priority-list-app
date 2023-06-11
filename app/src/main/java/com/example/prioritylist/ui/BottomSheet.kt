@@ -90,7 +90,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
     var textFieldValueState by remember {
         mutableStateOf(
             TextFieldValue(
-                text = viewModel.currentListName
+                text = viewModel.UI.currentListName
             )
         )
     }
@@ -114,7 +114,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                     label = {},
                     onValueChange = {
                         textFieldValueState = it
-                        viewModel.currentListName = it.text
+                        viewModel.UI.currentListName = it.text
                         viewModel.setName()
                     },
                     textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
@@ -133,7 +133,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                 }
             } else {
                 Text(
-                    text = viewModel.currentListName,
+                    text = viewModel.UI.currentListName,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(3f)
 
@@ -145,8 +145,8 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                     viewModel.setName()
                     }
                     textFieldValueState = TextFieldValue(
-                        text = viewModel.currentListName,
-                        selection = TextRange(viewModel.currentListName.length)
+                        text = viewModel.UI.currentListName,
+                        selection = TextRange(viewModel.UI.currentListName.length)
                     )
                     isEdited = !isEdited
                           },
@@ -161,11 +161,11 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
             }
         }
         Text(
-            text = viewModel.getDateOfCreation().toString(),
+            text = viewModel.Read.getDateOfCreation().toString(),
             textAlign = TextAlign.Center
         )
         Text(
-            text = when(viewModel.getCurrentType()){
+            text = when(viewModel.Read.getCurrentType()){
                 TaskTypes.DEADLINE -> "deadline-based tasks"
                 TaskTypes.PRIORITY -> "priority-based tasks"
                 TaskTypes.DEADLINE_PRIORITY_CATEGORY -> "deadline-priority-category-based tasks"
@@ -185,7 +185,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                     viewModel.swapWithLeft()
                     launchSnackbar("swaped with list on the left")
                           },
-                enabled = viewModel.isPrevList,
+                enabled = viewModel.Read.isPrevList,
                 modifier = Modifier.weight(1f)
             ) {
                 Column(
@@ -227,7 +227,7 @@ fun ListOptionsSheet(viewModel: StateHolder, modifier: Modifier = Modifier, remo
                     viewModel.swapWithRight()
                     launchSnackbar("swaped with list on the right")
                           },
-                enabled = viewModel.isNextList,
+                enabled = viewModel.Read.isNextList,
                 modifier = Modifier.weight(1f)
             ) {
                 Column(

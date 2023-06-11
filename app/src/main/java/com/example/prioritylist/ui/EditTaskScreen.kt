@@ -50,7 +50,11 @@ import androidx.compose.material3.Text as Material3Text
 import androidx.compose.material3.TextButton as Material3TextButton
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -93,6 +97,33 @@ fun EditTaskScreen(
 
         val focusManager = LocalFocusManager.current
 
+        var nameTextFieldValueState by remember {
+            mutableStateOf(
+                TextFieldValue(
+                    text = holder.UI.editedTask.name,
+                    selection = TextRange(holder.UI.editedTask.name.length)
+                )
+            )
+        }
+
+        var descriptionTextFieldValueState by remember {
+            mutableStateOf(
+                TextFieldValue(
+                    text = holder.UI.editedTask.description,
+                    selection = TextRange(holder.UI.editedTask.description.length)
+                )
+            )
+        }
+
+        var priorityTextFieldValueState by remember {
+            mutableStateOf(
+                TextFieldValue(
+                    text = if (holder.UI.editedTask.priority.toString() == "0") "" else holder.UI.editedTask.priority.toString(),
+                    selection = TextRange(holder.UI.editedTask.name.length)
+                )
+            )
+        }
+
         val openDialog = remember { mutableStateOf(false) }
 
         Column(
@@ -100,16 +131,17 @@ fun EditTaskScreen(
                 .padding(innerPadding)
                 .padding(24.dp)) {
             OutlinedTextField(
-                value = holder.editedTask.name,
+                value = nameTextFieldValueState,
                 singleLine = true,
                 label = { Text(text = "task name") },
-                isError = holder.isDuplicatedTask(),
+                isError = holder.UI.isDuplicatedTask(),
                 trailingIcon = {
-                    if (holder.isDuplicatedTask())
+                    if (holder.UI.isDuplicatedTask())
                         Icon(Icons.Outlined.Error, "error", tint = MaterialTheme.colors.error)
                 },
                 onValueChange = {
-                    holder.updateNameOfEditedTask(it)
+                    nameTextFieldValueState = it
+                    holder.UI.updateNameOfEditedTask(it.text)
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next
@@ -120,7 +152,7 @@ fun EditTaskScreen(
                 modifier = Modifier.focusRequester(focusRequester)
             )
 
-            if (holder.duplicatedName) {
+            if (holder.UI.duplicatedName) {
                 Text(
                     text = "task with given name already in list",
                     color = MaterialTheme.colors.error,
@@ -128,7 +160,7 @@ fun EditTaskScreen(
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
-            if (holder.emptyName) {
+            if (holder.UI.emptyName) {
                 Text(
                     text = "task name can't be empty",
                     color = MaterialTheme.colors.error,
@@ -142,20 +174,21 @@ fun EditTaskScreen(
             )
 
             TextField(
-                value = holder.editedTask.description,
+                value = descriptionTextFieldValueState,
                 label = { Text(text = "description") },
                 onValueChange = {
-                    holder.updateDescriptionOfEditedTask(it)
+                    descriptionTextFieldValueState = it
+                    holder.UI.updateDescriptionOfEditedTask(it.text)
                 },
                 keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = if (holder.getCurrentType().hasPriority() || holder.getCurrentType().hasCategory() || holder.getCurrentType().hasDeadline())
+                    imeAction = if (holder.Read.getCurrentType().hasPriority() || holder.Read.getCurrentType().hasCategory() || holder.Read.getCurrentType().hasDeadline())
                          ImeAction.Next
                     else
                         ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = {
-                        if(holder.getCurrentType().hasDeadline() && !holder.getCurrentType().hasPriority())
+                        if(holder.Read.getCurrentType().hasDeadline() && !holder.Read.getCurrentType().hasPriority())
                             openDialog.value = true
                         focusManager.moveFocus(FocusDirection.Down)
                              },
@@ -167,21 +200,24 @@ fun EditTaskScreen(
                 Modifier.padding(12.dp)
             )
 
-            if (holder.getCurrentType().hasPriority()) {
+            if (holder.Read.getCurrentType().hasPriority()) {
                 TextField(
-                    value = if (holder.editedTask.priority.toString() == "0") "" else holder.editedTask.priority.toString(),
+                    value = priorityTextFieldValueState,
                     label = { Text(text = "priority") },
-                    onValueChange = { holder.updatePriorityOfEditedTask(it) },
+                    onValueChange = {
+                        priorityTextFieldValueState = it
+                        holder.UI.updatePriorityOfEditedTask(it.text)
+                                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
-                        imeAction = if (holder.getCurrentType().hasCategory() || holder.getCurrentType().hasDeadline())
+                        imeAction = if (holder.Read.getCurrentType().hasCategory() || holder.Read.getCurrentType().hasDeadline())
                             ImeAction.Next
                         else
                             ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
-                            if(holder.getCurrentType().hasDeadline())
+                            if(holder.Read.getCurrentType().hasDeadline())
                                 openDialog.value = true
                             focusManager.moveFocus(FocusDirection.Down)
                                  },
@@ -194,11 +230,11 @@ fun EditTaskScreen(
                 )
             }
 
-            if (holder.getCurrentType().hasCategory()) {
+            if (holder.Read.getCurrentType().hasCategory()) {
 
             }
 
-            if (holder.getCurrentType().hasDeadline()){
+            if (holder.Read.getCurrentType().hasDeadline()){
 
                 var timePointer = remember { mutableStateOf(Calendar.getInstance()) }
                 val datePickerState = rememberDatePickerState(
@@ -214,7 +250,7 @@ fun EditTaskScreen(
                             Material3TextButton(
                                 onClick = {
                                     timePointer.value.setTimeInMillis(datePickerState.selectedDateMillis!!)
-                                    holder.editedTask.deadline = timePointer.value.time
+                                    holder.UI.editedTask.deadline = timePointer.value.time
                                     openDialog.value = false
 
                                 },

@@ -69,7 +69,7 @@ fun HistoryListContainer(
             Row(
                 Modifier.padding(0.dp)
             ) {
-                if (holder.isPrevList) {
+                if (holder.Read.isPrevList) {
                     TextButton(
                         modifier = Modifier
                             .weight(1f)
@@ -102,11 +102,11 @@ fun HistoryListContainer(
                     shape = RectangleShape
                 ) {
                     Text(
-                        holder.getName() + " history"
+                        holder.Read.getName() + " history"
                     )
                 }
 
-                if (holder.isNextList) {
+                if (holder.Read.isNextList) {
                     TextButton(
                         modifier = Modifier
                             .weight(1f)
@@ -132,22 +132,22 @@ fun HistoryListContainer(
 
             Column(modifier = modifier.weight(1f)) {
                 this@Column.AnimatedVisibility(
-                    visible = holder.visible
+                    visible = holder.UI.visible
                 ) {
                    HistoryList(
                        viewModel = holder,
-                       list = holder.firstHistoryList,
-                       type = holder.firstType
+                       list = holder.Read.firstHistoryList,
+                       type = holder.Read.firstType
                    )
                 }
 
                 this@Column.AnimatedVisibility(
-                    visible = !holder.visible
+                    visible = !holder.UI.visible
                 ) {
                     HistoryList(
                         viewModel = holder,
-                        list = holder.secondHistoryList,
-                        type = holder.secondType
+                        list = holder.Read.secondHistoryList,
+                        type = holder.Read.secondType
                     )
                 }
             }
