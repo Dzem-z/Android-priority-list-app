@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EmptyScreen(
     modifier: Modifier = Modifier,
-    holder: StateHolder = StateHolder(),
     onAddList:() -> Unit = {}
     ) {
 
