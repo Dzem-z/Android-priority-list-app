@@ -1,5 +1,6 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
 
+import com.example.prioritylist.data.backend.Category
 import java.util.Calendar
 import java.util.Date
 

@@ -1,6 +1,19 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
 
 import androidx.annotation.VisibleForTesting
+import com.example.prioritylist.data.backend.CategoryTaskList
+import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
+import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
+import com.example.prioritylist.data.backend.DeadlinePriorityTaskList
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.DeadlineTaskList
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.PriorityTaskList
+import com.example.prioritylist.data.backend.Status
+import com.example.prioritylist.data.backend.StatusCodes
+import com.example.prioritylist.data.backend.Task
+import com.example.prioritylist.data.backend.TaskList
+import com.example.prioritylist.data.backend.TaskTypes
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -55,7 +68,7 @@ class MainPage() {
     //testing
     init{
         //-------------------------testing values
-
+        /*
         val task1 = PriorityTask(
             dateOfCreation =   SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -160,7 +173,7 @@ class MainPage() {
         (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
         (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
         (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
-        prevList()
+        prevList()*/
         //testing
     }
 
@@ -181,7 +194,9 @@ class MainPage() {
             TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(name, currentListID, dateOfCreation))
             TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(name, currentListID, dateOfCreation))
             TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(name, currentListID, dateOfCreation))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(
+                DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation)
+            )
         }
 
         currentList = getListByID(currentListID)
@@ -259,7 +274,8 @@ class MainPage() {
             TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.remove(currentList)
             TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.remove(currentList)
             TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.remove(currentList)
-            else -> {return Status(StatusCodes.FAILURE, "error: currentList is null")}
+            else -> {return Status(StatusCodes.FAILURE, "error: currentList is null")
+            }
         }
         listIdentifiers.removeAt(currentListID)
         shift(currentListID, -1)

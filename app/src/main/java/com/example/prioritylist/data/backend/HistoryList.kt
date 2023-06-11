@@ -1,5 +1,7 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
 
+import com.example.prioritylist.data.backend.Status
+import com.example.prioritylist.data.backend.StatusCodes
 import java.util.Date
 
 /*

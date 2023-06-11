@@ -1,6 +1,8 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
 
 import androidx.annotation.VisibleForTesting
+import com.example.prioritylist.data.backend.Status
+import com.example.prioritylist.data.backend.StatusCodes
 import java.lang.Math.sqrt
 import java.util.Collections.list
 import java.util.Collections.max

@@ -1,4 +1,4 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
 
 /*
 TODO(comments)

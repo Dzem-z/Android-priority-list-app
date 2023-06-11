@@ -1,5 +1,19 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
 
+import com.example.prioritylist.data.backend.CategoryTask
+import com.example.prioritylist.data.backend.CategoryTaskList
+import com.example.prioritylist.data.backend.DeadlineCategoryTask
+import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
+import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTask
+import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
+import com.example.prioritylist.data.backend.DeadlinePriorityTask
+import com.example.prioritylist.data.backend.DeadlinePriorityTaskList
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.DeadlineTaskList
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.PriorityTaskList
+import com.example.prioritylist.data.backend.Task
+import com.example.prioritylist.data.backend.TaskList
 import kotlin.reflect.KClass
 
 /*

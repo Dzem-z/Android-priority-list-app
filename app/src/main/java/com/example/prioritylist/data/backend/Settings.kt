@@ -1,4 +1,6 @@
-package com.example.prioritylist.data
+package com.example.prioritylist.data.backend
+
+import com.example.prioritylist.data.backend.CategoryManager
 
 class Settings(
     var appearanceSettings : Appearance = Appearance(),
