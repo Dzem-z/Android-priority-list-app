@@ -1,6 +1,8 @@
 package com.example.prioritylist
 
-import com.example.prioritylist.data.*
+import com.example.prioritylist.data.backend.*
+import com.example.prioritylist.data.backend.MainPage
+import com.example.prioritylist.data.backend.TaskTypes
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Assert.assertThrows

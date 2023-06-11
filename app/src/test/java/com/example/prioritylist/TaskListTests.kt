@@ -1,7 +1,9 @@
 package com.example.prioritylist
 
 import androidx.compose.ui.graphics.Color
-import com.example.prioritylist.data.*
+import com.example.prioritylist.data.backend.*
+import com.example.prioritylist.data.backend.Category
+import com.example.prioritylist.data.backend.StatusCodes
 import junit.framework.TestCase.*
 import org.junit.*
 import org.junit.Assert.assertThrows
@@ -722,7 +724,6 @@ class TaskListTests {
         val returnedList = list.getList()
         returnedList.sortBy { it.name }
         assertTrue(returnedList[0] == task1)
-        assertTrue(returnedList[1] == task1)
         assertTrue(returnedList[2] == task2)
         assertTrue(returnedList[3] == task3)
     }

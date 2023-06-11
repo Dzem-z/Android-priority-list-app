@@ -1,10 +1,10 @@
 package com.example.prioritylist
 
-import com.example.prioritylist.data.DeadlineTask
-import com.example.prioritylist.data.HistoryList
-import com.example.prioritylist.data.HistoryTask
-import com.example.prioritylist.data.PriorityTask
-import com.example.prioritylist.data.Task
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.HistoryList
+import com.example.prioritylist.data.backend.HistoryTask
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.Task
 import junit.framework.TestCase.assertNotNull
 import org.junit.Assert.assertThrows
 import junit.framework.TestCase.assertTrue

@@ -1,6 +1,11 @@
 package com.example.prioritylist.domain
 
-import com.example.prioritylist.data.*
+import com.example.prioritylist.data.backend.*
+import com.example.prioritylist.data.backend.MainPage
+import com.example.prioritylist.data.backend.Settings
+import com.example.prioritylist.data.backend.Status
+import com.example.prioritylist.data.backend.StatusCodes
+import com.example.prioritylist.data.backend.TaskTypes
 import java.util.Date
 
 /*

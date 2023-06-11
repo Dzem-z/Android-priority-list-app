@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.data.backend.TaskTypes
 import com.example.prioritylist.ui.AddListScreen
 import com.example.prioritylist.ui.EditTaskScreen
 import com.example.prioritylist.ui.MainPageScreen
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainPageScreen(holder = StateHolder())
+                    MainPageScreen()
                 }
             }
         }
@@ -38,6 +38,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     PriorityListTheme {
-        MainPageScreen(holder = StateHolder())
+        MainPageScreen()
     }
 }

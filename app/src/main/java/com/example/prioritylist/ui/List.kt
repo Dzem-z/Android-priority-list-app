@@ -44,10 +44,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.prioritylist.data.DeadlineTask
-import com.example.prioritylist.data.PriorityTask
-import com.example.prioritylist.data.Task
-import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.Task
+import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime

@@ -29,12 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.prioritylist.data.CategoryTask
-import com.example.prioritylist.data.DeadlineTask
-import com.example.prioritylist.data.HistoryTask
-import com.example.prioritylist.data.PriorityTask
-import com.example.prioritylist.data.Task
-import com.example.prioritylist.data.TaskTypes
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.data.backend.CategoryTask
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.HistoryTask
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.Task
+import com.example.prioritylist.data.backend.TaskTypes
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -146,6 +147,6 @@ fun HistoryTaskTile(tile: HistoryTask<out Task>, modifier: Modifier = Modifier, 
 @Preview(showBackground = true)
 @Composable
 fun HistoryListPreview(){
-    val viewModel = StateHolder()
+    val viewModel: StateHolder = viewModel(factory = AppViewModelProvider.Factory)
     HistoryList(viewModel, viewModel.Read.getHistoryList(), type = viewModel.Read.getCurrentType())
 }
