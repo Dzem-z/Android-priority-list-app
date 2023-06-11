@@ -2,10 +2,10 @@ package com.example.prioritylist.ui
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
-import com.example.prioritylist.data.ModifiableTask
-import com.example.prioritylist.data.Status
-import com.example.prioritylist.data.Task
-import com.example.prioritylist.data.TaskTypes
+import com.example.prioritylist.data.backend.ModifiableTask
+import com.example.prioritylist.data.backend.Status
+import com.example.prioritylist.data.backend.Task
+import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,18 +13,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.prioritylist.data.Category
-import com.example.prioritylist.data.CategoryTask
-import com.example.prioritylist.data.CategoryTaskList
-import com.example.prioritylist.data.DeadlineCategoryTask
-import com.example.prioritylist.data.DeadlineCategoryTaskList
-import com.example.prioritylist.data.DeadlinePriorityCategoryTask
-import com.example.prioritylist.data.DeadlinePriorityCategoryTaskList
-import com.example.prioritylist.data.DeadlinePriorityTask
-import com.example.prioritylist.data.DeadlineTask
-import com.example.prioritylist.data.HistoryTask
-import com.example.prioritylist.data.PriorityTask
-import com.example.prioritylist.data.StatusCodes
+import com.example.prioritylist.data.backend.Category
+import com.example.prioritylist.data.backend.CategoryTask
+import com.example.prioritylist.data.backend.CategoryTaskList
+import com.example.prioritylist.data.backend.DeadlineCategoryTask
+import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
+import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTask
+import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
+import com.example.prioritylist.data.backend.DeadlinePriorityTask
+import com.example.prioritylist.data.backend.DeadlineTask
+import com.example.prioritylist.data.backend.HistoryTask
+import com.example.prioritylist.data.database.ListRepository
+import com.example.prioritylist.data.database.MainRepository
+import com.example.prioritylist.data.database.OfflineListRepository
+import com.example.prioritylist.data.backend.PriorityTask
+import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.domain.DataManager
 import java.util.Calendar
 import java.util.Date
@@ -32,84 +35,11 @@ import java.util.Date
 /*
 TODO(comments)
  */
-/*class UiViewModel : ViewModel() {
-    var editedTask by mutableStateOf(ModifiableTask())
 
-    var isPrevList by mutableStateOf(false)
-    var isNextList by mutableStateOf(false)
-
-    var visible by mutableStateOf(true)
-
-    var currentListName by mutableStateOf("")
-
-    var newListName by mutableStateOf("")
-    var selectedTypeText by mutableStateOf("priority-based tasks")
-    var selectedType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
-
-    private var badName by mutableStateOf(false)
-
-
-    var duplicatedName by mutableStateOf(false)
-    var emptyName by mutableStateOf(false)
-
-    var taskBottomSheetExpanded by mutableStateOf(true)
-
-    var currentListIndex = MutableStateFlow(0)
-    var index = currentListIndex.asStateFlow()
-        private set
-
-    private fun incrementIndex() {
-        currentListIndex.value = (currentListIndex.value + 1) % 2
-        index = currentListIndex.asStateFlow()
-        visible = !visible
-    }
-
-    fun setDuplicatedTaskError() {
-        duplicatedName = true
-        badName = true
-    }
-
-    fun setEmptyNameError() {
-        badName = true
-        emptyName = true
-    }
-
-    fun clearNameErrorFlags() {
-        badName = false
-        emptyName = false
-        duplicatedName = false
-    }
-
-    fun isDuplicatedTask(): Boolean {
-        return badName
-    }
-
-    fun resetEditedTask() {
-        editedTask = ModifiableTask()
-    }
-
-    fun updateNameOfEditedTask(newName: String) {
-        val newTask = editedTask.copy()
-        newTask.name = newName
-        clearNameErrorFlags()
-        editedTask = newTask
-    }
-
-    fun updateDescriptionOfEditedTask(newDescription: String) {
-        val newTask = editedTask.copy()
-        newTask.description = newDescription
-        editedTask = newTask
-    }
-
-    fun updatePriorityOfEditedTask(newPriority: String) {
-        val newTask = editedTask.copy()
-        newTask.priority = if(newPriority.isEmpty()) 0 else newPriority.toInt()
-        editedTask = newTask
-    }
-
-}*/
-
-class StateHolder : ViewModel() {
+class StateHolder(
+    private val listRepository: ListRepository,
+    private val mainRepository: MainRepository
+    ) : ViewModel() {
 
     class UiViewModel: ViewModel() {
         var editedTask by mutableStateOf(ModifiableTask())
@@ -256,7 +186,7 @@ class StateHolder : ViewModel() {
             return dataManager.getHistoryListUseCase()
         }
 
-        fun getCurrentType(): TaskTypes{
+        fun getCurrentType(): TaskTypes {
             return if (currentListIndex.value.equals(0))
                 firstType
             else
@@ -288,7 +218,7 @@ class StateHolder : ViewModel() {
 
 
 
-    fun setName(): Status{
+    fun setName(): Status {
         return dataManager.changeNameUseCase(UI.currentListName)
     }
 
@@ -299,7 +229,7 @@ class StateHolder : ViewModel() {
     fun onEditTask(){
     }
 
-    fun onDeleteTask(): Status{
+    fun onDeleteTask(): Status {
         val status = when(Read.getCurrentType()){
             TaskTypes.PRIORITY -> dataManager.deleteTaskUseCase(PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
             TaskTypes.DEADLINE -> dataManager.deleteTaskUseCase(DeadlineTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline))
