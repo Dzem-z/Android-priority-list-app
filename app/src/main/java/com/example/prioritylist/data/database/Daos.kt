@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,8 +16,8 @@ interface ListDao {
     @Delete
     suspend fun delete(task: TaskEntity)
 
-    @Query("UPDATE listsTable SET name = :newName WHERE listID = :listID")
-    suspend fun changeName(listID: Int, newName: String)
+    @Update
+    suspend fun update(newTask: TaskEntity)
 }
 
 @Dao
@@ -24,11 +25,28 @@ interface MainDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveList(list: ListEntity)
 
+    @Query("DELETE FROM ListsTable WHERE listID = :listID")
+    suspend fun deleteListCredentials(listID: Int)
+
+    @Query("DELETE FROM TasksTable WHERE listID = :listID")
+    suspend fun deleteListTasks(listID: Int)
+
+    @Query("UPDATE ListsTable SET listID = :newCurrent WHERE listID = :listID")
+    suspend fun changeIdOfCurrent(listID: Int, newCurrent: Int)
+
+    @Query("UPDATE ListsTable SET listID = listID + :size + :value WHERE listID >= :startingID;")
+    suspend fun shiftForward(startingID: Int, value: Int, size: Int)
+
+    @Query("UPDATE ListsTable SET listID = listID - :size WHERE listID >= :size")
+    suspend fun shiftBackward(size: Int)
+
     @Query("SELECT * FROM ListsTable")
-    fun loadListCredentials(): Flow<List<ListEntity>>
+    fun loadListCredentials(): List<ListEntity>
 
     @Query("SELECT * FROM TasksTable WHERE listID = :listID")
-    fun loadListByID(listID: Int): Flow<List<TaskEntity>>
+    fun loadListByID(listID: Int): List<TaskEntity>
+
+
 
 }
 
