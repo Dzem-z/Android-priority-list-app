@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
@@ -13,6 +14,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prioritylist.data.backend.StatusCodes
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
@@ -24,7 +27,7 @@ fun MainPageScreen(
     modifier: Modifier = Modifier) {
 
 
-
+    val coroutineScope = rememberCoroutineScope()
     val navController = rememberNavController()
 
     NavHost(
@@ -119,7 +122,10 @@ fun MainPageScreen(
                     navController.popBackStack()
                 },
                 onConfirm = {
-                    holder.addList()
+                    coroutineScope.launch {
+                        holder.addList()
+                    }
+
                     navController.navigate("ListContainer"){
                         popUpTo(0)
                     }
