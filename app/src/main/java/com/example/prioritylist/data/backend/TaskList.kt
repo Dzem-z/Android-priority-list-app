@@ -3,6 +3,7 @@ package com.example.prioritylist.data.backend
 import androidx.annotation.VisibleForTesting
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.StatusCodes
+import com.example.prioritylist.data.database.ListEntity
 import java.lang.Math.sqrt
 import java.util.Collections.list
 import java.util.Collections.max
@@ -142,6 +143,23 @@ abstract class TaskList<TaskType: Task>(
     fun addTask(newTask: TaskType): Status {
         storage.push(Add(newTask))
         return add(newTask)
+    }
+
+    fun toListEntity(): ListEntity {
+        return ListEntity(
+            listID = id,
+            name = name,
+            type = when(this::class) {
+                TaskTypes.PRIORITY.listType -> 1
+                TaskTypes.DEADLINE.listType -> 2
+                TaskTypes.CATEGORY.listType -> 3
+                TaskTypes.DEADLINE_PRIORITY.listType -> 4
+                TaskTypes.DEADLINE_CATEGORY.listType -> 5
+                TaskTypes.DEADLINE_PRIORITY_CATEGORY.listType -> 6
+                else -> 0
+            },
+            dateOfCreation = dateOfCreation
+        )
     }
 }
 
