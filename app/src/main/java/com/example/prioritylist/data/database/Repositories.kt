@@ -6,11 +6,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface MainRepository {
 
-    fun loadListByID(listID: Int): Flow<List<TaskEntity>>
+    fun loadListByID(listID: Int): List<TaskEntity>
 
-    fun loadListCredentials(): Flow<List<ListEntity>>
+    fun loadListCredentials(): List<ListEntity>
 
     suspend fun saveList(list: ListEntity)
+
+    suspend fun changeIdOfCurrent(listID: Int, newID: Int)
+
+    suspend fun shift(startingID: Int, value: Int, size: Int)
+
+    suspend fun deleteList(listID: Int)
 }
 
 interface ListRepository {
@@ -18,7 +24,7 @@ interface ListRepository {
 
     suspend fun delete(task: TaskEntity)
 
-    suspend fun changeName(listID: Int, newName: String)
+    suspend fun update(task: TaskEntity)
 }
 
 interface HistoryRepository {
