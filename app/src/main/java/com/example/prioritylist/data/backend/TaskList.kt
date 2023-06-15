@@ -4,6 +4,8 @@ import androidx.annotation.VisibleForTesting
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.database.ListEntity
+import com.example.prioritylist.data.database.ListRepository
+import com.example.prioritylist.data.database.TaskEntity
 import java.lang.Math.sqrt
 import java.util.Collections.list
 import java.util.Collections.max
@@ -17,19 +19,21 @@ TODO(comments)
 abstract class TaskList<TaskType: Task>(
     protected open var name: String,
     protected open var id: Int,
-    protected open var dateOfCreation: Date
+    protected open var dateOfCreation: Date,
+    protected open val listRepository: ListRepository,
+    protected open val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>(),
+
 ) {
 
 
-    protected open val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>()
     protected open val storage: Storage<TaskType> = Storage<TaskType>()
     open val history: HistoryList<TaskType> = HistoryList<TaskType>()
     abstract fun getPriority(id: Int): Double
-
+    abstract protected fun toTaskEntity(task: TaskType): TaskEntity
 
 
     @VisibleForTesting
-    internal open fun add(task: TaskType): Status {
+    suspend internal open fun add(task: TaskType): Status {
         if (listOfTasks.find{ task.name == it.name  } != null){
             return Status(StatusCodes.DUPLICATED_TASK)
         } else if (task.name.isEmpty()) {
@@ -38,17 +42,17 @@ abstract class TaskList<TaskType: Task>(
         task.id = listOfTasks.size
         listOfTasks.add(task)
         sort()
-        //TODO(write to database)
+        listRepository.add(toTaskEntity(task))
         return Status(StatusCodes.SUCCESS)
     }
     @VisibleForTesting
-    internal open fun delete(task: TaskType): Status {
+    suspend internal open fun delete(task: TaskType): Status {
         if (listOfTasks.find { it == task } == null){
             throw NoSuchElementException()
         }
         listOfTasks.remove(task)
         normalizeIndexes()
-        //TODO(write to database)
+        listRepository.delete(toTaskEntity(task))
         return Status(StatusCodes.SUCCESS)
     }
 
@@ -98,7 +102,7 @@ abstract class TaskList<TaskType: Task>(
     fun getTaskByID(id: Int): TaskType {
         return listOfTasks[id]
     }
-    fun undo(): Status {
+    suspend fun undo(): Status {
         if (storage.isEmpty())
             throw Exception()
         else {
@@ -124,7 +128,7 @@ abstract class TaskList<TaskType: Task>(
     fun updatePriority() {
         TODO("Not yet implemented")
     }
-    fun editTask(id: Int, newTask: TaskType): Status {
+    suspend fun editTask(id: Int, newTask: TaskType): Status {
         val oldTask = getTaskByID(id)
         val status = delete(oldTask)
         if (status.code != StatusCodes.SUCCESS)
@@ -133,47 +137,38 @@ abstract class TaskList<TaskType: Task>(
         return add(newTask)
     }
 
-    fun deleteTask(deletedTask: TaskType): Status {
+    suspend fun deleteTask(deletedTask: TaskType): Status {
         val status = delete(deletedTask)
         if (status.code == StatusCodes.SUCCESS)
             storage.push(Delete(deletedTask))
         return status
     }
 
-    fun addTask(newTask: TaskType): Status {
+    suspend fun addTask(newTask: TaskType): Status {
         storage.push(Add(newTask))
         return add(newTask)
     }
 
-    fun toListEntity(): ListEntity {
-        return ListEntity(
-            listID = id,
-            name = name,
-            type = when(this::class) {
-                TaskTypes.PRIORITY.listType -> 1
-                TaskTypes.DEADLINE.listType -> 2
-                TaskTypes.CATEGORY.listType -> 3
-                TaskTypes.DEADLINE_PRIORITY.listType -> 4
-                TaskTypes.DEADLINE_CATEGORY.listType -> 5
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY.listType -> 6
-                else -> 0
-            },
-            dateOfCreation = dateOfCreation
-        )
-    }
+
 }
 
 class CategoryTaskList(
     override var name: String,
     override var id: Int,
-    override var dateOfCreation: Date
+    override var dateOfCreation: Date,
+    override val listRepository: ListRepository,
+    override val listOfTasks: MutableList<CategoryTask> = mutableListOf()
 ): TaskList<CategoryTask>(
     name = name,
     id = id,
-    dateOfCreation = dateOfCreation
+    dateOfCreation = dateOfCreation,
+    listRepository = listRepository,
+    listOfTasks = listOfTasks
 ) {
 
-
+    override protected fun toTaskEntity(task: CategoryTask): TaskEntity {
+        TODO("Not yet implemented")
+    }
 
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
@@ -183,23 +178,40 @@ class CategoryTaskList(
 class DeadlineTaskList(
     override var name: String,
     override var id: Int,
-    override var dateOfCreation: Date
+    override var dateOfCreation: Date,
+    override val listRepository: ListRepository,
+    override val listOfTasks: MutableList<DeadlineTask> = mutableListOf()
 ): TaskList<DeadlineTask>(
     name = name,
     id = id,
-    dateOfCreation = dateOfCreation
+    dateOfCreation = dateOfCreation,
+    listRepository = listRepository,
+    listOfTasks = listOfTasks
 ) {
 
     private var maximumDeadline: Long = Long.MIN_VALUE
 
-    override fun add(task: DeadlineTask): Status {
+    override protected fun toTaskEntity(task: DeadlineTask): TaskEntity {
+        return TaskEntity(
+            name = task.name,
+            description = task.description,
+            dateOfCreation = task.dateOfCreation,
+            priority = null,
+            category = null,
+            deadline = task.deadline,
+            listID = id,
+            type = TaskTypes.DEADLINE
+        )
+    }
+
+    override suspend fun add(task: DeadlineTask): Status {
         maximumDeadline = max(
             super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
             task.deadline.toInstant().toEpochMilli())
         return super.add(task)
     }
 
-    override fun delete(task: DeadlineTask): Status {
+    override suspend fun delete(task: DeadlineTask): Status {
         maximumDeadline = max(
             super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
             task.deadline.toInstant().toEpochMilli())
@@ -219,16 +231,32 @@ class DeadlineTaskList(
 class PriorityTaskList(
     override var name: String,
     override var id: Int,
-    override var dateOfCreation: Date
+    override var dateOfCreation: Date,
+    override val listRepository: ListRepository,
+    override val listOfTasks: MutableList<PriorityTask> = mutableListOf()
 ): TaskList<PriorityTask>(
     name = name,
     id = id,
-    dateOfCreation = dateOfCreation
+    dateOfCreation = dateOfCreation,
+    listRepository = listRepository,
+    listOfTasks = listOfTasks
 ) {
     private var maximumPriority = Int.MIN_VALUE
 
+    override protected fun toTaskEntity(task: PriorityTask): TaskEntity {
+        return TaskEntity(
+            name = task.name,
+            description = task.description,
+            dateOfCreation = task.dateOfCreation,
+            priority = task.priority,
+            category = null,
+            deadline = null,
+            listID = id,
+            type = TaskTypes.DEADLINE
+        )
+    }
 
-    override fun add(task: PriorityTask): Status {
+    override suspend fun add(task: PriorityTask): Status {
         val status = super.add(task)
         if (status.code == StatusCodes.SUCCESS)
             maximumPriority = max(
@@ -237,7 +265,7 @@ class PriorityTaskList(
         return status
     }
 
-    override fun delete(task: PriorityTask): Status {
+    override suspend fun delete(task: PriorityTask): Status {
         maximumPriority = max(
             super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
             task.priority)
@@ -257,12 +285,20 @@ class PriorityTaskList(
 class DeadlineCategoryTaskList(
     override var name: String,
     override var id: Int,
-    override var dateOfCreation: Date
+    override var dateOfCreation: Date,
+    override val listRepository: ListRepository,
+    override val listOfTasks: MutableList<DeadlineCategoryTask> = mutableListOf()
 ): TaskList<DeadlineCategoryTask>(
     name = name,
     id = id,
-    dateOfCreation = dateOfCreation
+    dateOfCreation = dateOfCreation,
+    listRepository = listRepository,
+    listOfTasks = listOfTasks
 ) {
+    override protected fun toTaskEntity(task: DeadlineCategoryTask): TaskEntity {
+        TODO("Not yet implemented")
+    }
+
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
     }
@@ -271,12 +307,20 @@ class DeadlineCategoryTaskList(
 class DeadlinePriorityTaskList(
     override var name: String,
     override var id: Int,
-    override var dateOfCreation: Date
+    override var dateOfCreation: Date,
+    override val listRepository: ListRepository,
+    override val listOfTasks: MutableList<DeadlinePriorityTask> = mutableListOf()
 ): TaskList<DeadlinePriorityTask>(
     name = name,
     id = id,
-    dateOfCreation = dateOfCreation
+    dateOfCreation = dateOfCreation,
+    listRepository = listRepository,
+    listOfTasks = listOfTasks
 ) {
+    override protected fun toTaskEntity(task: DeadlinePriorityTask): TaskEntity {
+        TODO("Not yet implemented")
+    }
+
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
     }
@@ -285,12 +329,20 @@ class DeadlinePriorityTaskList(
 class DeadlinePriorityCategoryTaskList(
     override var name: String,
     override var id: Int,
-    override var dateOfCreation: Date
+    override var dateOfCreation: Date,
+    override val listRepository: ListRepository,
+    override val listOfTasks: MutableList<DeadlinePriorityCategoryTask> = mutableListOf()
 ): TaskList<DeadlinePriorityCategoryTask>(
     name = name,
     id = id,
-    dateOfCreation = dateOfCreation
+    dateOfCreation = dateOfCreation,
+    listRepository = listRepository,
+    listOfTasks = listOfTasks
 ) {
+    override protected fun toTaskEntity(task: DeadlinePriorityCategoryTask): TaskEntity {
+        TODO("Not yet implemented")
+    }
+
     override fun getPriority(id: Int): Double {
         TODO("not yet implemented")
     }
