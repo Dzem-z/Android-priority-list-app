@@ -22,7 +22,7 @@ class DataManager(
 ) {
 
 
-    fun addTaskUseCase(task: Task): Status {
+    suspend fun addTaskUseCase(task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
         var status: Status
@@ -49,7 +49,7 @@ class DataManager(
         }
     }
 
-    fun editTaskUseCase(oldId: Int, task: Task): Status {
+    suspend fun editTaskUseCase(oldId: Int, task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
         if (currentType != null && list != null) {
@@ -67,7 +67,7 @@ class DataManager(
         return Status(StatusCodes.SUCCESS)
     }
 
-    fun deleteTaskUseCase(task: Task): Status {
+    suspend fun deleteTaskUseCase(task: Task): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
         if (currentType != null && list != null) {
@@ -85,7 +85,7 @@ class DataManager(
         return Status(StatusCodes.SUCCESS)
     }
 
-    fun moveToHistoryUseCase(task: Task, dateOfCompletion: Date): Status {
+    suspend fun moveToHistoryUseCase(task: Task, dateOfCompletion: Date): Status {
         val list = mainPage.currentList
         val currentType = mainPage.currentType
         var status = Status(StatusCodes.FAILURE)
@@ -136,12 +136,12 @@ class DataManager(
             return ""
     }
 
-    fun getDateOfCreationUseCase(): Date{
+    fun getDateOfCreationUseCase(): Date?{
         val list = mainPage.currentList
         if (list != null)
             return list.getDateOfCreation()
         else
-            throw NullPointerException()
+            return null
     }
 
     fun getHistoryListUseCase(): MutableList<out HistoryTask<out Task>> {
@@ -171,7 +171,7 @@ class DataManager(
         return Status(StatusCodes.SUCCESS)
     }
 
-    fun undoUseCase(): Status {
+    suspend fun undoUseCase(): Status {
         return mainPage.undo()
     }
 
@@ -179,7 +179,7 @@ class DataManager(
         return mainPage.isStorageEmpty()
     }
 
-    fun changeIDUseCase(newId: Int) {
+    suspend fun changeIDUseCase(newId: Int) {
         mainPage.changeIDofCurrentList(newId)
     }
 
@@ -209,7 +209,7 @@ class DataManager(
         return type
     }
 
-    fun deleteCurrentListUseCase(): TaskTypes? {
+    suspend fun deleteCurrentListUseCase(): TaskTypes? {
         if (mainPage.deleteCurrentList().code != StatusCodes.SUCCESS)
             return null
         else
