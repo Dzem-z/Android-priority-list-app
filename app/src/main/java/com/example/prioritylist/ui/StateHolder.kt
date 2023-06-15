@@ -210,7 +210,7 @@ class StateHolder(
             return UI.currentListName
         }
 
-        fun getDateOfCreation(): Date{
+        fun getDateOfCreation(): Date?{
             return dataManager.getDateOfCreationUseCase()
         }
 
@@ -234,7 +234,7 @@ class StateHolder(
     fun onEditTask(){
     }
 
-    fun onDeleteTask(): Status {
+    suspend fun onDeleteTask(): Status {
         val status = when(Read.getCurrentType()){
             TaskTypes.PRIORITY -> dataManager.deleteTaskUseCase(PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
             TaskTypes.DEADLINE -> dataManager.deleteTaskUseCase(DeadlineTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline))
@@ -247,7 +247,7 @@ class StateHolder(
         Read.updateList()
         return status
     }
-    fun onUndo(){
+    suspend fun onUndo(){
         dataManager.undoUseCase()
         Read.updateList()
     }
@@ -309,7 +309,7 @@ class StateHolder(
 
 
 
-    fun removeList() {
+    suspend fun removeList() {
         val returnedType = dataManager.deleteCurrentListUseCase()
         if( returnedType != null ){
             Read.incrementIndex()
@@ -320,12 +320,12 @@ class StateHolder(
         }
     }
 
-    fun swapWithLeft() {
+    suspend fun swapWithLeft() {
         dataManager.changeIDUseCase(dataManager.getIDUseCase() - 1)
         Read.updateList()
     }
 
-    fun swapWithRight() {
+    suspend fun swapWithRight() {
         dataManager.changeIDUseCase(dataManager.getIDUseCase() + 1)
         Read.updateList()
     }
@@ -341,7 +341,7 @@ class StateHolder(
     fun updateTask(task: Task){
         TODO("Not yet implemented")
     }
-    fun addTask(): Status {
+    suspend fun addTask(): Status {
 
         val status = when(Read.getCurrentType()){
             TaskTypes.PRIORITY -> dataManager.addTaskUseCase(PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
@@ -356,7 +356,7 @@ class StateHolder(
         return status
     }
 
-    fun confirmEditingTask() : Status {
+    suspend fun confirmEditingTask() : Status {
         val status = when(Read.getCurrentType()){
             TaskTypes.PRIORITY -> dataManager.editTaskUseCase(UI.editedTask.id, PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
             TaskTypes.DEADLINE -> dataManager.editTaskUseCase(UI.editedTask.id, DeadlineTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline))
