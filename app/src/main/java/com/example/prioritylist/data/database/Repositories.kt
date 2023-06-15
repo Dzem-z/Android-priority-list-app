@@ -10,8 +10,6 @@ interface MainRepository {
 
     fun loadListCredentials(): Flow<List<ListEntity>>
 
-    suspend fun saveCurrent(listID: Int, newCurrent: Int)
-
     suspend fun saveList(list: ListEntity)
 }
 
