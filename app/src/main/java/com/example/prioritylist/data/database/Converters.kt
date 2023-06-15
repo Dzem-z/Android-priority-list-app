@@ -1,6 +1,7 @@
 package com.example.prioritylist.data.database
 
 import androidx.room.TypeConverter
+import com.example.prioritylist.data.backend.TaskTypes
 import java.time.Instant
 import java.util.Date
 
@@ -13,5 +14,31 @@ class Converters {
     @TypeConverter
     fun dateToTimestamp(date: Date?): Long? {
         return date?.toInstant()?.epochSecond
+    }
+
+    @TypeConverter
+    fun TypeToInt(type: TaskTypes?): Int? {
+        return when(type){
+            TaskTypes.PRIORITY -> 1
+            TaskTypes.DEADLINE -> 2
+            TaskTypes.CATEGORY -> 3
+            TaskTypes.DEADLINE_PRIORITY -> 4
+            TaskTypes.DEADLINE_CATEGORY -> 5
+            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> 6
+            else -> null
+        }
+    }
+
+    @TypeConverter
+    fun IntToType(int: Int?): TaskTypes? {
+        return when(int){
+            1 -> TaskTypes.PRIORITY
+            2 -> TaskTypes.DEADLINE
+            3 -> TaskTypes.CATEGORY
+            4 -> TaskTypes.DEADLINE_PRIORITY
+            5 -> TaskTypes.DEADLINE_CATEGORY
+            6 -> TaskTypes.DEADLINE_PRIORITY_CATEGORY
+            else -> null
+        }
     }
 }
