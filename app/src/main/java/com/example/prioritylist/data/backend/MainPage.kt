@@ -14,13 +14,19 @@ import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskList
 import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.data.database.ListEntity
+import com.example.prioritylist.data.database.ListRepository
+import com.example.prioritylist.data.database.MainRepository
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 
-class MainPage() {
+class MainPage(
+    private val listRepository: ListRepository,
+    private val mainRepository: MainRepository
+) {
     private val listOfDeadlineCategoryLists: MutableList<DeadlineCategoryTaskList> = mutableListOf<DeadlineCategoryTaskList>()
     private val listOfDeadlinePriorityLists: MutableList<DeadlinePriorityTaskList> = mutableListOf<DeadlinePriorityTaskList>()
     private val listOfDeadlinePriorityCategoryLists: MutableList<DeadlinePriorityCategoryTaskList> = mutableListOf<DeadlinePriorityCategoryTaskList>()
@@ -65,120 +71,13 @@ class MainPage() {
     }
 
 
-    //testing
+
     init{
-        //-------------------------testing values
-        /*
-        val task1 = PriorityTask(
-            dateOfCreation =   SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_1",
-            description = "desc_1",
-            id = 3,
-            priority = 3
-        )
-        val task2 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
-            name = "test_name_2",
-            description = "desc_2",
-            id = 3,
-            priority = 2
-        )
-        val task3 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_3",
-            description = "desc_1",
-            id = 3,
-            priority = 1
-        )
-        val task4 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_4",
-            description = "desc_1",
-            id = 3,
-            priority = 12
-        )
-        val task5 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
-            name = "test_name_5",
-            description = "desc_2",
-            id = 3,
-            priority = 2
-        )
-        val task6 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_6",
-            description = "desc_1",
-            id = 3,
-            priority = 6
-        )
-        val task7 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_7",
-            description = "desc_1",
-            id = 3,
-            priority = 3
-        )
-        val task8 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-2412:15:30"),
-            name = "test_name_8",
-            description = "desc_2",
-            id = 3,
-            priority = 2
-        )
-        val task9 = PriorityTask(
-            dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_9",
-            description = "desc_1",
-            id = 3,
-            priority = 1
-        )
 
-        val deadlineTask1 = DeadlineTask(
-            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
-            name = "test_name_1",
-            description = "desc_1",
-            id = 3,
-            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1212:15:30")
-        )
-        val deadlineTask2 = DeadlineTask(
-            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
-            name = "test_name_2",
-            description = "desc_2",
-            id = 3,
-            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-05-1212:15:30")
-        )
-        val deadlineTask3 = DeadlineTask(
-            dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
-            name = "test_name_3",
-            description = "desc_3",
-            id = 2,
-            deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
-        )
-
-        addList(TaskTypes.PRIORITY, "test", Calendar.getInstance().time)
-        val list = currentList
-        (list as PriorityTaskList).add(task1)
-        (list as PriorityTaskList).add(task2)
-        (list as PriorityTaskList).add(task3)
-        (list as PriorityTaskList).add(task4)
-        (list as PriorityTaskList).add(task5)
-        (list as PriorityTaskList).add(task6)
-        (list as PriorityTaskList).add(task7)
-        (list as PriorityTaskList).add(task8)
-        (list as PriorityTaskList).add(task9)
-        list.history.pushTask(task8, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
-
-        addList(TaskTypes.DEADLINE, "test deadline", Calendar.getInstance().time)
-        val listDeadline = currentList
-        (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
-        (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
-        (listDeadline as DeadlineTaskList).history.pushTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2025-04-1212:15:30"))
-        prevList()*/
-        //testing
     }
 
 
-    fun addList(
+    suspend fun addList(
         type: TaskTypes,
         name: String,
         dateOfCreation: Date
@@ -198,6 +97,23 @@ class MainPage() {
                 DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation)
             )
         }
+
+        mainRepository.saveList(
+            ListEntity(
+                currentListID,
+                name,
+                dateOfCreation,
+                type = when(type) {
+                    TaskTypes.PRIORITY -> 1
+                    TaskTypes.DEADLINE -> 2
+                    TaskTypes.CATEGORY -> 3
+                    TaskTypes.DEADLINE_PRIORITY -> 4
+                    TaskTypes.DEADLINE_CATEGORY -> 5
+                    TaskTypes.DEADLINE_PRIORITY_CATEGORY -> 6
+                }
+            )
+        )
+
 
         currentList = getListByID(currentListID)
         currentType = listIdentifiers[currentListID].type
@@ -304,7 +220,6 @@ class MainPage() {
 
 
 }
-
 internal data class ListIdentifier(
     var name: String,
     var type: TaskTypes

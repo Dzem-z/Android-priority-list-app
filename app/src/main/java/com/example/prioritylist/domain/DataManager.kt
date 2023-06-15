@@ -6,6 +6,8 @@ import com.example.prioritylist.data.backend.Settings
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.data.database.ListRepository
+import com.example.prioritylist.data.database.MainRepository
 import java.util.Date
 
 /*
@@ -13,7 +15,9 @@ TODO(comments)
  */
 
 class DataManager(
-    private val mainPage: MainPage = MainPage(),
+    private val mainRepository: MainRepository,
+    private val listRepository: ListRepository,
+    private val mainPage: MainPage = MainPage(listRepository, mainRepository),
     private val settings: Settings = Settings()
 ) {
 
@@ -199,7 +203,7 @@ class DataManager(
         }
     }
 
-    fun addListUseCase(id: Int, name: String, type: TaskTypes, dateOfCreation: Date): TaskTypes {
+    suspend fun addListUseCase(id: Int, name: String, type: TaskTypes, dateOfCreation: Date): TaskTypes {
         mainPage.addList(type, name, dateOfCreation)
         mainPage.changeIDofCurrentList(id)
         return type

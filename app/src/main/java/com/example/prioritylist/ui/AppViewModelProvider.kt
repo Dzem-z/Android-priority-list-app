@@ -16,7 +16,8 @@ object AppViewModelProvider {
         initializer {
             StateHolder(
                 priorityListApplication().container.listRepository,
-                priorityListApplication().container.mainRepository
+                priorityListApplication().container.mainRepository,
+                priorityListApplication().container.mainPageRepository
             )
         }
     }

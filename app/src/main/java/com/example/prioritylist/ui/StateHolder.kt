@@ -6,6 +6,7 @@ import com.example.prioritylist.data.backend.ModifiableTask
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.data.backend.MainPage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -38,9 +39,13 @@ TODO(comments)
 
 class StateHolder(
     private val listRepository: ListRepository,
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val mainPageRepository: MainPage
     ) : ViewModel() {
 
+    companion object {
+        private const val DATABASE_COLLECTION_TIMEOUT_MILLIS = 10_000L
+    }
     class UiViewModel: ViewModel() {
         var editedTask by mutableStateOf(ModifiableTask())
 
@@ -211,7 +216,7 @@ class StateHolder(
 
     }
 
-    private val dataManager = DataManager()
+    private val dataManager = DataManager(mainPage = mainPageRepository, listRepository = listRepository, mainRepository = mainRepository)
 
     val Read = ReadViewModel()
 
@@ -288,7 +293,7 @@ class StateHolder(
         }
     }
 
-    fun addList() {
+    suspend fun addList() {
         dataManager.addListUseCase(
             dataManager.getIDUseCase() + 1,
             UI.newListName,
