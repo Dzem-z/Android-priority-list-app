@@ -33,6 +33,7 @@ import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
 import com.example.prioritylist.data.backend.TaskTypes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -88,6 +91,7 @@ fun TaskOptionsSheet(
 
 @Composable
 fun ListOptionsSheet(
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     viewModel: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier,
     removeList: () -> Unit = {},
@@ -195,7 +199,9 @@ fun ListOptionsSheet(
 
             Button(
                 onClick = {
-                    viewModel.swapWithLeft()
+                    coroutineScope.launch {
+                        viewModel.swapWithLeft()
+                    }
                     launchSnackbar("swaped with list on the left")
                           },
                 enabled = viewModel.Read.isPrevList,
@@ -237,7 +243,9 @@ fun ListOptionsSheet(
 
             Button(
                 onClick = {
-                    viewModel.swapWithRight()
+                    coroutineScope.launch {
+                        viewModel.swapWithRight()
+                    }
                     launchSnackbar("swaped with list on the right")
                           },
                 enabled = viewModel.Read.isNextList,
