@@ -21,6 +21,7 @@ abstract class database : RoomDatabase() {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, database::class.java, "priority_list_database")
                     .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
                     .build()
                     .also { Instance = it }
             }
