@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 
 val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainPageScreen(
     holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
@@ -48,7 +47,9 @@ fun MainPageScreen(
                     navController.navigate("EditTask")
                 },
                 onDeleteTask = {
-                    holder.onDeleteTask()
+                    coroutineScope.launch {
+                        holder.onDeleteTask()
+                    }
                 },
                 onAddList = {
                     navController.navigate("AddList")
@@ -59,8 +60,9 @@ fun MainPageScreen(
                         navController.navigate("EmptyScreen"){
                             popUpTo(0)
                         }
-                    else
+                    coroutineScope.launch {
                         holder.removeList()
+                    }
                 },
                 onGoToHistory = {
                     navController.navigate("historyScreen")
@@ -75,15 +77,16 @@ fun MainPageScreen(
                 holder = holder,
                 onConfirmMessage = "add task",
                 onConfirm = {
-                    val code = holder.addTask().code
-                    if (code == StatusCodes.DUPLICATED_TASK) {
-                        holder.UI.setDuplicatedTaskError()
-                    } else if (code == StatusCodes.EMPTY_NAME){
-                        holder.UI.setEmptyNameError()
-                    }
-                    else {
-                        holder.UI.resetEditedTask()
-                        navController.popBackStack()
+                    coroutineScope.launch {
+                        val code = holder.addTask().code
+                        if (code == StatusCodes.DUPLICATED_TASK) {
+                            holder.UI.setDuplicatedTaskError()
+                        } else if (code == StatusCodes.EMPTY_NAME) {
+                            holder.UI.setEmptyNameError()
+                        } else {
+                            holder.UI.resetEditedTask()
+                            navController.popBackStack()
+                        }
                     }
                             },
                 onCancel = {
@@ -101,9 +104,11 @@ fun MainPageScreen(
                 holder = holder,
                 onConfirmMessage = "confirm",
                 onConfirm = {
-                    holder.confirmEditingTask()
-                    holder.UI.resetEditedTask()
-                    navController.popBackStack()
+                    coroutineScope.launch {
+                        holder.confirmEditingTask()
+                        holder.UI.resetEditedTask()
+                        navController.popBackStack()
+                    }
                             },
                 onCancel = {
                     holder.UI.resetEditedTask()
@@ -150,8 +155,10 @@ fun MainPageScreen(
 
             EmptyScreen(
                 onAddList = {
-                    if (!holder.Read.isEmpty())
-                        holder.removeList()
+                    /*if (!holder.Read.isEmpty())
+                        coroutineScope.launch {
+                            holder.removeList()
+                        }*/
                     navController.navigate("AddList")
                 }
             )
