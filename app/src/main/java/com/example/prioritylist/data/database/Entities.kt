@@ -15,15 +15,20 @@ data class TaskEntity(
     val deadline: Date,
     val listID: Int,
     val type: Int
-    )
-
+)
+/*
+*
+* @param type encodes list type: 1 is priority, 2 is deadline, 3 is category,
+*                                   4 is deadline-priority, 5 is deadline-category,
+*                                   6 is deadline-priority-category
+* */
 @Entity(tableName = "ListsTable")
 data class ListEntity(
     @PrimaryKey
     val listID: Int,
     val name: String,
-    val type: Int,
-    val currentID: Int
+    val dateOfCreation: Date,
+    val type: Int
 )
 
 /*
