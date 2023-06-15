@@ -3,24 +3,27 @@ package com.example.prioritylist.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.prioritylist.data.backend.TaskTypes
 import java.util.Date
+
+/*
+*
+* */
 
 @Entity(tableName = "TasksTable", primaryKeys = ["name", "listID"])
 data class TaskEntity(
     val name: String,
     val description: String,
     val dateOfCreation: Date,
-    val priority: Int,
-    val category: Int,
-    val deadline: Date,
+    val priority: Int?,
+    val category: Int?,
+    val deadline: Date?,
     val listID: Int,
-    val type: Int
+    val type: TaskTypes
 )
 /*
-*
 * @param type encodes list type: 1 is priority, 2 is deadline, 3 is category,
-*                                   4 is deadline-priority, 5 is deadline-category,
-*                                   6 is deadline-priority-category
+* 4 is deadline-priority, 5 is deadline-category, 6 is deadline-priority-category
 * */
 @Entity(tableName = "ListsTable")
 data class ListEntity(
@@ -28,7 +31,7 @@ data class ListEntity(
     val listID: Int,
     val name: String,
     val dateOfCreation: Date,
-    val type: Int
+    val type: TaskTypes
 )
 
 /*
