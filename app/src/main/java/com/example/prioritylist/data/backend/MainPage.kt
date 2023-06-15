@@ -1,6 +1,7 @@
 package com.example.prioritylist.data.backend
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.ui.graphics.Color
 import com.example.prioritylist.data.backend.CategoryTaskList
 import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
 import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
@@ -43,7 +44,7 @@ class MainPage(
     var currentType: TaskTypes? = null
         private set
 
-    private fun shift(startingID: Int, value: Int){
+    suspend private fun shift(startingID: Int, value: Int){
         for (i in listOfDeadlineLists) {
             if (i.getID() >= startingID)
                 i.changeID(i.getID() + value)
@@ -73,6 +74,31 @@ class MainPage(
 
 
     init{
+        val listHolder: List<ListEntity> = mainRepository.loadListCredentials()
+        for(i in listHolder)
+            listIdentifiers.add(ListIdentifier("<init>", TaskTypes.PRIORITY))
+        for(i in listHolder) {
+            listIdentifiers.removeAt(i.listID)
+            listIdentifiers.add(i.listID, ListIdentifier(i.name, i.type))
+            when(i.type) {
+                TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(i.name, i.listID, i.dateOfCreation, listRepository, mainRepository.loadListByID(i.listID).map {
+                    PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name )
+                }.toMutableList()))
+                TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(i.name, i.listID, i.dateOfCreation, listRepository, mainRepository.loadListByID(i.listID).map {
+                    DeadlineTask(deadline = it.deadline!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
+                }.toMutableList() ))
+                TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
+                TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
+                TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
+                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(DeadlinePriorityCategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
+            }
+        }
+        if (size() > 0) {
+            currentListID = 0
+            currentList = getListByID(0)
+            currentType = listIdentifiers[0].type
+        }
+
 
     }
 
@@ -88,29 +114,24 @@ class MainPage(
         shift(currentListID, 1)
 
         when (type) {
-            TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(name, currentListID, dateOfCreation))
-            TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(name, currentListID, dateOfCreation))
-            TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(name, currentListID, dateOfCreation))
-            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(name, currentListID, dateOfCreation))
-            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(name, currentListID, dateOfCreation))
+            TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(name, currentListID, dateOfCreation, listRepository))
+            TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(name, currentListID, dateOfCreation, listRepository))
+            TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(name, currentListID, dateOfCreation, listRepository))
+            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(name, currentListID, dateOfCreation, listRepository))
+            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(name, currentListID, dateOfCreation, listRepository))
             TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(
-                DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation)
+                DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation, listRepository)
             )
         }
+
+        mainRepository.shift(currentListID, 1, 100_000)
 
         mainRepository.saveList(
             ListEntity(
                 currentListID,
                 name,
                 dateOfCreation,
-                type = when(type) {
-                    TaskTypes.PRIORITY -> 1
-                    TaskTypes.DEADLINE -> 2
-                    TaskTypes.CATEGORY -> 3
-                    TaskTypes.DEADLINE_PRIORITY -> 4
-                    TaskTypes.DEADLINE_CATEGORY -> 5
-                    TaskTypes.DEADLINE_PRIORITY_CATEGORY -> 6
-                }
+                type = type
             )
         )
 
@@ -119,6 +140,10 @@ class MainPage(
         currentType = listIdentifiers[currentListID].type
 
         return Status(StatusCodes.SUCCESS)
+    }
+
+    fun size(): Int {
+        return listOfPriorityLists.size + listOfCategoryLists.size + listOfDeadlineLists.size + listOfDeadlineCategoryLists.size + listOfDeadlinePriorityLists.size + listOfDeadlinePriorityCategoryLists.size
     }
 
     @VisibleForTesting
@@ -134,7 +159,7 @@ class MainPage(
         return returnList
     }
 
-    fun changeIDofCurrentList(newId: Int): Status {
+    suspend fun changeIDofCurrentList(newId: Int): Status {
         var newID = newId
         val list = getListByID(currentListID)
 
@@ -143,6 +168,7 @@ class MainPage(
         else if(newID < 0)
             newID = 0
         return if (list != null) {
+            mainRepository.changeIdOfCurrent(currentListID, newID)
             shift(currentListID, -1)
             shift(newID, 1)
             list.changeID(newID)
@@ -182,7 +208,9 @@ class MainPage(
         }
     }
 
-    fun deleteCurrentList(): Status {
+    suspend fun deleteCurrentList(): Status {
+        mainRepository.deleteList(currentListID)
+        mainRepository.shift(currentListID, -1, 100_000)
         when (currentType) {
             TaskTypes.DEADLINE -> listOfDeadlineLists.remove(currentList)
             TaskTypes.PRIORITY -> listOfPriorityLists.remove(currentList)
@@ -208,7 +236,7 @@ class MainPage(
         return Status(StatusCodes.SUCCESS)
     }
 
-    fun undo(): Status {
+    suspend fun undo(): Status {
         val list = currentList
         return list?.undo() ?: Status(StatusCodes.FAILURE)
     }
