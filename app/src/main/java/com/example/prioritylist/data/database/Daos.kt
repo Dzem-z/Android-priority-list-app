@@ -24,9 +24,6 @@ interface MainDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveList(list: ListEntity)
 
-    @Query("UPDATE ListsTable SET currentID = :newCurrent WHERE listID = :listID")
-    suspend fun saveCurrent(listID: Int, newCurrent: Int)
-
     @Query("SELECT * FROM ListsTable")
     fun loadListCredentials(): Flow<List<ListEntity>>
 
