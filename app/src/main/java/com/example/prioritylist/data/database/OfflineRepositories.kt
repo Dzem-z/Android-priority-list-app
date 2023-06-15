@@ -14,8 +14,6 @@ class OfflineMainRepository(private val mainDao: MainDao): MainRepository {
 
     override fun loadListCredentials(): Flow<List<ListEntity>> = mainDao.loadListCredentials()
 
-    override suspend fun saveCurrent(listID: Int, newCurrent: Int) = mainDao.saveCurrent(listID, newCurrent)
-
     override suspend fun saveList(list: ListEntity) = mainDao.saveList(list)
 }
 
