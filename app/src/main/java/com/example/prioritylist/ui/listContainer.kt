@@ -64,6 +64,7 @@ import com.example.prioritylist.R
 import com.example.prioritylist.data.backend.DeadlineTask
 import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.TaskTypes
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -77,11 +78,12 @@ fun ListContainer(
     onDeleteTask: () -> Unit = {},
     onAddList:() -> Unit = {},
     onRemoveList: () -> Unit = {},
-    onGoToHistory: () -> Unit = {}
+    onGoToHistory: () -> Unit = {},
+    globalScope: CoroutineScope = rememberCoroutineScope()
     ) {
 
-    val snackbarPosition = remember { Animatable(180f) }
     val coroutineScope = rememberCoroutineScope()
+    val snackbarPosition = remember { Animatable(180f) }
 
     val scaffoldState = rememberScaffoldState()
     val modalSheetState = rememberModalBottomSheetState(
@@ -139,7 +141,8 @@ fun ListContainer(
                     coroutineScope.launch {
                         scaffoldState.snackbarHostState.showSnackbar(message)
                     }
-                }
+                },
+                coroutineScope = globalScope
 
             ) }
             }
@@ -175,7 +178,7 @@ fun ListContainer(
                     },
                     actions = {
                         IconButton(
-                            onClick = { holder.onUndo() },
+                            onClick = { globalScope.launch { holder.onUndo() } },
                             enabled = !holder.Read.isStorageEmpty
                         ) {
                             Icon(
