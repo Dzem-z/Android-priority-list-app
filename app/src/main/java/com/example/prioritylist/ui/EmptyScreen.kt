@@ -22,6 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+/*
+* a composable responsible for displaying the emptyScreen (when there is no list to display)
+* @param onAddList is called when user presses add list button
+* */
+
+
 @Composable
 fun EmptyScreen(
     modifier: Modifier = Modifier,

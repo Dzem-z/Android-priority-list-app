@@ -3,6 +3,10 @@ package com.example.prioritylist.ui
 import java.util.Calendar
 import java.util.Date
 
+/*
+* function that formats Date to format more friendly to user
+* */
+
 fun dateFormatter(date: Date): String {
     val cal = Calendar.getInstance()
     cal.time = date

@@ -63,6 +63,14 @@ import java.util.Calendar
 import java.util.TimeZone
 
 
+/*
+* a composable that displays edit or add screen to the user
+* @param holder is an instance of StateHolder initialized by viewModel factory
+* @param onConfirmMessage is an message displaying on confirm button
+* @onConfirm is called when user confirms action
+* @onCancel is called when user cancels action
+* */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTaskScreen(
@@ -94,10 +102,11 @@ fun EditTaskScreen(
 
     ) { innerPadding ->
 
-        val focusRequester = remember { FocusRequester() }
+        val focusRequester = remember { FocusRequester() }  //focusRequester initially requests focus
 
         val focusManager = LocalFocusManager.current
 
+        //used for initially setting up pointer at the end of edited word
         var nameTextFieldValueState by remember {
             mutableStateOf(
                 TextFieldValue(
@@ -125,7 +134,7 @@ fun EditTaskScreen(
             )
         }
 
-        val openDialog = remember { mutableStateOf(false) }
+        val openDialog = remember { mutableStateOf(false) } //if type dialog is opened
 
         Column(
             Modifier
@@ -153,7 +162,7 @@ fun EditTaskScreen(
                 modifier = Modifier.focusRequester(focusRequester)
             )
 
-            if (holder.UI.duplicatedName) {
+            if (holder.UI.duplicatedName) {//error messages
                 Text(
                     text = "task with given name already in list",
                     color = MaterialTheme.colors.error,
@@ -161,7 +170,7 @@ fun EditTaskScreen(
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
-            if (holder.UI.emptyName) {
+            if (holder.UI.emptyName) {//error messages
                 Text(
                     text = "task name can't be empty",
                     color = MaterialTheme.colors.error,
@@ -201,7 +210,7 @@ fun EditTaskScreen(
                 Modifier.padding(12.dp)
             )
 
-            if (holder.Read.getCurrentType().hasPriority()) {
+            if (holder.Read.getCurrentType().hasPriority()) {   //if current task has priority atributte
                 TextField(
                     value = priorityTextFieldValueState,
                     label = { Text(text = "priority") },
@@ -231,11 +240,11 @@ fun EditTaskScreen(
                 )
             }
 
-            if (holder.Read.getCurrentType().hasCategory()) {
+            if (holder.Read.getCurrentType().hasCategory()) { //if current task has category atributte
 
             }
 
-            if (holder.Read.getCurrentType().hasDeadline()){
+            if (holder.Read.getCurrentType().hasDeadline()){ //if current task has deadline atributte
 
                 var timePointer = remember { mutableStateOf(Calendar.getInstance()) }
                 val datePickerState = rememberDatePickerState(
@@ -329,7 +338,7 @@ fun EditTaskScreen(
                 }
             }
 
-            LaunchedEffect(Unit) {
+            LaunchedEffect(Unit) {//request focus for name textfield at startup
                 focusRequester.requestFocus()
             }
 

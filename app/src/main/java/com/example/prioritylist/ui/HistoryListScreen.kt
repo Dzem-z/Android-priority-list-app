@@ -33,6 +33,11 @@ import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.launch
 
+/*
+* an composable with functionality analogous to the listContainer
+* @param holder is an instance of stateHolder initialized with viewModel factory
+* goToListScreen is called when user navigates back to listScreen
+* */
 
 @Composable
 fun HistoryListContainer(
@@ -70,7 +75,7 @@ fun HistoryListContainer(
             Row(
                 Modifier.padding(0.dp)
             ) {
-                if (holder.Read.isPrevList) {
+                if (holder.Read.isPrevList) { //previous list navigator
                     TextButton(
                         modifier = Modifier
                             .weight(1f)
@@ -93,7 +98,7 @@ fun HistoryListContainer(
                     )
                 }
 
-                TextButton(
+                TextButton( //list button
                     modifier = Modifier
                         .weight(2f)
                         .height(48.dp),
@@ -107,7 +112,7 @@ fun HistoryListContainer(
                     )
                 }
 
-                if (holder.Read.isNextList) {
+                if (holder.Read.isNextList) { //next list navigator
                     TextButton(
                         modifier = Modifier
                             .weight(1f)

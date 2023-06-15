@@ -68,6 +68,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+/*
+* an composable that displays list information
+* @param holder an instance of StateHolder recieved from viewModel factory
+* @param onAddTask is called when user taps add task button
+* @param onEditTaks is called when user taps edit task button
+* @param onDeleteTask is called when user deletes task
+* @param onAddList is called when user taps add list button
+* @param onRemoveList is called when user removes list
+* @param onGoToHistory is called when user navigates to history
+* @param globalScope in with database i/o is executed
+* */
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListContainer(
@@ -82,8 +94,8 @@ fun ListContainer(
     globalScope: CoroutineScope = rememberCoroutineScope()
     ) {
 
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarPosition = remember { Animatable(180f) }
+    val coroutineScope = rememberCoroutineScope()   //an inner coroutineScope
+    val snackbarPosition = remember { Animatable(180f) }    //the vertical position of the snackbar
 
     val scaffoldState = rememberScaffoldState()
     val modalSheetState = rememberModalBottomSheetState(
@@ -99,11 +111,11 @@ fun ListContainer(
         }
     }
 
-    val roundedCornerRadius = 12.dp
+    val roundedCornerRadius = 12.dp //used in [modalBottomSheetLayout]
 
 
 
-    BackHandler(modalSheetState.isVisible) {
+    BackHandler(modalSheetState.isVisible) {    //executed when user presses back button
         coroutineScope.launch {
             modalSheetState.hide()
         }
@@ -113,7 +125,7 @@ fun ListContainer(
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(topStart = roundedCornerRadius, topEnd = roundedCornerRadius),
-        sheetContent = if (holder.UI.taskBottomSheetExpanded) {
+        sheetContent = if (holder.UI.taskBottomSheetExpanded) { //determines which bottomSheet should be expanded
             { TaskOptionsSheet(
                 hide = {
                     coroutineScope.launch { modalSheetState.hide() }
@@ -142,7 +154,7 @@ fun ListContainer(
                         scaffoldState.snackbarHostState.showSnackbar(message)
                     }
                 },
-                coroutineScope = globalScope
+                coroutineScope = globalScope    //global scope
 
             ) }
             }
@@ -164,7 +176,7 @@ fun ListContainer(
 
 
             topBar = {
-                TopAppBar(
+                TopAppBar(  //an side bar button
                     title = { /*TODO*/ },
                     navigationIcon = {
                         IconButton(
@@ -176,7 +188,7 @@ fun ListContainer(
                             )
                         }
                     },
-                    actions = {
+                    actions = { //an undo button, usable whenever there is an action in the storage
                         IconButton(
                             onClick = { globalScope.launch { holder.onUndo() } },
                             enabled = !holder.Read.isStorageEmpty
@@ -208,7 +220,7 @@ fun ListContainer(
                 Row(
                     Modifier.padding(0.dp),
                 ) {
-                    if (holder.Read.isPrevList) {
+                    if (holder.Read.isPrevList) {  //previous list navigator
                         TextButton(
                             modifier = Modifier
                                 .weight(1f)
@@ -232,7 +244,7 @@ fun ListContainer(
                     }
 
 
-                    TextButton(
+                    TextButton( //list button
                         modifier = Modifier
                             .weight(2f)
                             .height(48.dp),
@@ -247,7 +259,7 @@ fun ListContainer(
                         )
                     }
 
-                    if (holder.Read.isNextList) {
+                    if (holder.Read.isNextList) {   //next list navigator
                         TextButton(
                             modifier = Modifier
                                 .weight(1f)
@@ -270,7 +282,9 @@ fun ListContainer(
                     }
 
                 }
-
+                /*
+                * when user navigates to the next list, states change and animation is launched
+                * */
                 AnimatedVisibility(visible = holder.UI.visible) {
                     if (holder.Read.firstType == TaskTypes.PRIORITY) {
                         PriorityList(

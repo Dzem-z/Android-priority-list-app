@@ -37,6 +37,14 @@ import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskTypes
 
+/*
+* an composable with functionality analogous to List composable
+* @param viewModel is an instance of StateHolder
+* @param list is an list of historyTasks of any type to be displayed
+* @param type is an actual type of Tasks
+* @param onDoubleTap called on double tap on the tile
+* */
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HistoryList(
@@ -73,7 +81,11 @@ fun HistoryList(
         }
     }
 }
-
+/*
+* composable responsible for displaying history tasks tiles on the screen
+* @param tile is an HistoryTask to be displayed
+* @param type is an type of the task, is used to determine which parameters should be displayed (must match historyTask type!)
+* */
 @Composable
 fun HistoryTaskTile(tile: HistoryTask<out Task>, modifier: Modifier = Modifier, type: TaskTypes) {
     var expanded by remember { mutableStateOf(false) }

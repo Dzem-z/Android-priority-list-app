@@ -34,36 +34,43 @@ import java.util.Calendar
 import java.util.Date
 
 /*
-TODO(comments)
- */
+* [StateHolder] is main ViewModel for priorityList app, it contains two subclasses: ReadViewModel and UIViewModel.
+* It provides all state-based functionality and also serves as database communicator
+*
+* @param listRepository is a reference to [listRepository] class
+* @param mainRepository is a reference to [MainRepository] class
+* @param mainPageRepository is a reference to [MainPageRepository] class
+* all of these should be initialized with [AppContainer]
+*  */
 
 class StateHolder(
     private val listRepository: ListRepository,
     private val mainRepository: MainRepository,
     private val mainPageRepository: MainPage
     ) : ViewModel() {
+    /**
+     * UiViewModel is responsible for all state-related actions that do not require any database data nor any backend interference
+     */
 
-    companion object {
-        private const val DATABASE_COLLECTION_TIMEOUT_MILLIS = 10_000L
-    }
     class UiViewModel: ViewModel() {
-        var editedTask by mutableStateOf(ModifiableTask())
+        var editedTask by mutableStateOf(ModifiableTask())  //an instance of state of currently edited Task
 
-        var visible by mutableStateOf(true)
+        var visible by mutableStateOf(true) //state used in [animatedVisibility], determines which list should be displayed
 
-        var currentListName by mutableStateOf("")
+        var currentListName by mutableStateOf("")   //an actual list name
 
-        var newListName by mutableStateOf("")
-        var selectedTypeText by mutableStateOf("priority-based tasks")
-        var selectedType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
+        var newListName by mutableStateOf("")   //addList textField state name
+        var selectedTypeText by mutableStateOf("priority-based tasks")  //addList textField state type text
+        var selectedType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)   //addList textField state type enum
 
-        private var badName by mutableStateOf(false)
+        private var badName by mutableStateOf(false)    //a flag indicating if name entered by the user is invalid
 
 
-        var duplicatedName by mutableStateOf(false)
-        var emptyName by mutableStateOf(false)
+        var duplicatedName by mutableStateOf(false) //same name already in list
+        var emptyName by mutableStateOf(false)  //emptyName
 
-        var taskBottomSheetExpanded by mutableStateOf(true)
+        var taskBottomSheetExpanded by mutableStateOf(true) //a state flag indicating if bottomSheet is expanded
+
 
         fun setDuplicatedTaskError() {
             duplicatedName = true
@@ -75,6 +82,7 @@ class StateHolder(
             emptyName = true
         }
 
+        //clears all errors
         fun clearNameErrorFlags() {
             badName = false
             emptyName = false
@@ -85,6 +93,7 @@ class StateHolder(
             return badName
         }
 
+        //clears all fields of [EditedTask]
         fun resetEditedTask() {
             editedTask = ModifiableTask()
         }
@@ -115,9 +124,17 @@ class StateHolder(
         }
     }
 
-    val UI = UiViewModel()
+    val UI = UiViewModel()  //an instance of [UiViewModel]
+
+    /*
+    * [ReadViewModel] is an inner class ViewModel that is responsible for asking the data layer for information about lists
+    * */
 
     inner class ReadViewModel : ViewModel() {
+        /*
+        * these duplicated fields serve as state switch between lists in [animatedVisibility]
+        * */
+
         var firstType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
         var secondType by mutableStateOf<TaskTypes>(TaskTypes.PRIORITY)
 
@@ -130,12 +147,14 @@ class StateHolder(
         var isPrevList by mutableStateOf(false)
         var isNextList by mutableStateOf(false)
 
-        var currentListIndex = MutableStateFlow(0)
-        var index = currentListIndex.asStateFlow()
+        var currentListIndex = MutableStateFlow(0)  //an pointer on currently focused list
+        var index = currentListIndex.asStateFlow()  //an instance of StateFlow of currentListIndex
             private set
 
         var isStorageEmpty by mutableStateOf(false)
 
+
+        //switches between first and second list
         internal fun incrementIndex() {
             currentListIndex.value = (currentListIndex.value + 1) % 2
             index = currentListIndex.asStateFlow()
@@ -146,6 +165,7 @@ class StateHolder(
             return dataManager.isEmptyUseCase()
         }
 
+        //returns true if there is single list left
         fun isAlmostEmpty(): Boolean {
             return !isNextListPresent() && !isPrevListPresent()
         }
@@ -154,6 +174,7 @@ class StateHolder(
             updateList()
         }
 
+        //assigns list to the variable exposing it to the UI
         @VisibleForTesting
         internal fun setList(list: MutableList<out Task>) {
             if (currentListIndex.value.equals(0)){
@@ -163,6 +184,7 @@ class StateHolder(
             }
         }
 
+        //assigns list to the variable exposing it to the UI
         internal fun setHistoryList(list: MutableList<out HistoryTask<out Task>>){
             if(currentListIndex.value.equals(0)){
                 firstHistoryList = list
@@ -171,6 +193,7 @@ class StateHolder(
             }
         }
 
+        //updates all of the credentials of single list
         fun updateList() {
             setList(dataManager.getListUseCase())
             setHistoryList(dataManager.getHistoryListUseCase())
@@ -216,7 +239,7 @@ class StateHolder(
 
     }
 
-    private val dataManager = DataManager(mainPage = mainPageRepository, listRepository = listRepository, mainRepository = mainRepository)
+    private val dataManager = DataManager(mainPage = mainPageRepository, listRepository = listRepository, mainRepository = mainRepository)  //an instance of DataManager
 
     val Read = ReadViewModel()
 
@@ -227,13 +250,17 @@ class StateHolder(
         return dataManager.changeNameUseCase(UI.currentListName)
     }
 
+
+    //called whenever user enters addTask Screen
     fun onAddTask(){
         UI.resetEditedTask()
     }
 
+    //called whenever user enters editTask Screen
     fun onEditTask(){
     }
 
+    //called when task is deleted
     suspend fun onDeleteTask(): Status {
         val status = when(Read.getCurrentType()){
             TaskTypes.PRIORITY -> dataManager.deleteTaskUseCase(PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
@@ -247,11 +274,14 @@ class StateHolder(
         Read.updateList()
         return status
     }
+
+
     suspend fun onUndo(){
         dataManager.undoUseCase()
         Read.updateList()
     }
 
+    //loads next list to the memory
     fun nextList(){
         val returnedType = dataManager.nextListUseCase()
         if(returnedType == null){
@@ -263,7 +293,7 @@ class StateHolder(
         }
     }
 
-
+    //loads previous list to the memory
     fun prevList(){
         val returnedType = dataManager.prevListUseCase()
         if(returnedType == null){
@@ -275,6 +305,7 @@ class StateHolder(
         }
     }
 
+    //true if next list is present in the list
     fun isNextListPresent(): Boolean{
         return if(dataManager.nextListUseCase() != null){
             dataManager.prevListUseCase()
@@ -284,6 +315,7 @@ class StateHolder(
         }
     }
 
+    //true if previous list is present in the list
     fun isPrevListPresent(): Boolean{
         return if(dataManager.prevListUseCase() != null){
             dataManager.nextListUseCase()
@@ -320,27 +352,25 @@ class StateHolder(
         }
     }
 
+
+    //swaps current list with previous one
     suspend fun swapWithLeft() {
         dataManager.changeIDUseCase(dataManager.getIDUseCase() - 1)
         Read.updateList()
     }
 
+    //swaps current list with next one
     suspend fun swapWithRight() {
         dataManager.changeIDUseCase(dataManager.getIDUseCase() + 1)
         Read.updateList()
     }
 
-    fun onDelete(task: Task) {
-
-    }
-
+    //called when user completes task
     fun onDone(task: Task) {
         //dataManager.moveToHistoryUseCase(task)
         Read.updateList()
     }
-    fun updateTask(task: Task){
-        TODO("Not yet implemented")
-    }
+
     suspend fun addTask(): Status {
 
         val status = when(Read.getCurrentType()){

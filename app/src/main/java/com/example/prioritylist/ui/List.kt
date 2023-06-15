@@ -52,6 +52,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+/*
+*   X-typeList
+* an composable responsible for displaying X-type lists on the screen
+* @param viewModel is an instance of StateHolder
+* @param list is a X-type list to be displayed
+* @param onLongPress is called when user holds task tile
+* */
+
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun PriorityList(
@@ -140,9 +148,14 @@ fun DeadlineList(
 
 }
 
+/*X-type TaskTile
+* is an composable responsible for displaying X-type taskTiles on the screen
+* @param tile is an X-type task to be displayed
+*  */
+
 @Composable
 fun PriorityTaskTile(tile: PriorityTask, modifier: Modifier = Modifier) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }  //is description expanded
 
     Card(
         elevation = 10.dp,
@@ -243,17 +256,3 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
         }
     }
 }
-/*
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-@Preview
-fun ListPreview() {
-
-    val holder = StateHolder()
-
-    PriorityList(
-        holder,
-        mutableListOf<PriorityTask>()
-        //holder.displayingList as MutableList<PriorityTask>
-    )
-}*/

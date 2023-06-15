@@ -20,43 +20,48 @@ import kotlinx.coroutines.launch
 
 val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
 
+
+/*
+* an composable responsible for navigating between screens, it is an entry point for every composable
+* @param holder an instance of StateHolder recieved from viewModel factory
+*  */
 @Composable
 fun MainPageScreen(
     holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier) {
 
 
-    val coroutineScope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()   //an global coroutineScope in which all database actions are done
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = if (holder.Read.isEmpty()) "EmptyScreen" else "ListContainer",
+        startDestination = if (holder.Read.isEmpty()) "EmptyScreen" else "ListContainer",   //if list is empty, navigates to the empty screen, listContainer otherwise
         modifier = modifier
     ){
         composable(
             route = "ListContainer"
         ) {
             ListContainer(holder = holder,
-                onAddTask = {
+                onAddTask = {   //when user taps add task button
                     holder.onAddTask()
                     navController.navigate("AddTask")
                             },
-                onEditTask = {
+                onEditTask = {  //when user taps edit task button
                     holder.onEditTask()
                     navController.navigate("EditTask")
                 },
-                onDeleteTask = {
+                onDeleteTask = { //when user deletes task
                     coroutineScope.launch {
                         holder.onDeleteTask()
                     }
                 },
-                onAddList = {
+                onAddList = {   //when user taps add list button
                     navController.navigate("AddList")
                 },
-                onRemoveList = {
+                onRemoveList = {    //when user removes list
 
-                    if(holder.Read.isAlmostEmpty())
+                    if(holder.Read.isAlmostEmpty()) //if no lists left then navigate to empty screen
                         navController.navigate("EmptyScreen"){
                             popUpTo(0)
                         }
@@ -76,7 +81,7 @@ fun MainPageScreen(
             EditTaskScreen(
                 holder = holder,
                 onConfirmMessage = "add task",
-                onConfirm = {
+                onConfirm = {   //an confirming action
                     coroutineScope.launch {
                         val code = holder.addTask().code
                         if (code == StatusCodes.DUPLICATED_TASK) {
@@ -89,7 +94,7 @@ fun MainPageScreen(
                         }
                     }
                             },
-                onCancel = {
+                onCancel = {    //when user cancels adding task
                     holder.UI.resetEditedTask()
                     navController.popBackStack()
                 }
@@ -103,14 +108,14 @@ fun MainPageScreen(
             EditTaskScreen(
                 holder = holder,
                 onConfirmMessage = "confirm",
-                onConfirm = {
+                onConfirm = {   //an confirming action
                     coroutineScope.launch {
                         holder.confirmEditingTask()
                         holder.UI.resetEditedTask()
                         navController.popBackStack()
                     }
                             },
-                onCancel = {
+                onCancel = { //when user cancels adding task
                     holder.UI.resetEditedTask()
                     navController.popBackStack()
                 }
@@ -122,11 +127,11 @@ fun MainPageScreen(
         ) {
             AddListScreen(
                 UIholder = holder.UI,
-                onCancel = {
+                onCancel = { //when user cancels adding list
                     holder.UI.resetAddListParameters()
                     navController.popBackStack()
                 },
-                onConfirm = {
+                onConfirm = { //an confirming action
                     coroutineScope.launch {
                         holder.addList()
                     }
@@ -155,10 +160,6 @@ fun MainPageScreen(
 
             EmptyScreen(
                 onAddList = {
-                    /*if (!holder.Read.isEmpty())
-                        coroutineScope.launch {
-                            holder.removeList()
-                        }*/
                     navController.navigate("AddList")
                 }
             )
@@ -166,12 +167,6 @@ fun MainPageScreen(
 
     }
 
-
-}
-
-
-@Composable
-fun TopBar(modifier: Modifier = Modifier) {
 
 }
 
