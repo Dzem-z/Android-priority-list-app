@@ -12,8 +12,7 @@ Android priority list app is an app that allows users to create lists based on v
 This project is distributed under MIT license. See [LICENSE.md](https://github.com/Dzem-z/Android-priority-list-app/blob/master/LICENSE.md "LICENSE.md") for details.
 
 ## Build Status
-Currently only backend is implemented
-
+15.6.23 - frontend without theme is implemented and backend logic as well. Currently working on database integration.
 ## Full documentation
 Uml diagrams and other documentation files will be placed in doc directory.
 
@@ -21,7 +20,7 @@ Uml diagrams and other documentation files will be placed in doc directory.
 This section will be filled in future releases.
 
 ## Technology Used
-The app is being build on Jetpack Compose kotlin framework. Tests are written with the help of JUnit 4. This section will expand in future releases.
+The app is being build on Jetpack Compose kotlin framework. Tests are written with the help of JUnit 4. The database is implemented in SQLite with help of Room framework.
 
 ## Tests
 Unit tests are located in [Android-priority-list-app/app/src/test/java/com/example/prioritylist/](https://github.com/Dzem-z/Android-priority-list-app/tree/master/app/src/test/java/com/example/prioritylist). Integrated tests will be added in the future parts of development.
