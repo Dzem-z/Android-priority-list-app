@@ -42,7 +42,7 @@ fun EmptyScreen(
         topBar = {
             TopAppBar(
                 title = { /*TODO*/ },
-                navigationIcon = {
+                /*navigationIcon = {
                     IconButton(
                         onClick = { /*TODO*/ }
                     ) {
@@ -51,7 +51,7 @@ fun EmptyScreen(
                             contentDescription = "Drawer Icon"
                         )
                     }
-                },
+                },*/
                 actions = {
                     /*TODO*/
                 }

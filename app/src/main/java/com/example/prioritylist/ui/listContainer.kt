@@ -178,7 +178,7 @@ fun ListContainer(
             topBar = {
                 TopAppBar(  //an side bar button
                     title = { /*TODO*/ },
-                    navigationIcon = {
+                    /*navigationIcon = {
                         IconButton(
                             onClick = { /*TODO*/ }
                         ) {
@@ -187,7 +187,7 @@ fun ListContainer(
                                 contentDescription = "Drawer Icon"
                             )
                         }
-                    },
+                    },*/
                     actions = { //an undo button, usable whenever there is an action in the storage
                         IconButton(
                             onClick = { globalScope.launch { holder.onUndo() } },
