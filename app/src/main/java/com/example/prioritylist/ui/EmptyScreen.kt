@@ -41,17 +41,7 @@ fun EmptyScreen(
 
         topBar = {
             TopAppBar(
-                title = { /*TODO*/ },
-                /*navigationIcon = {
-                    IconButton(
-                        onClick = { /*TODO*/ }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Menu,
-                            contentDescription = "Drawer Icon"
-                        )
-                    }
-                },*/
+                title = { /*TODO*/ }
                 actions = {
                     /*TODO*/
                 }
