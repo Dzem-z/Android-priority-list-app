@@ -3,6 +3,7 @@ package com.example.prioritylist.data.database
 import com.example.prioritylist.data.database.ListEntity
 import com.example.prioritylist.data.database.TaskEntity
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 interface MainRepository {
 
@@ -25,8 +26,6 @@ interface ListRepository {
     suspend fun delete(task: TaskEntity)
 
     suspend fun update(task: TaskEntity)
-}
 
-interface HistoryRepository {
-    //TODO
+    suspend fun updateDateOfCompletion(name: String, listID: Int, dateOfCompletion: Date)
 }

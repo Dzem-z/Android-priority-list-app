@@ -7,6 +7,7 @@ import com.example.prioritylist.data.database.ListEntity
 import com.example.prioritylist.data.database.MainDao
 import com.example.prioritylist.data.database.TaskEntity
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 class OfflineMainRepository(private val mainDao: MainDao): MainRepository {
 
@@ -49,4 +50,8 @@ class OfflineListRepository(private val listDao: ListDao): ListRepository {
     override suspend fun update(task: TaskEntity) = listDao.update(task)
 
     override suspend fun delete(task: TaskEntity) = listDao.delete(task)
+
+    override suspend fun updateDateOfCompletion(
+        name: String, listID: Int, dateOfCompletion: Date)
+    = listDao.updateDateOfCompletion(name, listID, dateOfCompletion)
 }
