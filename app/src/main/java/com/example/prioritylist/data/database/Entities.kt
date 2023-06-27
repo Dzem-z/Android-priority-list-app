@@ -2,7 +2,9 @@ package com.example.prioritylist.data.database
 
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.util.TableInfo
 import com.example.prioritylist.data.backend.TaskTypes
 import java.util.Date
 
@@ -10,8 +12,10 @@ import java.util.Date
 *
 * */
 
-@Entity(tableName = "TasksTable", primaryKeys = ["name", "listID"])
+@Entity(tableName = "TasksTable")
 data class TaskEntity(
+    @PrimaryKey(autoGenerate = true)
+    val taskID: Int = 0,
     val name: String,
     val description: String,
     val dateOfCreation: Date,
@@ -19,12 +23,10 @@ data class TaskEntity(
     val category: Int?,
     val deadline: Date?,
     val listID: Int,
-    val type: TaskTypes
+    val type: TaskTypes,
+    val dateOfCompletion: Date?
 )
-/*
-* @param type encodes list type: 1 is priority, 2 is deadline, 3 is category,
-* 4 is deadline-priority, 5 is deadline-category, 6 is deadline-priority-category
-* */
+
 @Entity(tableName = "ListsTable")
 data class ListEntity(
     @PrimaryKey
@@ -34,21 +36,3 @@ data class ListEntity(
     val type: TaskTypes
 )
 
-/*
-@Entity(tableName = "HistoryTasksTable")
-data class HistoryTaskEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val historyTaskID: Int,
-    val name: String,
-    val listID: Int,
-    val dateOfCompletion: Date
-)
-
-data class HistoryTaskData(
-    @Embedded val task: TaskEntity,
-    @Relation(
-        parentColumn = ""
-    )
-    )
- */
