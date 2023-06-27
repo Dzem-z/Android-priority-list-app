@@ -2,6 +2,7 @@ package com.example.prioritylist.data.backend
 
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.StatusCodes
+import com.example.prioritylist.data.database.ListRepository
 import java.util.Date
 
 /*
@@ -9,14 +10,16 @@ TODO(comments)
  */
 
 
-class HistoryList<TaskType: Task>() {
+class HistoryList<TaskType: Task>(
+    listRepository: ListRepository
+) {
     val listOfTasks: MutableList<HistoryTask<TaskType>> = mutableListOf()
 
     private fun normalizeIndexes() {
         listOfTasks.forEachIndexed { index, element -> element.it.id = index }
     }
 
-    fun pushTask(newTask: TaskType, completionDate: Date): Status {
+    suspend fun pushTask(newTask: TaskType, completionDate: Date): Status {
         if (listOfTasks.find{ newTask.name == it.it.name  } != null){
             return Status(StatusCodes.DUPLICATED_TASK)
         } else if (newTask.name.isEmpty()) {
