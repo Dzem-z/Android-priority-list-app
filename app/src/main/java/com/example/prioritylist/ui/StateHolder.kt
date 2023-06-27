@@ -366,8 +366,8 @@ class StateHolder(
     }
 
     //called when user completes task
-    fun onDone(task: Task) {
-        //dataManager.moveToHistoryUseCase(task)
+    suspend fun onDone(task: Task) {
+        dataManager.moveToHistoryUseCase(task, Calendar.getInstance().time)
         Read.updateList()
     }
 

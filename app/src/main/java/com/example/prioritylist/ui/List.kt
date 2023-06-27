@@ -58,6 +58,7 @@ import java.time.LocalDateTime
 * @param viewModel is an instance of StateHolder
 * @param list is a X-type list to be displayed
 * @param onLongPress is called when user holds task tile
+* @param globalScope is a reference to globalScope
 * */
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -65,8 +66,10 @@ import java.time.LocalDateTime
 fun PriorityList(
     viewModel: StateHolder,
     list: MutableList<PriorityTask>,
+    globalScope: CoroutineScope,
     onLongPress: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+
 ) {
     LazyColumn(
                 modifier = modifier
@@ -84,7 +87,7 @@ fun PriorityList(
                     .pointerInput(item) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
-                            onDoubleTap = { viewModel.onDone(item) },
+                            onDoubleTap = { globalScope.launch { viewModel.onDone(item) } },
                             onLongPress = {
                                 viewModel.UI.resetEditedTask()
                                 viewModel.UI.updateDescriptionOfEditedTask(item.description)
@@ -109,6 +112,7 @@ fun PriorityList(
 fun DeadlineList(
     viewModel: StateHolder,
     list: MutableList<DeadlineTask>,
+    globalScope: CoroutineScope,
     onLongPress: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -128,7 +132,7 @@ fun DeadlineList(
                     .pointerInput(item) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
-                            onDoubleTap = { viewModel.onDone(item) },
+                            onDoubleTap = { globalScope.launch { viewModel.onDone(item) } },
                             onLongPress = {
                                 viewModel.UI.resetEditedTask()
                                 viewModel.UI.updateDescriptionOfEditedTask(item.description)

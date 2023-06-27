@@ -22,12 +22,13 @@ abstract class TaskList<TaskType: Task>(
     protected open var dateOfCreation: Date,
     protected open val listRepository: ListRepository,
     protected open val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>(),
+    open val history: HistoryList<TaskType>
 
 ) {
 
 
     protected open val storage: Storage<TaskType> = Storage<TaskType>()
-    open val history: HistoryList<TaskType> = HistoryList<TaskType>()
+
     abstract fun getPriority(id: Int): Double
     abstract protected fun toTaskEntity(task: TaskType): TaskEntity
 
@@ -163,7 +164,8 @@ class CategoryTaskList(
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
-    listOfTasks = listOfTasks
+    listOfTasks = listOfTasks,
+    history = HistoryList<CategoryTask>(listRepository)
 ) {
 
     override protected fun toTaskEntity(task: CategoryTask): TaskEntity {
@@ -186,7 +188,8 @@ class DeadlineTaskList(
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
-    listOfTasks = listOfTasks
+    listOfTasks = listOfTasks,
+    history = HistoryList<DeadlineTask>(listRepository)
 ) {
 
     private var maximumDeadline: Long = Long.MIN_VALUE
@@ -200,7 +203,8 @@ class DeadlineTaskList(
             category = null,
             deadline = task.deadline,
             listID = id,
-            type = TaskTypes.DEADLINE
+            type = TaskTypes.DEADLINE,
+            dateOfCompletion = null
         )
     }
 
@@ -239,7 +243,8 @@ class PriorityTaskList(
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
-    listOfTasks = listOfTasks
+    listOfTasks = listOfTasks,
+    history = HistoryList<PriorityTask>(listRepository)
 ) {
     private var maximumPriority = Int.MIN_VALUE
 
@@ -252,7 +257,8 @@ class PriorityTaskList(
             category = null,
             deadline = null,
             listID = id,
-            type = TaskTypes.DEADLINE
+            type = TaskTypes.DEADLINE,
+            dateOfCompletion = null
         )
     }
 
@@ -293,7 +299,8 @@ class DeadlineCategoryTaskList(
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
-    listOfTasks = listOfTasks
+    listOfTasks = listOfTasks,
+    history = HistoryList<DeadlineCategoryTask>(listRepository)
 ) {
     override protected fun toTaskEntity(task: DeadlineCategoryTask): TaskEntity {
         TODO("Not yet implemented")
@@ -315,7 +322,8 @@ class DeadlinePriorityTaskList(
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
-    listOfTasks = listOfTasks
+    listOfTasks = listOfTasks,
+    history = HistoryList<DeadlinePriorityTask>(listRepository)
 ) {
     override protected fun toTaskEntity(task: DeadlinePriorityTask): TaskEntity {
         TODO("Not yet implemented")
@@ -337,7 +345,8 @@ class DeadlinePriorityCategoryTaskList(
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
-    listOfTasks = listOfTasks
+    listOfTasks = listOfTasks,
+    history = HistoryList<DeadlinePriorityCategoryTask>(listRepository)
 ) {
     override protected fun toTaskEntity(task: DeadlinePriorityCategoryTask): TaskEntity {
         TODO("Not yet implemented")
