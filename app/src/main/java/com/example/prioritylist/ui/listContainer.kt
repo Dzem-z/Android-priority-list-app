@@ -176,9 +176,9 @@ fun ListContainer(
 
 
             topBar = {
-                TopAppBar(  //an side bar button
+                TopAppBar(  //side bar button
                     title = { /*TODO*/ },
-                    /*navigationIcon = {
+                    navigationIcon = {
                         IconButton(
                             onClick = { /*TODO*/ }
                         ) {
@@ -187,8 +187,8 @@ fun ListContainer(
                                 contentDescription = "Drawer Icon"
                             )
                         }
-                    },*/
-                    actions = { //an undo button, usable whenever there is an action in the storage
+                    },
+                    actions = { //undo button, usable whenever there is an action in the storage
                         IconButton(
                             onClick = { globalScope.launch { holder.onUndo() } },
                             enabled = !holder.Read.isStorageEmpty
@@ -290,6 +290,7 @@ fun ListContainer(
                         PriorityList(
                             holder,
                             holder.Read.firstList as MutableList<PriorityTask>,
+                            globalScope,
                         {
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
@@ -298,6 +299,7 @@ fun ListContainer(
                         DeadlineList(
                             holder,
                             holder.Read.firstList as MutableList<DeadlineTask>,
+                            globalScope,
                         {
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
@@ -310,6 +312,7 @@ fun ListContainer(
                         PriorityList(
                             holder,
                             holder.Read.secondList as MutableList<PriorityTask>,
+                            globalScope,
                         {
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
@@ -318,6 +321,7 @@ fun ListContainer(
                         DeadlineList(
                             holder,
                             holder.Read.secondList as MutableList<DeadlineTask>,
+                            globalScope,
                         {
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }

@@ -53,7 +53,7 @@ fun HistoryListContainer(
         topBar = {
             TopAppBar(
                 title = { /*TODO*/ },
-                /*navigationIcon = {
+                navigationIcon = {
                     IconButton(
                         onClick = { /*TODO*/ }
                     ) {
@@ -62,7 +62,7 @@ fun HistoryListContainer(
                             contentDescription = "Drawer Icon"
                         )
                     }
-                },*/
+                },
                 actions = {
                     /*TODO*/
                 }
