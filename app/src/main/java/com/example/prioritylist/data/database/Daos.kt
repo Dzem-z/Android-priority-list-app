@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 @Dao
 interface ListDao {
@@ -18,6 +19,9 @@ interface ListDao {
 
     @Update
     suspend fun update(newTask: TaskEntity)
+
+    @Query("UPDATE TasksTable SET dateOfCompletion = :dateOfCompletion WHERE listID = :listID AND name = :name")
+    suspend fun updateDateOfCompletion(name: String, listID: Int, dateOfCompletion: Date)
 }
 
 @Dao
@@ -48,9 +52,4 @@ interface MainDao {
 
 
 
-}
-
-@Dao
-interface HistoryDao{
-    //TODO
 }
