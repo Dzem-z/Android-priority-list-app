@@ -5,6 +5,7 @@ import com.example.prioritylist.data.backend.TaskTypes
 import com.example.prioritylist.domain.DataManager
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import java.text.SimpleDateFormat
@@ -14,9 +15,10 @@ import java.time.LocalDateTime
 
 class DataManagerTests {
 
+
     @Test
     fun getListUseCase_onEmptyGet_emptyListReturned() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val returnedList = manager.getListUseCase()
 
@@ -25,23 +27,25 @@ class DataManagerTests {
 
     @Test
     fun addListUseCase_onAddingLists_correctListReturned() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-
+        runBlocking {
+            manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        }
         val returnedList1 = manager.getListUseCase() as? MutableList<PriorityTask>
-
-        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-
+        runBlocking {
+            manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        }
         val returnedList2 = manager.getListUseCase() as? MutableList<DeadlineTask>
-
-        manager.addListUseCase(5, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-
+        runBlocking {
+            manager.addListUseCase(5, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        }
         val returnedList3 = manager.getListUseCase() as? MutableList<DeadlinePriorityTask>
+
 
         assertNotNull(returnedList1)
         assertNotNull(returnedList2)
@@ -50,7 +54,7 @@ class DataManagerTests {
 
     @Test
     fun addTaskAndAddList_TaskAddedToTheList() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -71,32 +75,40 @@ class DataManagerTests {
         )
 
         val task3 = DeadlineTask(
-            name = "test1",
+            name = "test3",
             description = "desc",
             id = 0,
             dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-08-0612:15:30"),
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-
+            manager.addTaskUseCase(task1)
+        }
         val list1 = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(list1)
         val retTask = list1?.get(0)
         assertTrue(retTask == task1)
 
-        manager.addTaskUseCase(task2)
-
+        runBlocking {
+            manager.addTaskUseCase(task2)
+        }
         val list2 = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(list2)
         assertTrue(list2?.get(0) == task2)
 
-        manager.addTaskUseCase(task3)
-
+        runBlocking {
+            manager.addTaskUseCase(task3)
+        }
         val list3 = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(list3)
@@ -107,7 +119,7 @@ class DataManagerTests {
 
     @Test
     fun deleteTaskAndAddTaskAndAddList_TaskDeletedFromTheList() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -127,24 +139,32 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-12-1112:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+        }
         val list = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(list)
 
-        manager.deleteTaskUseCase(list!!.get(0))
-
+        runBlocking {
+            manager.deleteTaskUseCase(list!!.get(0))
+        }
         var afterDeleteList = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(afterDeleteList)
         assertTrue(afterDeleteList!![0] == task1)
 
-        manager.deleteTaskUseCase(afterDeleteList!!.get(0))
-
+        runBlocking {
+            manager.deleteTaskUseCase(afterDeleteList!!.get(0))
+        }
         afterDeleteList = manager.getListUseCase() as? MutableList<DeadlineTask>
 
         assertNotNull(afterDeleteList)
@@ -152,9 +172,10 @@ class DataManagerTests {
 
     }
 
+
     @Test
     fun editTaskAndAddTaskAndAddList_TaskEditedProperly() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -182,11 +203,18 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-        manager.addTaskUseCase(task3)
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+            manager.addTaskUseCase(task3)
+        }
 
         val list = manager.getListUseCase() as MutableList<DeadlineTask>
 
@@ -198,7 +226,9 @@ class DataManagerTests {
             deadline = list[0].deadline
         )
 
-        manager.editTaskUseCase(list[0].id, editedTask)
+        runBlocking {
+            manager.editTaskUseCase(list[0].id, editedTask)
+        }
 
         val modifiedList = manager.getListUseCase() as MutableList<DeadlineTask>
 
@@ -206,9 +236,10 @@ class DataManagerTests {
 
     }
 
+
     @Test
     fun editTask_TaskModifiedWithoutChangingItsName_TaskProperlyEdited(){
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val task1 = PriorityTask(
             dateOfCreation =   SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
@@ -296,22 +327,34 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
         )
 
-        manager.addListUseCase(0, "test", TaskTypes.PRIORITY, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                "test",
+                TaskTypes.PRIORITY,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-        manager.addTaskUseCase(task3)
-        manager.addTaskUseCase(task4)
-        manager.addTaskUseCase(task5)
-        manager.addTaskUseCase(task6)
-        manager.addTaskUseCase(task7)
-        manager.addTaskUseCase(task8)
-        manager.addTaskUseCase(task9)
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+            manager.addTaskUseCase(task3)
+            manager.addTaskUseCase(task4)
+            manager.addTaskUseCase(task5)
+            manager.addTaskUseCase(task6)
+            manager.addTaskUseCase(task7)
+            manager.addTaskUseCase(task8)
+            manager.addTaskUseCase(task9)
 
-        manager.addListUseCase(1, "test deadline", TaskTypes.DEADLINE, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addTaskUseCase(deadlineTask1)
-        manager.addTaskUseCase(deadlineTask2)
-        manager.addTaskUseCase(deadlineTask3)
+            manager.addListUseCase(
+                1,
+                "test deadline",
+                TaskTypes.DEADLINE,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addTaskUseCase(deadlineTask1)
+            manager.addTaskUseCase(deadlineTask2)
+            manager.addTaskUseCase(deadlineTask3)
+        }
 
         manager.prevListUseCase()
 
@@ -319,7 +362,9 @@ class DataManagerTests {
 
         val newTask = PriorityTask(id = oldList[0].id, name = oldList[0].name, description = oldList[0].description, priority = oldList[0].priority, dateOfCreation = oldList[0].dateOfCreation)
 
-        manager.editTaskUseCase(newTask.id, newTask)
+        runBlocking {
+            manager.editTaskUseCase(newTask.id, newTask)
+        }
 
         val list = manager.getListUseCase()
 
@@ -340,7 +385,7 @@ class DataManagerTests {
 
     @Test
     fun moveToHistoryAndGetHistoryList_filePutInHistory(){
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -368,17 +413,35 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-        manager.addTaskUseCase(task3)
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+            manager.addTaskUseCase(task3)
+        }
 
         val list = manager.getListUseCase() as MutableList<DeadlineTask>
 
-        manager.moveToHistoryUseCase(list[0], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-08-0612:15:30"))
-        manager.moveToHistoryUseCase(list[1], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-09-0612:15:30"))
-        manager.moveToHistoryUseCase(list[2], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-10-0612:15:30"))
+        runBlocking {
+            manager.moveToHistoryUseCase(
+                list[0],
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-08-0612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                list[1],
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-09-0612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                list[2],
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-10-0612:15:30")
+            )
+        }
 
         val newList = manager.getListUseCase() as MutableList<DeadlineTask>
         val hList = manager.getHistoryListUseCase() as MutableList<HistoryTask<DeadlineTask>>
@@ -387,13 +450,14 @@ class DataManagerTests {
         assertTrue(hList.isNotEmpty())
         assertTrue(hList[2].it == list[0])
         assertTrue(hList[1].it == list[1])
-        assertTrue(hList[0].it == list[1])
+        assertTrue(hList[0].it == list[2])
         assertTrue(hList.size == 3)
     }
 
+
     @Test
     fun deleteFromHistory_taskDeletedFromHistory() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -421,17 +485,35 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-        manager.addTaskUseCase(task3)
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+            manager.addTaskUseCase(task3)
+        }
 
         val list = manager.getListUseCase() as MutableList<DeadlineTask>
 
-        manager.moveToHistoryUseCase(list[0], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-08-0612:15:30"))
-        manager.moveToHistoryUseCase(list[1], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-09-0612:15:30"))
-        manager.moveToHistoryUseCase(list[2], SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-10-0612:15:30"))
+        runBlocking {
+            manager.moveToHistoryUseCase(
+                list[0],
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-08-0612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                list[1],
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-09-0612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                list[2],
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2030-10-0612:15:30")
+            )
+        }
 
         manager.deleteFromHistoryUseCase(list[0].name)
 
@@ -444,13 +526,14 @@ class DataManagerTests {
 
         val historyList2 = manager.getHistoryListUseCase()
 
-        assertTrue(historyList[0].it == list[1])
-        assertTrue(historyList.size == 1)
+        assertTrue(historyList2[0].it == list[1])
+        assertTrue(historyList2.size == 1)
     }
+
 
     @Test
     fun deleteUntil_allTasksDeletedUntil() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -494,19 +577,41 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2021-09-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-        manager.addTaskUseCase(task3)
-        manager.addTaskUseCase(task4)
-        manager.addTaskUseCase(task5)
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+            manager.addTaskUseCase(task3)
+            manager.addTaskUseCase(task4)
+            manager.addTaskUseCase(task5)
 
-        manager.moveToHistoryUseCase(task5, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.moveToHistoryUseCase(task4, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
-        manager.moveToHistoryUseCase(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
-        manager.moveToHistoryUseCase(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
-        manager.moveToHistoryUseCase(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
+            manager.moveToHistoryUseCase(
+                task5,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                task4,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                task3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                task2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30")
+            )
+            manager.moveToHistoryUseCase(
+                task1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30")
+            )
+        }
 
         val historyList = manager.getHistoryListUseCase()
 
@@ -520,14 +625,22 @@ class DataManagerTests {
         assertTrue(afterRemovalList.size == 3)
     }
 
+
     @Test
     fun changeName_nameChanged() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
         val newName = "new"
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+        }
 
         manager.changeNameUseCase(newName)
 
@@ -536,7 +649,7 @@ class DataManagerTests {
 
     @Test
     fun undo_undoAction_previousStateRestored() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.DEADLINE
 
@@ -564,15 +677,24 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.addTaskUseCase(task1)
-        manager.addTaskUseCase(task2)
-        manager.addTaskUseCase(task3)
+            manager.addTaskUseCase(task1)
+            manager.addTaskUseCase(task2)
+            manager.addTaskUseCase(task3)
+        }
 
         val list1 = manager.getListUseCase() as MutableList<DeadlineTask>
 
-        manager.deleteTaskUseCase(list1[0])
+        runBlocking {
+            manager.deleteTaskUseCase(list1[0])
+        }
 
         val editedTask = DeadlineTask(
             name = "new",
@@ -582,15 +704,19 @@ class DataManagerTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        manager.editTaskUseCase(list1[1].id, editedTask)
+        runBlocking {
+            manager.editTaskUseCase(list1[1].id, editedTask)
 
-        manager.undoUseCase()
+            manager.undoUseCase()
+        }
 
         val list2 = manager.getListUseCase() as MutableList<DeadlineTask>
 
         assertTrue(list2[0] == list1[1])
 
-        manager.undoUseCase()
+        runBlocking {
+            manager.undoUseCase()
+        }
 
         val list3 = manager.getListUseCase() as MutableList<DeadlineTask>
 
@@ -601,15 +727,32 @@ class DataManagerTests {
 
     @Test
     fun prevList_prevListSetAsCurrent() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(1, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(2, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                1,
+                name2,
+                type2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                2,
+                name3,
+                type3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+        }
 
         assertTrue(manager.prevListUseCase() == TaskTypes.DEADLINE)
 
@@ -628,7 +771,7 @@ class DataManagerTests {
 
     @Test
     fun changeIDprevList_IDChanged(){
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
@@ -636,14 +779,33 @@ class DataManagerTests {
 
         val newID = 5
 
-        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(5, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name2,
+                type2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                5,
+                name3,
+                type3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+        }
 
         manager.prevListUseCase()
         manager.prevListUseCase()
 
-        manager.changeIDUseCase(newID)
+        runBlocking {
+            manager.changeIDUseCase(newID)
+        }
 
         manager.prevListUseCase()
 
@@ -660,15 +822,32 @@ class DataManagerTests {
 
     @Test
     fun nextList_nextListSetAsCurrent() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name3,
+                type3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                0,
+                name2,
+                type2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+        }
 
         assertTrue(manager.nextListUseCase() == TaskTypes.DEADLINE)
 
@@ -685,34 +864,54 @@ class DataManagerTests {
 
     @Test
     fun deleteCurrentList_listRemovedAndCurrentSetToPrevious() {
-        val manager = DataManager()
+        val manager = DataManager(mainRepository = MainRepositoryMock(), listRepository = ListRepositoryMock())
 
         val name1 = "name1"; val type1 = TaskTypes.PRIORITY
         val name2 = "name2"; val type2 = TaskTypes.DEADLINE
         val name3 = "name3"; val type3 = TaskTypes.DEADLINE_PRIORITY
 
-        manager.addListUseCase(0, name3, type3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(0, name2, type2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
-        manager.addListUseCase(0, name1, type1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        runBlocking {
+            manager.addListUseCase(
+                0,
+                name3,
+                type3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                0,
+                name2,
+                type2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
+            manager.addListUseCase(
+                0,
+                name1,
+                type1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            )
 
-        manager.deleteCurrentListUseCase()
+            manager.deleteCurrentListUseCase()
+        }
 
         val newName = manager.getNameUseCase()
 
         assertTrue(newName == name2)
 
-        manager.deleteCurrentListUseCase()
+        runBlocking {
+            manager.deleteCurrentListUseCase()
+        }
 
         val newName1 = manager.getNameUseCase()
 
         assertTrue(newName1 == name3)
 
-        manager.deleteCurrentListUseCase()
-
-        assertThrows(NullPointerException::class.java){
-            manager.getNameUseCase()
+        runBlocking {
+            manager.deleteCurrentListUseCase()
         }
 
+        val newName2 = manager.getNameUseCase()
+
+        assertTrue(newName2 == "")
     }
 
 }

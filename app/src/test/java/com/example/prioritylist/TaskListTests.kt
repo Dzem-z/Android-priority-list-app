@@ -5,6 +5,7 @@ import com.example.prioritylist.data.backend.*
 import com.example.prioritylist.data.backend.Category
 import com.example.prioritylist.data.backend.StatusCodes
 import junit.framework.TestCase.*
+import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.assertThrows
 import java.text.SimpleDateFormat
@@ -16,14 +17,16 @@ class TaskListTests {
 
     @Test
     fun addAndGetTaskByID_taskAddedAndRead_CorrectTaskRememberedAndProperIDSet() {
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3,
             priority = 1)
-        list.add(task1)
+        runBlocking {
+            list.add(task1)
+        }
         val returnedTask = list.getTaskByID(0)
         assertTrue(
             returnedTask.name == task1.name &&
@@ -34,7 +37,7 @@ class TaskListTests {
 
     @Test
     fun addAndGetTaskByName_taskAddedAndRead_CorrectTaskRemembered(){
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -57,10 +60,12 @@ class TaskListTests {
             priority = 5
         )
 
-        list.add(task1)
-        list.add(task3)
-        list.add(task1)
-        list.add(task2)
+        runBlocking {
+            list.add(task1)
+            list.add(task3)
+            list.add(task1)
+            list.add(task2)
+        }
 
         val returnedTask1 = list.getTaskByName("test_name_1")
         val returnedTask2 = list.getTaskByName("test_name_2")
@@ -90,7 +95,7 @@ class TaskListTests {
 
     @Test
     fun add_checkForUniqueness_duplicatedTaskCodeReturned() {
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -112,9 +117,14 @@ class TaskListTests {
             id = 3,
             priority = 1
         )
-        list.add(task1)
-        val code1 = list.add(task2)
-        val code2 = list.add(task3)
+        var code1: Status
+        var code2: Status
+
+        runBlocking {
+            list.add(task1)
+            code1 = list.add(task2)
+            code2 = list.add(task3)
+        }
 
         assertTrue(code1.code == StatusCodes.DUPLICATED_TASK)
         assertTrue(code2.code == StatusCodes.SUCCESS)
@@ -125,7 +135,7 @@ class TaskListTests {
 
     @Test
     fun priorityGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val taskByDate1 = PriorityTask(
             dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1212:15:30"),
             name = "test_name_1",
@@ -148,9 +158,11 @@ class TaskListTests {
             priority = 1
         )
 
-        list.add(taskByDate2)
-        list.add(taskByDate1)
-        list.add(taskByDate3)
+        runBlocking {
+            list.add(taskByDate2)
+            list.add(taskByDate1)
+            list.add(taskByDate3)
+        }
 
         val firstTaskByDate = list.getTaskByID(0)
         val secondTaskByDate = list.getTaskByID(1)
@@ -178,7 +190,7 @@ class TaskListTests {
 
     @Test
     fun priorityGetPriority2_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val taskByPriority1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -202,10 +214,11 @@ class TaskListTests {
         )
 
 
-
-        list.add(taskByPriority1)
-        list.add(taskByPriority2)
-        list.add(taskByPriority3)
+        runBlocking {
+            list.add(taskByPriority1)
+            list.add(taskByPriority2)
+            list.add(taskByPriority3)
+        }
 
         val firstTaskByPriority = list.getTaskByID(0)
         val secondTaskByPriority = list.getTaskByID(1)
@@ -234,7 +247,7 @@ class TaskListTests {
 
     @Test
     fun deadlineGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val taskByDate1 = DeadlineTask(
             dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
             name = "test_name_1",
@@ -257,9 +270,11 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-06-1212:15:30")
         )
 
-        list.add(taskByDate2)
-        list.add(taskByDate1)
-        list.add(taskByDate3)
+        runBlocking {
+            list.add(taskByDate2)
+            list.add(taskByDate1)
+            list.add(taskByDate3)
+        }
 
         val firstTaskByDate = list.getTaskByID(0)
         val secondTaskByDate = list.getTaskByID(1)
@@ -276,7 +291,7 @@ class TaskListTests {
     @Test
     fun deadlineGetPriority2__whenPriorityNeedsToBeEvaluated_correctOrdering(){
 
-        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val taskByDeadline1 = DeadlineTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
@@ -300,9 +315,11 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-12-1212:15:30")
         )
 
-        list.add(taskByDeadline1)
-        list.add(taskByDeadline2)
-        list.add(taskByDeadline3)
+        runBlocking {
+            list.add(taskByDeadline1)
+            list.add(taskByDeadline2)
+            list.add(taskByDeadline3)
+        }
 
         val firstTaskByPriority = list.getTaskByID(0)
         val secondTaskByPriority = list.getTaskByID(1)
@@ -319,7 +336,7 @@ class TaskListTests {
 
     @Test
     fun categoryGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = CategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = CategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val cat1 = Category(
             name = "cat1",
             priority = 1,
@@ -362,9 +379,11 @@ class TaskListTests {
             category = cat3
         )
 
-        list.add(taskByDate2)
-        list.add(taskByDate1)
-        list.add(taskByDate3)
+        runBlocking {
+            list.add(taskByDate2)
+            list.add(taskByDate1)
+            list.add(taskByDate3)
+        }
 
         val firstTaskByDate = list.getTaskByID(0)
         val secondTaskByDate = list.getTaskByID(1)
@@ -379,7 +398,7 @@ class TaskListTests {
 
     @Test
     fun categoryGetPriority2_whenPriorityNeedsToBeEvaluated_correctOrdering(){
-        val list = CategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = CategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val cat1 = Category(
             name = "cat1",
@@ -422,9 +441,11 @@ class TaskListTests {
             category =  cat3
         )
 
-        list.add(taskByCategory1)
-        list.add(taskByCategory2)
-        list.add(taskByCategory3)
+        runBlocking {
+            list.add(taskByCategory1)
+            list.add(taskByCategory2)
+            list.add(taskByCategory3)
+        }
 
         val firstTaskByCategory = list.getTaskByID(0)
         val secondTaskByCategory = list.getTaskByID(1)
@@ -452,7 +473,7 @@ class TaskListTests {
 
     @Test
     fun deadlineCategoryGetPriority1_whenPriorityNeedsToBeEvaluated_correctOrdering() {
-        val list = DeadlineCategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineCategoryTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val cat1 = Category(
             name = "cat1",
             priority = 1,
@@ -498,9 +519,11 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1312:15:30")
         )
 
-        list.add(taskByDate2)
-        list.add(taskByDate1)
-        list.add(taskByDate3)
+        runBlocking {
+            list.add(taskByDate2)
+            list.add(taskByDate1)
+            list.add(taskByDate3)
+        }
 
         val firstTaskByDate = list.getTaskByID(0)
         val secondTaskByDate = list.getTaskByID(1)
@@ -526,7 +549,7 @@ class TaskListTests {
 
     @Test
     fun delete_onDeleteOrEdit_taskDeleted() {
-        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -552,17 +575,21 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        list.add(task1)
-        list.add(task2)
-        list.add(task3)
+        runBlocking {
+            list.add(task1)
+            list.add(task2)
+            list.add(task3)
 
-        list.delete(task1)
+            list.delete(task1)
+        }
 
         assertThrows(java.util.NoSuchElementException::class.java) {
             val ret1 = list.getTaskByName(task1.name)
         }
 
-        list.delete(task3)
+        runBlocking {
+            list.delete(task3)
+        }
         val ret2 = list.getTaskByName(task2.name)
 
         assertThrows(java.util.NoSuchElementException::class.java) {
@@ -575,14 +602,16 @@ class TaskListTests {
 
     @Test
     fun addTask_taskAdded_CorrectTaskAdded() {
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val task = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
             description = "desc_1",
             id = 3,
             priority = 1)
-        list.addTask(task)
+        runBlocking {
+            list.addTask(task)
+        }
         val returnedTask = list.getTaskByID(0)
 
         assertTrue(returnedTask == task)
@@ -590,7 +619,7 @@ class TaskListTests {
 
     @Test
     fun editTask_taskEdited_taskProperlyEdited() {
-        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
         val task = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
             name = "test_name_1",
@@ -598,7 +627,9 @@ class TaskListTests {
             id = 3,
             priority = 1
         )
-        list.add(task)
+        runBlocking {
+            list.add(task)
+        }
         val editedTask = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-03-1212:15:30"),
             name = "edited_task",
@@ -606,7 +637,9 @@ class TaskListTests {
             id = 3,
             priority = 3
         )
-        list.editTask(0, editedTask)
+        runBlocking {
+            list.editTask(0, editedTask)
+        }
 
         val returnedTask = list.getTaskByID(0)
 
@@ -616,7 +649,7 @@ class TaskListTests {
 
     @Test
     fun deleteTask_taskDeleted_properTaskDeleted() {
-        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -642,17 +675,21 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30"),
         )
 
-        list.add(task1)
-        list.add(task2)
-        list.add(task3)
+        runBlocking {
+            list.add(task1)
+            list.add(task2)
+            list.add(task3)
 
-        list.deleteTask(task1)
+            list.deleteTask(task1)
+        }
 
         assertThrows(java.util.NoSuchElementException::class.java) {
             val ret1 = list.getTaskByName(task1.name)
         }
 
-        list.deleteTask(task3)
+        runBlocking {
+            list.deleteTask(task3)
+        }
         val ret2 = list.getTaskByName(task2.name)
 
         assertThrows(java.util.NoSuchElementException::class.java) {
@@ -667,7 +704,8 @@ class TaskListTests {
         val list = PriorityTaskList(
             name = "test1",
             id = 0,
-            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            ListRepositoryMock()
         )
         val newId = 12
         list.changeID(newId)
@@ -680,7 +718,8 @@ class TaskListTests {
         val list = PriorityTaskList(
             name = "old",
             id = 0,
-            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            ListRepositoryMock()
         )
         val new = "new"
         list.changeName(new)
@@ -690,7 +729,7 @@ class TaskListTests {
 
     @Test
     fun getList_listSharing_listOfTasksReturned() {
-        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -716,21 +755,23 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30")
         )
 
-        list.add(task1)
-        list.add(task2)
-        list.add(task3)
-        list.add(task1)
+        runBlocking {
+            list.add(task1)
+            list.add(task2)
+            list.add(task3)
+            list.add(task1)
+        }
 
         val returnedList = list.getList()
         returnedList.sortBy { it.name }
         assertTrue(returnedList[0] == task1)
-        assertTrue(returnedList[2] == task2)
-        assertTrue(returnedList[3] == task3)
+        assertTrue(returnedList[1] == task2)
+        assertTrue(returnedList[2] == task3)
     }
 
     @Test
     fun getList_listSharingWithCopying_copyOflistOfTasksReturned() {
-        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = DeadlineTaskList(name = "test", id = 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val task1 = DeadlineTask(
             name = "test1",
@@ -756,9 +797,11 @@ class TaskListTests {
             deadline = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1212:15:30")
         )
 
-        list.add(task1)
-        list.add(task2)
-        list.add(task3)
+        runBlocking {
+            list.add(task1)
+            list.add(task2)
+            list.add(task3)
+        }
 
         val returnedList = list.getList()
         returnedList.sortBy { it.name }
@@ -797,7 +840,8 @@ class TaskListTests {
         val list = PriorityTaskList(
             name = "test",
             id = 0,
-            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            ListRepositoryMock()
         )
 
         val addedTask = PriorityTask(
@@ -809,8 +853,10 @@ class TaskListTests {
             name = "test"
         )
 
-        list.addTask(addedTask)
-        list.undo()
+        runBlocking {
+            list.addTask(addedTask)
+            list.undo()
+        }
 
         assertThrows(IndexOutOfBoundsException::class.java) {
             val returnedTask = list.getTaskByID(0)
@@ -823,7 +869,8 @@ class TaskListTests {
         val list = PriorityTaskList(
             name = "test",
             id = 0,
-            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            ListRepositoryMock()
         )
 
         val addedTask = PriorityTask(
@@ -835,9 +882,11 @@ class TaskListTests {
             name = "test"
         )
 
-        list.addTask(addedTask)
-        list.deleteTask(list.getTaskByID(0))
-        list.undo()
+        runBlocking {
+            list.addTask(addedTask)
+            list.deleteTask(list.getTaskByID(0))
+            list.undo()
+        }
 
         val task = list.getTaskByID(0)
 
@@ -853,7 +902,8 @@ class TaskListTests {
         val list = PriorityTaskList(
             name = "test",
             id = 0,
-            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            ListRepositoryMock()
         )
 
         val addedTask = PriorityTask(
@@ -874,10 +924,12 @@ class TaskListTests {
             name = "editedTask"
         )
 
-        list.add(addedTask)
-        list.editTask(0, editedTask)
+        runBlocking {
+            list.add(addedTask)
+            list.editTask(0, editedTask)
 
-        list.undo()
+            list.undo()
+        }
 
         val returnedTask = list.getTaskByID(0)
 
@@ -894,7 +946,8 @@ class TaskListTests {
         val list = PriorityTaskList(
             name = "test",
             id = 0,
-            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30")
+            SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"),
+            ListRepositoryMock()
         )
 
         val task1 = PriorityTask(
@@ -961,26 +1014,34 @@ class TaskListTests {
             priority = 11
         )
 
-        list.addTask(task1)
-        list.addTask(task2)
-        list.undo()
+        runBlocking {
+            list.addTask(task1)
+            list.addTask(task2)
+            list.undo()
+        }
 
         assertTrue((list.getList().size == 1) and (list.getList()[0] == task1))
 
-        list.addTask(task3)
-        list.addTask(task2)
-        list.editTask(0, task4)
-        list.undo()
+        runBlocking {
+            list.addTask(task3)
+            list.addTask(task2)
+            list.editTask(0, task4)
+            list.undo()
+        }
 
         assertTrue(list.getList()[0] == task3)
 
-        list.deleteTask(task1)
-        list.addTask(task5)
-        list.undo()
+        runBlocking {
+            list.deleteTask(task1)
+            list.addTask(task5)
+            list.undo()
+        }
 
         assertTrue((list.getList().size == 2) and (list.getList()[0] != task5))
 
-        list.undo()
+        runBlocking {
+            list.undo()
+        }
 
         assertTrue((list.getList().size == 3) and (list.getList()[2] == task1))
 
@@ -989,7 +1050,7 @@ class TaskListTests {
 
     @Test
     fun delete_tasksDeleted() {
-        val list = PriorityTaskList("name", 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList("name", 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
@@ -1055,34 +1116,38 @@ class TaskListTests {
             priority = 1
         )
 
-        list.addTask(task1)
-        list.addTask(task2)
-        list.addTask(task3)
-        list.addTask(task4)
-        list.addTask(task5)
-        list.addTask(task6)
-        list.addTask(task7)
-        list.addTask(task8)
-        list.addTask(task9)
-
+        runBlocking {
+            list.addTask(task1)
+            list.addTask(task2)
+            list.addTask(task3)
+            list.addTask(task4)
+            list.addTask(task5)
+            list.addTask(task6)
+            list.addTask(task7)
+            list.addTask(task8)
+            list.addTask(task9)
+        }
         val returnedList = list.getList()
 
-        list.deleteTask(returnedList[0])
-        list.deleteTask(returnedList[1])
-        list.deleteTask(returnedList[2])
-        list.deleteTask(returnedList[3])
-        list.deleteTask(returnedList[4])
-        list.deleteTask(returnedList[5])
-        list.deleteTask(returnedList[6])
-        list.deleteTask(returnedList[7])
-        list.deleteTask(returnedList[8])
+        runBlocking {
+            list.deleteTask(returnedList[0])
+            list.deleteTask(returnedList[1])
+            list.deleteTask(returnedList[2])
+            list.deleteTask(returnedList[3])
+            list.deleteTask(returnedList[4])
+            list.deleteTask(returnedList[5])
+            list.deleteTask(returnedList[6])
+            list.deleteTask(returnedList[7])
+            list.deleteTask(returnedList[8])
+        }
 
+        assertTrue(list.getList().isEmpty())
 
     }
 
     @Test
     fun addTasks_properOrder() {
-        val list = PriorityTaskList("name", 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"))
+        val list = PriorityTaskList("name", 0, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2022-12-1612:15:30"), ListRepositoryMock())
 
         val task1 = PriorityTask(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1212:15:30"),
@@ -1148,15 +1213,17 @@ class TaskListTests {
             priority = 1
         )
 
-        list.addTask(task1)
-        list.addTask(task2)
-        list.addTask(task3)
-        list.addTask(task4)
-        list.addTask(task5)
-        list.addTask(task6)
-        list.addTask(task7)
-        list.addTask(task8)
-        list.addTask(task9)
+        runBlocking {
+            list.addTask(task1)
+            list.addTask(task2)
+            list.addTask(task3)
+            list.addTask(task4)
+            list.addTask(task5)
+            list.addTask(task6)
+            list.addTask(task7)
+            list.addTask(task8)
+            list.addTask(task9)
+        }
 
         val returnedList = list.getList()
 

@@ -8,6 +8,7 @@ import com.example.prioritylist.data.backend.Task
 import junit.framework.TestCase.assertNotNull
 import org.junit.Assert.assertThrows
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -17,7 +18,7 @@ class HistoryTests {
 
     @Test
     fun pushTaskAndGetByID_onMoveToHistory_taskAdded() {
-        val historyList = HistoryList<Task> ()
+        val historyList = HistoryList<Task> (listRepository = ListRepositoryMock())
 
         val task1 = Task(
             dateOfCreation =  SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"),
@@ -42,9 +43,20 @@ class HistoryTests {
         val historyTask2 = HistoryTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
         val historyTask3 = HistoryTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
 
-        historyList.pushTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
-        historyList.pushTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
-        historyList.pushTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+        runBlocking {
+            historyList.pushTask(
+                task3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30")
+            )
+            historyList.pushTask(
+                task1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30")
+            )
+            historyList.pushTask(
+                task2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30")
+            )
+        }
 
         val returnedTask1 = historyList.getTaskByPos(0)
         val returnedTask2 = historyList.getTaskByPos(1)
@@ -67,7 +79,7 @@ class HistoryTests {
 
     @Test
     fun pushDeadlineTaskAndGetByID_onMoveToHistory_DeadlineTaskAdded() {
-        val historyList = HistoryList<Task> ()
+        val historyList = HistoryList<Task> (listRepository = ListRepositoryMock())
 
         val deadlineTask1 = DeadlineTask(
             dateOfCreation = SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1212:15:30"),
@@ -95,9 +107,20 @@ class HistoryTests {
         val historyTask2 = HistoryTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
         val historyTask3 = HistoryTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
 
-        historyList.pushTask(deadlineTask3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
-        historyList.pushTask(deadlineTask1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30"))
-        historyList.pushTask(deadlineTask2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+        runBlocking {
+            historyList.pushTask(
+                deadlineTask3,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30")
+            )
+            historyList.pushTask(
+                deadlineTask1,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-04-1612:15:30")
+            )
+            historyList.pushTask(
+                deadlineTask2,
+                SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30")
+            )
+        }
 
         val returnedTask1 = historyList.getTaskByPos(0)
         val returnedTask2 = historyList.getTaskByPos(1)
@@ -120,7 +143,7 @@ class HistoryTests {
 
     @Test
     fun addAndGetList_onReadRequest_TasksAddedAndProperListReturned() {
-        val historyList = HistoryList<Task> ()
+        val historyList = HistoryList<Task> (listRepository = ListRepositoryMock())
         val name1 = "test_name_1"
         val name2 = "test_name_2"
         val name3 = "test_name_3"
@@ -148,10 +171,11 @@ class HistoryTests {
         val historyTask2 = HistoryTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
         val historyTask3 = HistoryTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
 
-        historyList.pushTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
-        historyList.pushTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
-        historyList.pushTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
-
+        runBlocking {
+            historyList.pushTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
+            historyList.pushTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+            historyList.pushTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
+        }
         val returnedList = historyList.getList()
 
         assertNotNull(returnedList)
@@ -164,7 +188,7 @@ class HistoryTests {
 
     @Test
     fun addAndDeleteAndGet_onDelete_taskAddedAndDeleted(){
-        val historyList = HistoryList<Task> ()
+        val historyList = HistoryList<Task> (listRepository = ListRepositoryMock())
         val name1 = "test_name_1"
         val name2 = "test_name_2"
         val name3 = "test_name_3"
@@ -191,10 +215,11 @@ class HistoryTests {
         val historyTask1 = HistoryTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
         val historyTask2 = HistoryTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
 
-        historyList.pushTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
-        historyList.pushTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
-        historyList.pushTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
-
+        runBlocking {
+            historyList.pushTask(task1, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-03-1612:15:30"))
+            historyList.pushTask(task2, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-01-1612:15:30"))
+            historyList.pushTask(task3, SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("2023-02-1612:15:30"))
+        }
         historyList.deleteTask(historyList.getTaskByPos(1))
 
         val returnedTask1 = historyList.getTaskByPos(0)
@@ -213,7 +238,7 @@ class HistoryTests {
 
     @Test
     fun deleteUntilAddGet1_onDeleteUntil_tasksDeletedUntilDate() {
-        val historyList = HistoryList<Task> ()
+        val historyList = HistoryList<Task> (listRepository = ListRepositoryMock())
 
         val taskList = mutableListOf<Task>()
         val startingDate = 1940
@@ -226,7 +251,12 @@ class HistoryTests {
                 description = "desc_$i",
                 id = 2
             ))
-            historyList.pushTask(taskList.last(), SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("${startingDate + i}-03-1612:15:30"))
+            runBlocking {
+                historyList.pushTask(
+                    taskList.last(),
+                    SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("${startingDate + i}-03-1612:15:30")
+                )
+            }
         }
 
         historyList.deleteUntil(SimpleDateFormat("yyyy-MM-ddHH:mm:ss").parse("$untilDate-03-1612:15:30"))
