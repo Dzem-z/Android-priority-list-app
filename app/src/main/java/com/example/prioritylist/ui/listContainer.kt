@@ -68,8 +68,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-/*
-* an composable that displays list information
+/**
+* [ListContainer] is a composable that displays list information
 * @param holder an instance of StateHolder recieved from viewModel factory
 * @param onAddTask is called when user taps add task button
 * @param onEditTaks is called when user taps edit task button

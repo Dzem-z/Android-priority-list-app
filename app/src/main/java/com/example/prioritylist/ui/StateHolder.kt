@@ -33,7 +33,7 @@ import com.example.prioritylist.domain.DataManager
 import java.util.Calendar
 import java.util.Date
 
-/*
+/**
 * [StateHolder] is main ViewModel for priorityList app, it contains two subclasses: ReadViewModel and UIViewModel.
 * It provides all state-based functionality and also serves as database communicator
 *
@@ -49,7 +49,7 @@ class StateHolder(
     private val mainPageRepository: MainPage
     ) : ViewModel() {
     /**
-     * UiViewModel is responsible for all state-related actions that do not require any database data nor any backend interference
+     * [UiViewModel] is responsible for all state-related actions that do not require any database data nor any backend interference
      */
 
     class UiViewModel: ViewModel() {
@@ -126,7 +126,7 @@ class StateHolder(
 
     val UI = UiViewModel()  //an instance of [UiViewModel]
 
-    /*
+    /**
     * [ReadViewModel] is an inner class ViewModel that is responsible for asking the data layer for information about lists
     * */
 

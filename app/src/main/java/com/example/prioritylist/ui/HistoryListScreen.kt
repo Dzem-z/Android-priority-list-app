@@ -33,10 +33,10 @@ import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.launch
 
-/*
-* an composable with functionality analogous to the listContainer
+/**
+* [HistoryListContainer] is a composable with functionality analogous to the listContainer
 * @param holder is an instance of stateHolder initialized with viewModel factory
-* goToListScreen is called when user navigates back to listScreen
+* @param goToListScreen is called when user navigates back to listScreen
 * */
 
 @Composable

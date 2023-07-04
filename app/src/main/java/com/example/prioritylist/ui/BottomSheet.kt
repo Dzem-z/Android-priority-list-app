@@ -48,6 +48,12 @@ import com.example.prioritylist.data.backend.TaskTypes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+* [TaskOptionsSheet] is a composable function that displays task options visible in bottomSheetLayout
+* @param hide: a lambda called when dismiss behaviour is triggered
+* @param onEditTask: a lambda called when user clicks edit button (should display editTaskScreen)
+* @param onDeleteTask: a lambda called when user clicks delete button (shoulde delete selected task)
+* */
 
 @Composable
 fun TaskOptionsSheet(
@@ -89,9 +95,19 @@ fun TaskOptionsSheet(
     }
 }
 
+/**
+ * [ListOptionsSheet] is a composable used for displaying list options in a BottomSheetLayout
+ * @param globalScope is a global coroutineScope used for launching methods that save data to database
+ * @param viewModel is the viewModel responsible for data and state management
+ * @param removeList is a lambda that removes current list
+ * @param addList is a lambda that triggers the addList screen
+ * @param goToHistory is a lambda that triggers the historyList screen
+ * @param launchSnackbar launches a snackbar saying that swaping of two list ended succesfully
+ */
+
 @Composable
 fun ListOptionsSheet(
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    globalScope: CoroutineScope = rememberCoroutineScope(),
     viewModel: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
     modifier: Modifier = Modifier,
     removeList: () -> Unit = {},
@@ -100,9 +116,12 @@ fun ListOptionsSheet(
     launchSnackbar: (String) -> Unit = {}
 ) {
 
+    //state variable that points if name of current list is edited or not
     var isEdited by remember{ mutableStateOf(false) }
 
+    //a focusRequester used for requesting focus on name field when user selects edit button
     val focusRequester = remember { FocusRequester() }
+
 
     var textFieldValueState by remember {
         mutableStateOf(
@@ -146,7 +165,7 @@ fun ListOptionsSheet(
                     ),
                 )
                 LaunchedEffect(Unit) {
-                    focusRequester.requestFocus()
+                    focusRequester.requestFocus()  //requests focus when launched
                 }
             } else {
                 Text(
@@ -156,7 +175,7 @@ fun ListOptionsSheet(
 
                 )
             }
-            IconButton(
+            IconButton( //edit button
                 onClick = {
                     if(isEdited) {
                     viewModel.setName()
@@ -199,8 +218,8 @@ fun ListOptionsSheet(
 
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        viewModel.swapWithLeft()
+                    globalScope.launch {
+                        viewModel.swapWithLeft()    //swaps current list with list on the left
                     }
                     launchSnackbar("swaped with list on the left")
                           },
@@ -243,8 +262,8 @@ fun ListOptionsSheet(
 
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        viewModel.swapWithRight()
+                    globalScope.launch {
+                        viewModel.swapWithRight() //swaps current list with list on the left
                     }
                     launchSnackbar("swaped with list on the right")
                           },

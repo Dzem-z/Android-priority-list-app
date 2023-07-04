@@ -1,13 +1,12 @@
 package com.example.prioritylist.data.database
 
 import com.example.prioritylist.data.database.ListRepository
-import com.example.prioritylist.data.database.MainRepository
-import com.example.prioritylist.data.database.ListDao
-import com.example.prioritylist.data.database.ListEntity
-import com.example.prioritylist.data.database.MainDao
-import com.example.prioritylist.data.database.TaskEntity
-import kotlinx.coroutines.flow.Flow
 import java.util.Date
+
+/**
+ * An implementation of Database repositories interfaces
+ */
+
 
 class OfflineMainRepository(private val mainDao: MainDao): MainRepository {
 

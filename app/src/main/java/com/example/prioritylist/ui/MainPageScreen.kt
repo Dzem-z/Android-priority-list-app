@@ -1,28 +1,21 @@
 package com.example.prioritylist.ui
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prioritylist.data.backend.StatusCodes
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
-val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
 
 
-/*
-* an composable responsible for navigating between screens, it is an entry point for every composable
+/**
+* [MainPageScreen] is a composable responsible for navigating between screens, it is an entry point for every composable
 * @param holder an instance of StateHolder recieved from viewModel factory
 *  */
 @Composable

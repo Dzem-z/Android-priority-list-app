@@ -9,6 +9,9 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
+/**
+ * Dao used by [OfflineListRepository]
+ */
 @Dao
 interface ListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,6 +27,9 @@ interface ListDao {
     suspend fun updateDateOfCompletion(name: String, listID: Int, dateOfCompletion: Date)
 }
 
+/**
+ * Dao used by [OfflineMainRepository]
+ */
 @Dao
 interface MainDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

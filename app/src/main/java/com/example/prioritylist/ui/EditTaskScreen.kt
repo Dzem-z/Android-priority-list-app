@@ -63,8 +63,8 @@ import java.util.Calendar
 import java.util.TimeZone
 
 
-/*
-* a composable that displays edit or add screen to the user
+/**
+* [EditTaskScreen] is a composable that displays edit or add screen to the user
 * @param holder is an instance of StateHolder initialized by viewModel factory
 * @param onConfirmMessage is an message displaying on confirm button
 * @onConfirm is called when user confirms action

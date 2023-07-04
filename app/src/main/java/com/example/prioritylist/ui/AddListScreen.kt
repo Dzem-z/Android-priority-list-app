@@ -41,6 +41,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.data.backend.TaskTypes
 import com.example.prioritylist.data.backend.listOfTypes
 
+/**
+ * [AddListScreen] is a composable that displays addList screen responsible for creating new list
+ * @param UIholder is a instance of StateHolder.UiViewModel that manages the state of textFields and
+ * other materials present in addList screen
+ * @param onCancel is a lambda called when user is cancelling process of adding list
+ * @param onConfirm os a lambda called when the user confirms adding the list
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddListScreen(
@@ -69,10 +77,12 @@ fun AddListScreen(
 
     ) { innerPadding ->
 
+        //a focusRequester used for requesting focus for the first textField
         val focusRequester = remember { FocusRequester() }
 
         val focusManager = LocalFocusManager.current
 
+        //variable that manages the state of ExpandedDropdownMenu
         var expanded by remember { mutableStateOf(false) }
 
         Column(
@@ -80,7 +90,7 @@ fun AddListScreen(
                 .padding(innerPadding)
                 .padding(24.dp)
         ) {
-            OutlinedTextField(
+            OutlinedTextField(  //list name textfield
                 value = UIholder.newListName,
                 singleLine = true,
                 label = { Text(text = "list name") },
@@ -157,7 +167,7 @@ fun AddListScreen(
             Row(
 
             ) {
-                OutlinedButton(
+                OutlinedButton( //cancel button
                     onClick = onCancel,
                     modifier = Modifier.weight(1f)
                 ) {
@@ -173,7 +183,7 @@ fun AddListScreen(
 
                 Spacer(Modifier.weight(0.5f))
 
-                Button(
+                Button(//confirm button
                     onClick = onConfirm,
                     modifier = Modifier.weight(1f)
                 ) {

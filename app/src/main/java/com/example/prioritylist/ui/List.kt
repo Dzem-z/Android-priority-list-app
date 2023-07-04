@@ -52,7 +52,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
-/*
+/**
 *   X-typeList
 * an composable responsible for displaying X-type lists on the screen
 * @param viewModel is an instance of StateHolder

@@ -3,8 +3,8 @@ package com.example.prioritylist.ui
 import java.util.Calendar
 import java.util.Date
 
-/*
-* function that formats Date to format more friendly to user
+/**
+* [dateFormatter] is a function that formats Date to format more friendly to user
 * */
 
 fun dateFormatter(date: Date): String {

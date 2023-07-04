@@ -5,6 +5,10 @@ import com.example.prioritylist.data.backend.TaskTypes
 import java.time.Instant
 import java.util.Date
 
+/**
+ * type converters used by [database]
+ */
+
 class Converters {
     @TypeConverter
     fun fromTimestamp(value: Long?): Date? {
@@ -17,7 +21,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun TypeToInt(type: TaskTypes?): Int? {
+    fun typeToInt(type: TaskTypes?): Int? {
         return when(type){
             TaskTypes.PRIORITY -> 1
             TaskTypes.DEADLINE -> 2
@@ -30,7 +34,7 @@ class Converters {
     }
 
     @TypeConverter
-    fun IntToType(int: Int?): TaskTypes? {
+    fun intToType(int: Int?): TaskTypes? {
         return when(int){
             1 -> TaskTypes.PRIORITY
             2 -> TaskTypes.DEADLINE
