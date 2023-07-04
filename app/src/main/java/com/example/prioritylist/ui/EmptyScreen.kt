@@ -42,9 +42,6 @@ fun EmptyScreen(
         topBar = {
             TopAppBar(
                 title = { /*TODO*/ }
-                actions = {
-                    /*TODO*/
-                }
             )
 
 

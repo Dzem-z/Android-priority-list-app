@@ -44,7 +44,7 @@ class MainPage(
     var currentType: TaskTypes? = null
         private set
 
-    suspend private fun shift(startingID: Int, value: Int){
+    private suspend fun shift(startingID: Int, value: Int){
         for (i in listOfDeadlineLists) {
             if (i.getID() >= startingID)
                 i.changeID(i.getID() + value)
@@ -75,11 +75,14 @@ class MainPage(
 
     init{
         val listHolder: List<ListEntity> = mainRepository.loadListCredentials()
+
         for(i in listHolder)
             listIdentifiers.add(ListIdentifier("<init>", TaskTypes.PRIORITY))
+
         for(i in listHolder) {
             listIdentifiers.removeAt(i.listID)
             listIdentifiers.add(i.listID, ListIdentifier(i.name, i.type))
+
             when(i.type) {
                 TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(i.name, i.listID, i.dateOfCreation, listRepository, mainRepository.loadListByID(i.listID).map {
                     PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name )
@@ -93,6 +96,7 @@ class MainPage(
                 TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(DeadlinePriorityCategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
             }
         }
+
         if (size() > 0) {
             currentListID = 0
             currentList = getListByID(0)

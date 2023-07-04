@@ -154,7 +154,7 @@ fun ListContainer(
                         scaffoldState.snackbarHostState.showSnackbar(message)
                     }
                 },
-                coroutineScope = globalScope    //global scope
+                globalScope = globalScope    //global scope
 
             ) }
             }
