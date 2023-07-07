@@ -81,7 +81,7 @@ abstract class TaskList<TaskType: Task>(
     fun changeName(newName: String){
         name = newName
     }
-    fun changeID(newID: Int) {
+    suspend fun changeID(newID: Int) {
         id = newID
     }
 
