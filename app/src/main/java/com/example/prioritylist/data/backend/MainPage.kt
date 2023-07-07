@@ -28,12 +28,8 @@ class MainPage(
     private val listRepository: ListRepository,
     private val mainRepository: MainRepository
 ) {
-    private val listOfDeadlineCategoryLists: MutableList<DeadlineCategoryTaskList> = mutableListOf<DeadlineCategoryTaskList>()
-    private val listOfDeadlinePriorityLists: MutableList<DeadlinePriorityTaskList> = mutableListOf<DeadlinePriorityTaskList>()
-    private val listOfDeadlinePriorityCategoryLists: MutableList<DeadlinePriorityCategoryTaskList> = mutableListOf<DeadlinePriorityCategoryTaskList>()
-    private val listOfDeadlineLists: MutableList<DeadlineTaskList> = mutableListOf<DeadlineTaskList>()
-    private val listOfPriorityLists: MutableList<PriorityTaskList> = mutableListOf<PriorityTaskList>()
-    private val listOfCategoryLists: MutableList<CategoryTaskList> = mutableListOf<CategoryTaskList>()
+
+    private val listOfLists: MutableList<TaskList<*>> = mutableListOf<TaskList<*>>()
 
     private val listIdentifiers = mutableListOf<ListIdentifier>()
 
@@ -45,27 +41,7 @@ class MainPage(
         private set
 
     private suspend fun shift(startingID: Int, value: Int){
-        for (i in listOfDeadlineLists) {
-            if (i.getID() >= startingID)
-                i.changeID(i.getID() + value)
-        }
-        for (i in listOfPriorityLists) {
-            if (i.getID() >= startingID)
-                i.changeID(i.getID() + value)
-        }
-        for (i in listOfCategoryLists){
-            if (i.getID() >= startingID)
-                i.changeID(i.getID() + value)
-        }
-        for (i in listOfDeadlinePriorityLists){
-            if (i.getID() >= startingID)
-                i.changeID(i.getID() + value)
-        }
-        for (i in listOfDeadlineCategoryLists){
-            if (i.getID() >= startingID)
-                i.changeID(i.getID() + value)
-        }
-        for (i in listOfDeadlinePriorityCategoryLists){
+        for (i in listOfLists) {
             if (i.getID() >= startingID)
                 i.changeID(i.getID() + value)
         }
@@ -83,18 +59,15 @@ class MainPage(
             listIdentifiers.removeAt(i.listID)
             listIdentifiers.add(i.listID, ListIdentifier(i.name, i.type))
 
-            when(i.type) {
-                TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(i.name, i.listID, i.dateOfCreation, listRepository, mainRepository.loadListByID(i.listID).map {
-                    PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name )
-                }.toMutableList()))
-                TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(i.name, i.listID, i.dateOfCreation, listRepository, mainRepository.loadListByID(i.listID).map {
-                    DeadlineTask(deadline = it.deadline!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
-                }.toMutableList() ))
-                TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
-                TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
-                TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(DeadlinePriorityCategoryTaskList(i.name, i.listID, i.dateOfCreation, listRepository))
-            }
+            listOfLists.add(
+                i.type.create(
+                    i.name,
+                    i.listID,
+                    i.dateOfCreation,
+                    listRepository,
+                    mainRepository.loadListByID(i.listID)
+                )
+            )
         }
 
         if (size() > 0) {
@@ -117,16 +90,8 @@ class MainPage(
 
         shift(currentListID, 1)
 
-        when (type) {
-            TaskTypes.DEADLINE -> listOfDeadlineLists.add(DeadlineTaskList(name, currentListID, dateOfCreation, listRepository))
-            TaskTypes.PRIORITY -> listOfPriorityLists.add(PriorityTaskList(name, currentListID, dateOfCreation, listRepository))
-            TaskTypes.CATEGORY -> listOfCategoryLists.add(CategoryTaskList(name, currentListID, dateOfCreation, listRepository))
-            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.add(DeadlinePriorityTaskList(name, currentListID, dateOfCreation, listRepository))
-            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.add(DeadlineCategoryTaskList(name, currentListID, dateOfCreation, listRepository))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.add(
-                DeadlinePriorityCategoryTaskList(name, currentListID, dateOfCreation, listRepository)
-            )
-        }
+        val list = type.create(name, currentListID, dateOfCreation, listRepository)
+        listOfLists.add(list)
 
         mainRepository.shift(currentListID, 1, 100_000)
 
@@ -147,19 +112,12 @@ class MainPage(
     }
 
     fun size(): Int {
-        return listOfPriorityLists.size + listOfCategoryLists.size + listOfDeadlineLists.size + listOfDeadlineCategoryLists.size + listOfDeadlinePriorityLists.size + listOfDeadlinePriorityCategoryLists.size
+        return listOfLists.size
     }
 
     @VisibleForTesting
     internal fun getListByID(id: Int): TaskList<out Task> {
-        val returnList = when (listIdentifiers[id].type) {
-            TaskTypes.DEADLINE -> listOfDeadlineLists.find{ it.getID() == id }
-            TaskTypes.PRIORITY -> listOfPriorityLists.find{ it.getID() == id }
-            TaskTypes.CATEGORY -> listOfCategoryLists.find{ it.getID() == id }
-            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.find{ it.getID() == id }
-            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.find{ it.getID() == id }
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.find{ it.getID() == id }
-        } ?: throw IndexOutOfBoundsException()
+        val returnList = listOfLists.find {it.getID() == id} ?: throw IndexOutOfBoundsException()
         return returnList
     }
 
@@ -215,16 +173,9 @@ class MainPage(
     suspend fun deleteCurrentList(): Status {
         mainRepository.deleteList(currentListID)
         mainRepository.shift(currentListID, -1, 100_000)
-        when (currentType) {
-            TaskTypes.DEADLINE -> listOfDeadlineLists.remove(currentList)
-            TaskTypes.PRIORITY -> listOfPriorityLists.remove(currentList)
-            TaskTypes.CATEGORY -> listOfCategoryLists.remove(currentList)
-            TaskTypes.DEADLINE_PRIORITY -> listOfDeadlinePriorityLists.remove(currentList)
-            TaskTypes.DEADLINE_CATEGORY -> listOfDeadlineCategoryLists.remove(currentList)
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> listOfDeadlinePriorityCategoryLists.remove(currentList)
-            else -> {return Status(StatusCodes.FAILURE, "error: currentList is null")
-            }
-        }
+
+        listOfLists.remove(currentList)
+
         listIdentifiers.removeAt(currentListID)
         shift(currentListID, -1)
         if (currentListID >= listIdentifiers.size) {

@@ -257,7 +257,7 @@ class PriorityTaskList(
             category = null,
             deadline = null,
             listID = id,
-            type = TaskTypes.DEADLINE,
+            type = TaskTypes.PRIORITY,
             dateOfCompletion = null
         )
     }

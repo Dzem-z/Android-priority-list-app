@@ -31,15 +31,9 @@ class DataManager(
         val currentType = mainPage.currentType
         var status: Status
         if (currentType != null && list != null) {
-           status =  when (currentType) {
-                TaskTypes.PRIORITY -> (list as PriorityTaskList).addTask(task as PriorityTask)
-                TaskTypes.CATEGORY -> (list as CategoryTaskList).addTask(task as CategoryTask)
-                TaskTypes.DEADLINE -> (list as DeadlineTaskList).addTask(task as DeadlineTask)
-                TaskTypes.DEADLINE_PRIORITY -> (list as DeadlinePriorityTaskList).addTask(task as DeadlinePriorityTask)
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> (list as DeadlinePriorityCategoryTaskList).addTask(task as DeadlinePriorityCategoryTask)
-                TaskTypes.DEADLINE_CATEGORY -> (list as DeadlineCategoryTaskList).addTask(task as DeadlineCategoryTask)
-            }
-        } else{
+            status = (list as TaskList<Task>).addTask(task)
+        }
+        else{
             return Status(StatusCodes.FAILURE, "error: adding task to null list")
         }
         return status
@@ -60,14 +54,7 @@ class DataManager(
         val list = mainPage.currentList
         val currentType = mainPage.currentType
         if (currentType != null && list != null) {
-            when (currentType) {
-                TaskTypes.PRIORITY -> (list as PriorityTaskList).editTask(oldId, task as PriorityTask)
-                TaskTypes.CATEGORY -> (list as CategoryTaskList).editTask(oldId, task as CategoryTask)
-                TaskTypes.DEADLINE -> (list as DeadlineTaskList).editTask(oldId, task as DeadlineTask)
-                TaskTypes.DEADLINE_PRIORITY -> (list as DeadlinePriorityTaskList).editTask(oldId, task as DeadlinePriorityTask)
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> (list as DeadlinePriorityCategoryTaskList).editTask(oldId, task as DeadlinePriorityCategoryTask)
-                TaskTypes.DEADLINE_CATEGORY -> (list as DeadlineCategoryTaskList).editTask(oldId, task as DeadlineCategoryTask)
-            }
+            (list as TaskList<Task>).editTask(oldId, task)
         } else{
             return Status(StatusCodes.FAILURE, "error: adding task to null list")
         }
@@ -80,14 +67,7 @@ class DataManager(
         val list = mainPage.currentList
         val currentType = mainPage.currentType
         if (currentType != null && list != null) {
-            when (currentType) {
-                TaskTypes.PRIORITY -> (list as PriorityTaskList).deleteTask(task as PriorityTask)
-                TaskTypes.CATEGORY -> (list as CategoryTaskList).deleteTask(task as CategoryTask)
-                TaskTypes.DEADLINE -> (list as DeadlineTaskList).deleteTask(task as DeadlineTask)
-                TaskTypes.DEADLINE_PRIORITY -> (list as DeadlinePriorityTaskList).deleteTask(task as DeadlinePriorityTask)
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> (list as DeadlinePriorityCategoryTaskList).deleteTask(task as DeadlinePriorityCategoryTask)
-                TaskTypes.DEADLINE_CATEGORY -> (list as DeadlineCategoryTaskList).deleteTask(task as DeadlineCategoryTask)
-            }
+            (list as TaskList<Task>).deleteTask(task)
         } else{
             return Status(StatusCodes.FAILURE, "error: adding task to null list")
         }
@@ -101,32 +81,8 @@ class DataManager(
         var status = Status(StatusCodes.FAILURE)
         var hstatus = Status(StatusCodes.SUCCESS)
         if (currentType != null && list != null) {
-            when(currentType) {
-                TaskTypes.PRIORITY -> {
-                    status = (list as PriorityTaskList).deleteTask(task as PriorityTask)
-                    hstatus = list.history.pushTask(task, dateOfCompletion)
-                }
-                TaskTypes.CATEGORY -> {
-                    status = (list as CategoryTaskList).deleteTask(task as CategoryTask)
-                    hstatus = list.history.pushTask(task, dateOfCompletion)
-                }
-                TaskTypes.DEADLINE -> {
-                    status = (list as DeadlineTaskList).deleteTask(task as DeadlineTask)
-                    hstatus = list.history.pushTask(task, dateOfCompletion)
-                }
-                TaskTypes.DEADLINE_PRIORITY -> {
-                    status = (list as DeadlinePriorityTaskList).deleteTask(task as DeadlinePriorityTask)
-                    hstatus = list.history.pushTask(task, dateOfCompletion)
-                }
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> {
-                    status = (list as DeadlinePriorityCategoryTaskList).deleteTask(task as DeadlinePriorityCategoryTask)
-                    hstatus = list.history.pushTask(task, dateOfCompletion)
-                }
-                TaskTypes.DEADLINE_CATEGORY -> {
-                    status = (list as DeadlineCategoryTaskList).deleteTask(task as DeadlineCategoryTask)
-                    hstatus = list.history.pushTask(task, dateOfCompletion)
-                }
-            }
+            status = (list as TaskList<Task>).deleteTask(task)
+            hstatus = list.history.pushTask(task, dateOfCompletion)
         }
         if(status.code == StatusCodes.SUCCESS && hstatus.code == StatusCodes.SUCCESS)
             return Status(StatusCodes.SUCCESS)
