@@ -129,6 +129,7 @@ class MainPage(
         }
 
         mainRepository.shift(currentListID, 1, 100_000)
+        listRepository.shift(currentListID, 1, 100_000)
 
         mainRepository.saveList(
             ListEntity(
@@ -173,8 +174,10 @@ class MainPage(
             newID = 0
         return if (list != null) {
             mainRepository.changeIdOfCurrent(currentListID, newID)
+            listRepository.changeIdOfCurrent(currentListID, newID)
             shift(currentListID, -1)
             shift(newID, 1)
+
             list.changeID(newID)
             listIdentifiers.add(newID, listIdentifiers.removeAt(currentListID))
             currentList = list
@@ -215,6 +218,7 @@ class MainPage(
     suspend fun deleteCurrentList(): Status {
         mainRepository.deleteList(currentListID)
         mainRepository.shift(currentListID, -1, 100_000)
+        listRepository.shift(currentListID, -1, 100_000)
         when (currentType) {
             TaskTypes.DEADLINE -> listOfDeadlineLists.remove(currentList)
             TaskTypes.PRIORITY -> listOfPriorityLists.remove(currentList)
