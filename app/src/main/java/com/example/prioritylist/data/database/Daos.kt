@@ -23,6 +23,15 @@ interface ListDao {
     @Update
     suspend fun update(newTask: TaskEntity)
 
+    @Query("UPDATE TasksTable SET listID = listID + :size + :value WHERE listID >= :startingID;")
+    suspend fun shiftForward(startingID: Int, value: Int, size: Int)
+
+    @Query("UPDATE TasksTable SET listID = listID - :size WHERE listID >= :size")
+    suspend fun shiftBackward(size: Int)
+
+    @Query("UPDATE TasksTable SET listID = :newCurrent WHERE listID = :listID")
+    suspend fun changeIdOfCurrentList(listID: Int, newCurrent: Int)
+
     @Query("UPDATE TasksTable SET dateOfCompletion = :dateOfCompletion WHERE listID = :listID AND name = :name")
     suspend fun updateDateOfCompletion(name: String, listID: Int, dateOfCompletion: Date)
 }

@@ -29,5 +29,11 @@ interface ListRepository {
 
     suspend fun update(task: TaskEntity)
 
+    //changes id of list from listID to newID
+    suspend fun changeIdOfCurrent(listID: Int, newID: Int)
+
+    //shifts all records with id := id + value when id >= startingID
+    suspend fun shift(startingID: Int, value: Int, size: Int)
+
     suspend fun updateDateOfCompletion(name: String, listID: Int, dateOfCompletion: Date)
 }
