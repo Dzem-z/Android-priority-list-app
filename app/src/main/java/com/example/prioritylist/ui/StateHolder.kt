@@ -165,7 +165,7 @@ class StateHolder(
             return dataManager.isEmptyUseCase()
         }
 
-        //returns true if there is single list left
+        //returns true if there is only single list left
         fun isAlmostEmpty(): Boolean {
             return !isNextListPresent() && !isPrevListPresent()
         }
@@ -262,14 +262,7 @@ class StateHolder(
 
     //called when task is deleted
     suspend fun onDeleteTask(): Status {
-        val status = when(Read.getCurrentType()){
-            TaskTypes.PRIORITY -> dataManager.deleteTaskUseCase(PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
-            TaskTypes.DEADLINE -> dataManager.deleteTaskUseCase(DeadlineTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline))
-            TaskTypes.CATEGORY -> dataManager.deleteTaskUseCase(CategoryTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, category = UI.editedTask.category!!))
-            TaskTypes.DEADLINE_CATEGORY -> dataManager.deleteTaskUseCase(DeadlineCategoryTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, category = UI.editedTask.category!!))
-            TaskTypes.DEADLINE_PRIORITY -> dataManager.deleteTaskUseCase(DeadlinePriorityTask(name = UI.editedTask.name, description =  UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, priority = UI.editedTask.priority))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.deleteTaskUseCase(DeadlinePriorityCategoryTask(name  = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, priority = UI.editedTask.priority, category = UI.editedTask.category!!))
-        }
+        val status = dataManager.deleteTaskUseCase(Read.getCurrentType().toTask(UI.editedTask))
 
         Read.updateList()
         return status
@@ -372,29 +365,14 @@ class StateHolder(
     }
 
     suspend fun addTask(): Status {
-
-        val status = when(Read.getCurrentType()){
-            TaskTypes.PRIORITY -> dataManager.addTaskUseCase(PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
-            TaskTypes.DEADLINE -> dataManager.addTaskUseCase(DeadlineTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline))
-            TaskTypes.CATEGORY -> dataManager.addTaskUseCase(CategoryTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, category = UI.editedTask.category!!))
-            TaskTypes.DEADLINE_CATEGORY -> dataManager.addTaskUseCase(DeadlineCategoryTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, category = UI.editedTask.category!!))
-            TaskTypes.DEADLINE_PRIORITY -> dataManager.addTaskUseCase(DeadlinePriorityTask(name = UI.editedTask.name, description =  UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, priority = UI.editedTask.priority))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.addTaskUseCase(DeadlinePriorityCategoryTask(name  = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, priority = UI.editedTask.priority, category = UI.editedTask.category!!))
-        }
+        val status = dataManager.addTaskUseCase(Read.getCurrentType().toTask(UI.editedTask))
 
         Read.updateList()
         return status
     }
 
     suspend fun confirmEditingTask() : Status {
-        val status = when(Read.getCurrentType()){
-            TaskTypes.PRIORITY -> dataManager.editTaskUseCase(UI.editedTask.id, PriorityTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, priority = UI.editedTask.priority))
-            TaskTypes.DEADLINE -> dataManager.editTaskUseCase(UI.editedTask.id, DeadlineTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline))
-            TaskTypes.CATEGORY -> dataManager.editTaskUseCase(UI.editedTask.id, CategoryTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, category = UI.editedTask.category!!))
-            TaskTypes.DEADLINE_CATEGORY -> dataManager.editTaskUseCase(UI.editedTask.id, DeadlineCategoryTask(name = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, category = UI.editedTask.category!!))
-            TaskTypes.DEADLINE_PRIORITY -> dataManager.editTaskUseCase(UI.editedTask.id, DeadlinePriorityTask(name = UI.editedTask.name, description =  UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, priority = UI.editedTask.priority))
-            TaskTypes.DEADLINE_PRIORITY_CATEGORY -> dataManager.editTaskUseCase(UI.editedTask.id, DeadlinePriorityCategoryTask(name  = UI.editedTask.name, description = UI.editedTask.description, dateOfCreation = UI.editedTask.dateOfCreation, deadline = UI.editedTask.deadline, priority = UI.editedTask.priority, category = UI.editedTask.category!!))
-        }
+        val status = dataManager.editTaskUseCase(UI.editedTask.id, Read.getCurrentType().toTask(UI.editedTask))
 
         Read.updateList()
         return status

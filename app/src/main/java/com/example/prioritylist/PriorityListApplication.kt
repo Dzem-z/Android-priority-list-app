@@ -11,7 +11,6 @@ class PriorityListApplication : Application() {
     lateinit var container: AppContainer
 
     override fun onCreate() {
-        this.deleteDatabase("priority_list_database")
         super.onCreate()
         container = AppDataContainer(this)
     }
