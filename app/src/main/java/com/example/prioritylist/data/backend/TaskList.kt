@@ -17,20 +17,24 @@ TODO(comments)
  */
 
 abstract class TaskList<TaskType: Task>(
-    protected open var name: String,
-    protected open var id: Int,
-    protected open var dateOfCreation: Date,
-    protected open val listRepository: ListRepository,
-    protected open val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>(),
-    open val history: HistoryList<TaskType>
-
+    protected var name: String,
+    protected var id: Int,
+    protected var dateOfCreation: Date,
+    protected val listRepository: ListRepository,
+    protected val listOfTasks: MutableList<TaskType> = mutableListOf<TaskType>(),
+    protected val historyTasks: MutableList<HistoryTask<TaskType>>
 ) {
 
+    var history: HistoryList<TaskType>
+
+    init{
+        history = HistoryList(listRepository, this, historyTasks)
+    }
 
     protected open val storage: Storage<TaskType> = Storage<TaskType>()
 
     abstract fun getPriority(id: Int): Double
-    abstract protected fun toTaskEntity(task: TaskType): TaskEntity
+    abstract fun toTaskEntity(task: TaskType): TaskEntity
 
 
     @VisibleForTesting
@@ -154,21 +158,22 @@ abstract class TaskList<TaskType: Task>(
 }
 
 class CategoryTaskList(
-    override var name: String,
-    override var id: Int,
-    override var dateOfCreation: Date,
-    override val listRepository: ListRepository,
-    override val listOfTasks: MutableList<CategoryTask> = mutableListOf()
+    name: String,
+    id: Int,
+    dateOfCreation: Date,
+    listRepository: ListRepository,
+    listOfTasks: MutableList<CategoryTask> = mutableListOf(),
+    historyTasks: MutableList<HistoryTask<CategoryTask>> = mutableListOf()
 ): TaskList<CategoryTask>(
     name = name,
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
     listOfTasks = listOfTasks,
-    history = HistoryList<CategoryTask>(listRepository)
+    historyTasks = historyTasks
 ) {
 
-    override protected fun toTaskEntity(task: CategoryTask): TaskEntity {
+    override fun toTaskEntity(task: CategoryTask): TaskEntity {
         TODO("Not yet implemented")
     }
 
@@ -178,23 +183,24 @@ class CategoryTaskList(
 }
 
 class DeadlineTaskList(
-    override var name: String,
-    override var id: Int,
-    override var dateOfCreation: Date,
-    override val listRepository: ListRepository,
-    override val listOfTasks: MutableList<DeadlineTask> = mutableListOf()
+    name: String,
+    id: Int,
+    dateOfCreation: Date,
+    listRepository: ListRepository,
+    listOfTasks: MutableList<DeadlineTask> = mutableListOf(),
+    historyTasks: MutableList<HistoryTask<DeadlineTask>> = mutableListOf()
 ): TaskList<DeadlineTask>(
     name = name,
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
     listOfTasks = listOfTasks,
-    history = HistoryList<DeadlineTask>(listRepository)
+    historyTasks = historyTasks
 ) {
 
     private var maximumDeadline: Long = Long.MIN_VALUE
 
-    override protected fun toTaskEntity(task: DeadlineTask): TaskEntity {
+    override fun toTaskEntity(task: DeadlineTask): TaskEntity {
         return TaskEntity(
             name = task.name,
             description = task.description,
@@ -233,22 +239,23 @@ class DeadlineTaskList(
 }
 
 class PriorityTaskList(
-    override var name: String,
-    override var id: Int,
-    override var dateOfCreation: Date,
-    override val listRepository: ListRepository,
-    override val listOfTasks: MutableList<PriorityTask> = mutableListOf()
+    name: String,
+    id: Int,
+    dateOfCreation: Date,
+    listRepository: ListRepository,
+    listOfTasks: MutableList<PriorityTask> = mutableListOf(),
+    historyTasks: MutableList<HistoryTask<PriorityTask>> = mutableListOf()
 ): TaskList<PriorityTask>(
     name = name,
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
     listOfTasks = listOfTasks,
-    history = HistoryList<PriorityTask>(listRepository)
+    historyTasks = historyTasks
 ) {
     private var maximumPriority = Int.MIN_VALUE
 
-    override protected fun toTaskEntity(task: PriorityTask): TaskEntity {
+    override fun toTaskEntity(task: PriorityTask): TaskEntity {
         return TaskEntity(
             name = task.name,
             description = task.description,
@@ -289,20 +296,21 @@ class PriorityTaskList(
 }
 
 class DeadlineCategoryTaskList(
-    override var name: String,
-    override var id: Int,
-    override var dateOfCreation: Date,
-    override val listRepository: ListRepository,
-    override val listOfTasks: MutableList<DeadlineCategoryTask> = mutableListOf()
+    name: String,
+    id: Int,
+    dateOfCreation: Date,
+    listRepository: ListRepository,
+    listOfTasks: MutableList<DeadlineCategoryTask> = mutableListOf(),
+    historyTasks: MutableList<HistoryTask<DeadlineCategoryTask>> = mutableListOf()
 ): TaskList<DeadlineCategoryTask>(
     name = name,
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
     listOfTasks = listOfTasks,
-    history = HistoryList<DeadlineCategoryTask>(listRepository)
+    historyTasks = historyTasks
 ) {
-    override protected fun toTaskEntity(task: DeadlineCategoryTask): TaskEntity {
+    override fun toTaskEntity(task: DeadlineCategoryTask): TaskEntity {
         TODO("Not yet implemented")
     }
 
@@ -312,20 +320,21 @@ class DeadlineCategoryTaskList(
 }
 
 class DeadlinePriorityTaskList(
-    override var name: String,
-    override var id: Int,
-    override var dateOfCreation: Date,
-    override val listRepository: ListRepository,
-    override val listOfTasks: MutableList<DeadlinePriorityTask> = mutableListOf()
+    name: String,
+    id: Int,
+    dateOfCreation: Date,
+    listRepository: ListRepository,
+    listOfTasks: MutableList<DeadlinePriorityTask> = mutableListOf(),
+    historyTasks: MutableList<HistoryTask<DeadlinePriorityTask>> = mutableListOf()
 ): TaskList<DeadlinePriorityTask>(
     name = name,
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
     listOfTasks = listOfTasks,
-    history = HistoryList<DeadlinePriorityTask>(listRepository)
+    historyTasks = historyTasks
 ) {
-    override protected fun toTaskEntity(task: DeadlinePriorityTask): TaskEntity {
+    override fun toTaskEntity(task: DeadlinePriorityTask): TaskEntity {
         TODO("Not yet implemented")
     }
 
@@ -335,20 +344,21 @@ class DeadlinePriorityTaskList(
 }
 
 class DeadlinePriorityCategoryTaskList(
-    override var name: String,
-    override var id: Int,
-    override var dateOfCreation: Date,
-    override val listRepository: ListRepository,
-    override val listOfTasks: MutableList<DeadlinePriorityCategoryTask> = mutableListOf()
+    name: String,
+    id: Int,
+    dateOfCreation: Date,
+    listRepository: ListRepository,
+    listOfTasks: MutableList<DeadlinePriorityCategoryTask> = mutableListOf(),
+    historyTasks: MutableList<HistoryTask<DeadlinePriorityCategoryTask>> = mutableListOf()
 ): TaskList<DeadlinePriorityCategoryTask>(
     name = name,
     id = id,
     dateOfCreation = dateOfCreation,
     listRepository = listRepository,
     listOfTasks = listOfTasks,
-    history = HistoryList<DeadlinePriorityCategoryTask>(listRepository)
+    historyTasks = historyTasks
 ) {
-    override protected fun toTaskEntity(task: DeadlinePriorityCategoryTask): TaskEntity {
+    override fun toTaskEntity(task: DeadlinePriorityCategoryTask): TaskEntity {
         TODO("Not yet implemented")
     }
 

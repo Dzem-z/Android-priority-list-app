@@ -65,7 +65,8 @@ class MainPage(
                     i.listID,
                     i.dateOfCreation,
                     listRepository,
-                    mainRepository.loadListByID(i.listID)
+                    mainRepository.loadTaskListByID(i.listID),
+                    mainRepository.loadHistoryListByID(i.listID)
                 )
             )
         }

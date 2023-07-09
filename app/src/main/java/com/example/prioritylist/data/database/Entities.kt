@@ -10,7 +10,7 @@ import java.util.Date
 
 /**
  * Entities representing serializable objects, that are stored in a database.
- * [TaskEntity] represents [Task] object and its childrens
+ * [TaskEntity] represents [Task] object and its children
  * [ListEntity] represents [TaskList]
  * */
 

@@ -35,7 +35,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             id: Int,
             dateOfCreation: Date,
             listRepository: ListRepository,
-            listOfEntities: List<TaskEntity>
+            listOfEntities: List<TaskEntity>,
+            listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
             return CategoryTaskList(name, id, dateOfCreation, listRepository)
         }
@@ -54,12 +55,16 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             id: Int,
             dateOfCreation: Date,
             listRepository: ListRepository,
-            listOfEntities: List<TaskEntity>
+            listOfEntities: List<TaskEntity>,
+            listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
             val listOfTasks = listOfEntities.map {
                 PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
             }.toMutableList()
-            return PriorityTaskList(name, id, dateOfCreation, listRepository, listOfTasks)
+            val listOfHistoryTasks = listOfHistoryEntities.map {
+                HistoryTask<PriorityTask>(PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name), it.dateOfCompletion!!)
+            }.toMutableList()
+            return PriorityTaskList(name, id, dateOfCreation, listRepository, listOfTasks, listOfHistoryTasks)
         }
 
         override fun toTask(editedTask: ModifiableTask): Task {
@@ -76,7 +81,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             id: Int,
             dateOfCreation: Date,
             listRepository: ListRepository,
-            listOfEntities: List<TaskEntity>
+            listOfEntities: List<TaskEntity>,
+            listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
             return DeadlinePriorityCategoryTaskList(name, id, dateOfCreation, listRepository)
         }
@@ -95,7 +101,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             id: Int,
             dateOfCreation: Date,
             listRepository: ListRepository,
-            listOfEntities: List<TaskEntity>
+            listOfEntities: List<TaskEntity>,
+            listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
             return DeadlineCategoryTaskList(name, id, dateOfCreation, listRepository)
         }
@@ -114,7 +121,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             id: Int,
             dateOfCreation: Date,
             listRepository: ListRepository,
-            listOfEntities: List<TaskEntity>
+            listOfEntities: List<TaskEntity>,
+            listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
             val listOfTasks = listOfEntities.map {
                 DeadlinePriorityTask(deadline = it.deadline!!, priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
@@ -136,7 +144,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             id: Int,
             dateOfCreation: Date,
             listRepository: ListRepository,
-            listOfEntities: List<TaskEntity>
+            listOfEntities: List<TaskEntity>,
+            listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
             val listOfTasks = listOfEntities.map {
                 DeadlineTask(deadline = it.deadline!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
@@ -158,7 +167,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
         id: Int,
         dateOfCreation: Date,
         listRepository: ListRepository,
-        listOfEntities: List<TaskEntity> = listOf()
+        listOfEntities: List<TaskEntity> = listOf(),
+        listOfHistoryEntities: List<TaskEntity> = listOf()
     ): TaskList<out Task>
 
     abstract fun toTask(editedTask: ModifiableTask): Task

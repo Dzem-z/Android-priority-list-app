@@ -10,7 +10,9 @@ import java.util.Date
 
 class OfflineMainRepository(private val mainDao: MainDao): MainRepository {
 
-    override fun loadListByID(listID: Int): List<TaskEntity> = mainDao.loadListByID(listID)
+    override fun loadTaskListByID(listID: Int): List<TaskEntity> = mainDao.loadTaskListByID(listID)
+
+    override fun loadHistoryListByID(listID: Int): List<TaskEntity> = mainDao.loadHistoryListByID(listID)
 
     override fun loadListCredentials(): List<ListEntity> = mainDao.loadListCredentials()
 
