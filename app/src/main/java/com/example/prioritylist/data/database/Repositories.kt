@@ -6,7 +6,10 @@ import java.util.Date
 interface MainRepository {
 
     //loads list of tasks
-    fun loadListByID(listID: Int): List<TaskEntity>
+    fun loadTaskListByID(listID: Int): List<TaskEntity>
+
+    //loads list of history tasks
+    fun loadHistoryListByID(listID: Int): List<TaskEntity>
 
     //loads list of all lists saved in database
     fun loadListCredentials(): List<ListEntity>

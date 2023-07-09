@@ -62,8 +62,11 @@ interface MainDao {
     @Query("SELECT * FROM ListsTable")
     fun loadListCredentials(): List<ListEntity>
 
-    @Query("SELECT * FROM TasksTable WHERE listID = :listID")
-    fun loadListByID(listID: Int): List<TaskEntity>
+    @Query("SELECT * FROM TasksTable WHERE listID = :listID AND dateOfCompletion IS NULL")
+    fun loadTaskListByID(listID: Int): List<TaskEntity>
+
+    @Query("SELECT * FROM TasksTable WHERE listID = :listID AND dateOfCompletion IS NOT NULL")
+    fun loadHistoryListByID(listID: Int): List<TaskEntity>
 
 
 
