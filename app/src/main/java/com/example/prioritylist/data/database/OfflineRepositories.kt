@@ -48,7 +48,7 @@ class OfflineListRepository(private val listDao: ListDao): ListRepository {
 
     override suspend fun update(task: TaskEntity) = listDao.update(task)
 
-    override suspend fun delete(task: TaskEntity) = listDao.delete(task)
+    override suspend fun delete(task: TaskEntity) = listDao.delete(task.name, task.listID)
 
     override suspend fun changeIdOfCurrent(listID: Int, newID: Int) {
         if (listID > newID) {
