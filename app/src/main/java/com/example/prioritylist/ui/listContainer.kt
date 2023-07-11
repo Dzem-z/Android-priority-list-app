@@ -55,6 +55,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.AlertDialog
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -96,6 +97,7 @@ fun ListContainer(
 
     val coroutineScope = rememberCoroutineScope()   //an inner coroutineScope
     val snackbarPosition = remember { Animatable(180f) }    //the vertical position of the snackbar
+    var isDialogOpened by remember { mutableStateOf(false) } //state flag indicating if undo dialog is opened
 
     val scaffoldState = rememberScaffoldState()
     val modalSheetState = rememberModalBottomSheetState(
@@ -190,7 +192,7 @@ fun ListContainer(
                     },
                     actions = { //undo button, usable whenever there is an action in the storage
                         IconButton(
-                            onClick = { globalScope.launch { holder.onUndo() } },
+                            onClick = { isDialogOpened = true },
                             enabled = !holder.Read.isStorageEmpty
                         ) {
                             Icon(
@@ -216,6 +218,35 @@ fun ListContainer(
             }
 
         ) { innerPadding ->
+
+            if (isDialogOpened) {
+                AlertDialog(
+                    onDismissRequest = {
+
+                    },
+                    title = {
+                        Text(text = "Do you want to undo previous action?")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                globalScope.launch { holder.onUndo() }
+                                isDialogOpened = false
+                            }) {
+                            Text(text = "undo")
+                        }
+                    },
+                    dismissButton = {
+                        OutlinedButton(
+                            onClick = {
+                                isDialogOpened = false
+                            }) {
+                            Text(text = "cancel")
+                        }
+                    }
+                )
+            }
+
             Column(modifier = Modifier.padding(innerPadding)) {
                 Row(
                     Modifier.padding(0.dp),
