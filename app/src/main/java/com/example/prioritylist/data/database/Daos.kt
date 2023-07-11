@@ -17,8 +17,8 @@ interface ListDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add( task: TaskEntity)
 
-    @Delete
-    suspend fun delete(task: TaskEntity)
+    @Query("DELETE FROM TasksTable WHERE name = :taskName AND listID = :listID")
+    suspend fun delete(taskName: String, listID: Int)
 
     @Update
     suspend fun update(newTask: TaskEntity)
