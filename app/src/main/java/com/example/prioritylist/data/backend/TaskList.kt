@@ -68,7 +68,7 @@ abstract class TaskList<TaskType: Task>(
     fun getID(): Int {
         return id
     }
-    private fun sort() {
+    protected fun sort() {
         for(i in listOfTasks) {
             getPriority(i.id)
         }
@@ -95,6 +95,7 @@ abstract class TaskList<TaskType: Task>(
     }
 
     fun getList(): MutableList<TaskType> {
+        sort()
         return listOfTasks.toMutableList()
     }
     fun getTaskByName(name: String): TaskType {
@@ -200,6 +201,10 @@ class DeadlineTaskList(
 
     private var maximumDeadline: Long = Long.MIN_VALUE
 
+    init {
+        maximumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE
+    }
+
     override fun toTaskEntity(task: DeadlineTask): TaskEntity {
         return TaskEntity(
             name = task.name,
@@ -254,6 +259,10 @@ class PriorityTaskList(
     historyTasks = historyTasks
 ) {
     private var maximumPriority = Int.MIN_VALUE
+
+    init {
+        maximumPriority = super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE
+    }
 
     override fun toTaskEntity(task: PriorityTask): TaskEntity {
         return TaskEntity(

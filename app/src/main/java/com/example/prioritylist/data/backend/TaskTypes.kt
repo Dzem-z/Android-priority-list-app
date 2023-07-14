@@ -58,11 +58,11 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             listOfEntities: List<TaskEntity>,
             listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
-            val listOfTasks = listOfEntities.map {
-                PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
+            val listOfTasks = listOfEntities.mapIndexed { index, it ->
+                PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name, id = index)
             }.toMutableList()
-            val listOfHistoryTasks = listOfHistoryEntities.map {
-                HistoryTask<PriorityTask>(PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name), it.dateOfCompletion!!)
+            val listOfHistoryTasks = listOfHistoryEntities.mapIndexed { index, it ->
+                HistoryTask<PriorityTask>(PriorityTask(priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name, id = index), it.dateOfCompletion!!)
             }.toMutableList()
             return PriorityTaskList(name, id, dateOfCreation, listRepository, listOfTasks, listOfHistoryTasks)
         }
@@ -147,10 +147,13 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             listOfEntities: List<TaskEntity>,
             listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
-            val listOfTasks = listOfEntities.map {
-                DeadlineTask(deadline = it.deadline!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
+            val listOfTasks = listOfEntities.mapIndexed {index, it ->
+                DeadlineTask(deadline = it.deadline!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name, id = index)
             }.toMutableList()
-            return DeadlineTaskList(name, id, dateOfCreation, listRepository, listOfTasks)
+            val listOfHistoryTasks = listOfHistoryEntities.mapIndexed { index, it ->
+                HistoryTask<DeadlineTask>(DeadlineTask(deadline = it.deadline!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name, id = index), it.dateOfCompletion!!)
+            }.toMutableList()
+            return DeadlineTaskList(name, id, dateOfCreation, listRepository, listOfTasks, listOfHistoryTasks)
         }
 
         override fun toTask(editedTask: ModifiableTask): Task {
