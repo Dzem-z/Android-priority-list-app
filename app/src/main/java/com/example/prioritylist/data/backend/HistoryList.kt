@@ -56,6 +56,8 @@ class HistoryList<TaskType: Task>(
     }
 
     fun getList(): MutableList<HistoryTask<TaskType>> {
+        listOfTasks.sortBy{ it.completionDate }
+        listOfTasks.reverse()
         return listOfTasks.toMutableList()
     }
 
