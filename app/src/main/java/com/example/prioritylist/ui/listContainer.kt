@@ -79,6 +79,7 @@ import java.time.LocalDateTime
 * @param onRemoveList is called when user removes list
 * @param onGoToHistory is called when user navigates to history
 * @param globalScope in with database i/o is executed
+ * @param displaySidebar is called when user opens sidebar (clicks navigation button located on the topBar)
 * */
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -92,6 +93,7 @@ fun ListContainer(
     onAddList:() -> Unit = {},
     onRemoveList: () -> Unit = {},
     onGoToHistory: () -> Unit = {},
+    displaySidebar: () -> Unit = {},
     globalScope: CoroutineScope = rememberCoroutineScope()
     ) {
 
@@ -182,7 +184,7 @@ fun ListContainer(
                     title = { /*TODO*/ },
                     navigationIcon = {
                         IconButton(
-                            onClick = { /*TODO*/ }
+                            onClick = { displaySidebar() }
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Menu,

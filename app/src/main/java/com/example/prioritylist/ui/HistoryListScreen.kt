@@ -36,14 +36,14 @@ import kotlinx.coroutines.launch
 /**
 * [HistoryListContainer] is a composable with functionality analogous to the listContainer
 * @param holder is an instance of stateHolder initialized with viewModel factory
-* @param goToListScreen is called when user navigates back to listScreen
+* @param displaySidebar is called when user opens sidebar (clicks navigation button located on the sidebar
 * */
 
 @Composable
 fun HistoryListContainer(
     modifier: Modifier = Modifier,
     holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
-    goToListScreen: () -> Unit = {}
+    displaySidebar: () -> Unit = {}
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -55,7 +55,7 @@ fun HistoryListContainer(
                 title = { /*TODO*/ },
                 navigationIcon = {
                     IconButton(
-                        onClick = { /*TODO*/ }
+                        onClick = { displaySidebar() }
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Menu,
@@ -154,22 +154,6 @@ fun HistoryListContainer(
                         viewModel = holder,
                         list = holder.Read.secondHistoryList,
                         type = holder.Read.secondType
-                    )
-                }
-            }
-
-            Button(
-                onClick = { goToListScreen() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.ArrowBack,
-                        contentDescription = "Drawer Icon"
                     )
                 }
             }
