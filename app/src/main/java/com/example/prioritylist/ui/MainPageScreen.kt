@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 
 
-
 /**
 * [MainPageScreen] is a composable responsible for navigating between screens, it is an entry point for every composable
 * @param holder an instance of StateHolder received from viewModel factory
@@ -44,13 +43,15 @@ fun MainPageScreen(
         drawerContent = {
             SideBar(
                 goToHome = {
-                    if (holder.Read.isEmpty()){
-                        navController.navigate("EmptyScreen") {
-                            popUpTo(0)
-                        }
-                    } else {
-                        navController.navigate("ListContainer") {
-                            popUpTo(0)
+                    if(navController.popBackStack() != true) {
+                        if (holder.Read.isEmpty()) {
+                            navController.navigate("EmptyScreen") {
+                                popUpTo(0)
+                            }
+                        } else {
+                            navController.navigate("ListContainer") {
+                                popUpTo(0)
+                            }
                         }
                     }
                     coroutineScope.launch {
