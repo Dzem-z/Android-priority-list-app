@@ -25,13 +25,15 @@ import androidx.compose.ui.unit.dp
 /**
 * [EmptyScreen] is a composable responsible for displaying the emptyScreen (when there is no list to display)
 * @param onAddList is called when user presses add list button
+ * @param displaySidebar is called when user opens sidebar (clicks navigation button located on the topBar)
 * */
 
 
 @Composable
 fun EmptyScreen(
     modifier: Modifier = Modifier,
-    onAddList:() -> Unit = {}
+    onAddList: () -> Unit = {},
+    displaySidebar: () -> Unit = {}
     ) {
 
     val scaffoldState = rememberScaffoldState()
@@ -41,10 +43,18 @@ fun EmptyScreen(
 
         topBar = {
             TopAppBar(
-                title = { /*TODO*/ }
+                title = { /*TODO*/ },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { displaySidebar() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Menu,
+                            contentDescription = "Drawer Icon"
+                        )
+                    }
+                },
             )
-
-
         }
 
     ) { innerPadding ->
