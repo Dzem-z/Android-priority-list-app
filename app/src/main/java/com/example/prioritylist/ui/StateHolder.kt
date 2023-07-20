@@ -177,7 +177,7 @@ class StateHolder(
         //assigns list to the variable exposing it to the UI
         @VisibleForTesting
         internal fun setList(list: MutableList<out Task>) {
-            if (currentListIndex.value.equals(0)){
+            if (currentListIndex.value == 0){
                 firstList = list
             } else {
                 secondList = list
@@ -186,7 +186,7 @@ class StateHolder(
 
         //assigns list to the variable exposing it to the UI
         internal fun setHistoryList(list: MutableList<out HistoryTask<out Task>>){
-            if(currentListIndex.value.equals(0)){
+            if(currentListIndex.value == 0){
                 firstHistoryList = list
             } else {
                 secondHistoryList = list
@@ -201,10 +201,11 @@ class StateHolder(
             isNextList = isNextListPresent()
             UI.currentListName = dataManager.getNameUseCase()
             isStorageEmpty = dataManager.isStorageEmptyUseCase()
+            setCurrentType(dataManager.getCurrentType()?: TaskTypes.PRIORITY)
         }
 
         fun getList(): MutableList<out Task> {
-            return if (currentListIndex.value.equals(0))
+            return if (currentListIndex.value == 0)
                 firstList
             else
                 secondList
@@ -215,14 +216,14 @@ class StateHolder(
         }
 
         fun getCurrentType(): TaskTypes {
-            return if (currentListIndex.value.equals(0))
+            return if (currentListIndex.value == 0)
                 firstType
             else
                 secondType
         }
 
         fun setCurrentType(type: TaskTypes) {
-            if (currentListIndex.value.equals(0))
+            if (currentListIndex.value == 0)
                 firstType = type
             else
                 secondType = type

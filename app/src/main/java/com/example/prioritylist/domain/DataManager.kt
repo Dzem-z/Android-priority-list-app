@@ -123,6 +123,11 @@ class DataManager(
         }
     }
 
+    //returns current type
+    fun getCurrentType(): TaskTypes? {
+        return mainPage.currentType
+    }
+
     //deletes task identified by name from history of current list
     fun deleteFromHistoryUseCase(name: String): Status {
         TODO("Not yet implemented")
