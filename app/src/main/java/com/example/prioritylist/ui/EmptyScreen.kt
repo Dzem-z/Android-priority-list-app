@@ -19,8 +19,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.prioritylist.R
 
 /**
 * [EmptyScreen] is a composable responsible for displaying the emptyScreen (when there is no list to display)
@@ -64,7 +66,7 @@ fun EmptyScreen(
                 modifier = Modifier.align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Add your first list!")
+                Text(text = stringResource(id = R.string.first_list))
 
                 Spacer(modifier = Modifier.padding(8.dp))
 
@@ -74,7 +76,7 @@ fun EmptyScreen(
                         .height(64.dp)
                         .width(196.dp)
                 ) {
-                    Text(text = "add list")
+                    Text(text = stringResource(id = R.string.add_list))
                 }
             }
 

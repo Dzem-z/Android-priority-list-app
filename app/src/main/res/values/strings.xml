@@ -1,3 +1,40 @@
 <resources>
     <string name="app_name">priority list</string>
+
+    <string name="deadline_task">deadline-based tasks</string>
+    <string name="priority_task">priority-based tasks</string>
+    <string name="deadline_priority_task">deadline-priority-based tasks</string>
+    <string name="deadline_category_task">deadline-category-based tasks</string>
+    <string name="deadline_priority_category_task">deadline-priority-category-based tasks</string>
+    <string name="category_task">category-based tasks</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="add_list">add list</string>
+    <string name="list_name">list name</string>
+    <string name="edit_task">edit task</string>
+    <string name="delete_task">delete task</string>
+    <string name="left_swap">swap with left</string>
+    <string name="right_swap">swap with right</string>
+    <string name="remove_list">remove this list</string>
+    <string name="add_new_list">add new list</string>
+    <string name="go_to_history">go to history</string>
+    <string name="task_name">task name</string>
+    <string name="error">error</string>
+    <string name="empty_task_name_error">task name can\'t be empty</string>
+    <string name="duplicated_task_error">task with given name already in list</string>
+    <string name="task_description">description</string>
+    <string name="task_priority">priority</string>
+    <string name="OK">OK</string>
+    <string name="selected_deadline">selected deadline: </string>
+    <string name="first_list">add your first list!</string>
+    <string name="priority">priority: </string>
+    <string name="description">description: </string>
+    <string name="deadline">deadline: </string>
+    <string name="undo_alert">Do you want to undo previous action?</string>
+    <string name="undo">undo</string>
+
+    <string name="home">home</string>
+    <string name="history">history</string>
+    <string name="settings">settings</string>
+    <string name="help">help</string>
 </resources>

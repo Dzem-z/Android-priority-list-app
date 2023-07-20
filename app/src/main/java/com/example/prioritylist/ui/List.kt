@@ -42,8 +42,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.prioritylist.R
 import com.example.prioritylist.data.backend.DeadlineTask
 import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.Task
@@ -196,14 +198,14 @@ fun PriorityTaskTile(tile: PriorityTask, modifier: Modifier = Modifier) {
             }
 
             Row {
-                Text(text = "priority: " + tile.priority)
+                Text(text = stringResource(id = R.string.priority) + tile.priority)
             }
 
             if(expanded){
 
                 Spacer(modifier = Modifier.padding(6.dp))
 
-                Text(text = "description: " + tile.description)
+                Text(text = stringResource(id = R.string.description) + tile.description)
             }
 
         }
@@ -247,14 +249,14 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
                 }
             }
             Row{
-                Text(text = "deadline: " + dateFormatter(tile.deadline))
+                Text(text = stringResource(id = R.string.deadline) + dateFormatter(tile.deadline))
             }
 
             if(expanded){
 
                 Spacer(modifier = Modifier.padding(6.dp))
 
-                Text(text = "description: " + tile.description)
+                Text(text = stringResource(id = R.string.description) + tile.description)
             }
 
         }

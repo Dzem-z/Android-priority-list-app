@@ -37,7 +37,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.R
 import com.example.prioritylist.data.backend.TaskTypes
 import com.example.prioritylist.data.backend.listOfTypes
 
@@ -93,7 +95,7 @@ fun AddListScreen(
             OutlinedTextField(  //list name textfield
                 value = UIholder.newListName,
                 singleLine = true,
-                label = { Text(text = "list name") },
+                label = { Text(text = stringResource(id = R.string.list_name)) },
                 onValueChange = {
                     UIholder.newListName = it
                 },
@@ -133,12 +135,12 @@ fun AddListScreen(
                             text = {
                                 Text(
                                     text = when(item){
-                                        TaskTypes.DEADLINE -> "deadline-based tasks"
-                                        TaskTypes.PRIORITY -> "priority-based tasks"
-                                        TaskTypes.DEADLINE_PRIORITY_CATEGORY -> "deadline-priority-category-based tasks"
-                                        TaskTypes.DEADLINE_PRIORITY -> "deadline-priority-based tasks"
-                                        TaskTypes.DEADLINE_CATEGORY -> "deadline-category-based tasks"
-                                        TaskTypes.CATEGORY -> "category based tasks"
+                                        TaskTypes.DEADLINE -> stringResource(id = R.string.deadline_task)
+                                        TaskTypes.PRIORITY -> stringResource(id = R.string.priority_task)
+                                        TaskTypes.DEADLINE_PRIORITY_CATEGORY -> stringResource(id = R.string.deadline_priority_category_task)
+                                        TaskTypes.DEADLINE_PRIORITY -> stringResource(id = R.string.deadline_priority_task)
+                                        TaskTypes.DEADLINE_CATEGORY -> stringResource(id = R.string.deadline_category_task)
+                                        TaskTypes.CATEGORY -> stringResource(id = R.string.category_task)
                                     }
                                 )
                             },
@@ -178,7 +180,7 @@ fun AddListScreen(
 
                     Spacer(Modifier.padding(5.dp))
 
-                    Text(text = "Cancel")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
 
                 Spacer(Modifier.weight(0.5f))
@@ -194,7 +196,7 @@ fun AddListScreen(
 
                     Spacer(Modifier.padding(5.dp))
 
-                    Text(text = "add list")
+                    Text(text = stringResource(id = R.string.add_list))
                 }
             }
         }

@@ -56,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.AlertDialog
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -227,7 +228,7 @@ fun ListContainer(
 
                     },
                     title = {
-                        Text(text = "Do you want to undo previous action?")
+                        Text(text = stringResource(id = R.string.undo_alert))
                     },
                     confirmButton = {
                         Button(
@@ -235,7 +236,7 @@ fun ListContainer(
                                 globalScope.launch { holder.onUndo() }
                                 isDialogOpened = false
                             }) {
-                            Text(text = "undo")
+                            Text(text = stringResource(id = R.string.undo))
                         }
                     },
                     dismissButton = {
@@ -243,7 +244,7 @@ fun ListContainer(
                             onClick = {
                                 isDialogOpened = false
                             }) {
-                            Text(text = "cancel")
+                            Text(text = stringResource(id = R.string.cancel))
                         }
                     }
                 )

@@ -38,6 +38,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,7 +76,7 @@ fun TaskOptionsSheet(
                 onEditTask()
             }
         ) {
-            Text(text = "edit task")
+            Text(text = stringResource(id = R.string.edit_task))
         }
 
         Spacer(modifier = Modifier.padding(6.dp))
@@ -90,7 +91,7 @@ fun TaskOptionsSheet(
                 onDeleteTask()
             }
         ) {
-            Text(text = "delete task")
+            Text(text = stringResource(id = R.string.delete_task))
         }
     }
 }
@@ -202,12 +203,12 @@ fun ListOptionsSheet(
         )
         Text(
             text = when(viewModel.Read.getCurrentType()){
-                TaskTypes.DEADLINE -> "deadline-based tasks"
-                TaskTypes.PRIORITY -> "priority-based tasks"
-                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> "deadline-priority-category-based tasks"
-                TaskTypes.DEADLINE_PRIORITY -> "deadline-priority-based tasks"
-                TaskTypes.DEADLINE_CATEGORY -> "deadline-category-based tasks"
-                TaskTypes.CATEGORY -> "category based tasks"
+                TaskTypes.DEADLINE -> stringResource(id = R.string.deadline_task)
+                TaskTypes.PRIORITY -> stringResource(id = R.string.priority_task)
+                TaskTypes.DEADLINE_PRIORITY_CATEGORY -> stringResource(id = R.string.deadline_priority_category_task)
+                TaskTypes.DEADLINE_PRIORITY -> stringResource(id = R.string.deadline_priority_task)
+                TaskTypes.DEADLINE_CATEGORY -> stringResource(id = R.string.deadline_category_task)
+                TaskTypes.CATEGORY -> stringResource(id = R.string.category_task)
             },
             textAlign = TextAlign.Center
         )
@@ -221,7 +222,7 @@ fun ListOptionsSheet(
                     globalScope.launch {
                         viewModel.swapWithLeft()    //swaps current list with list on the left
                     }
-                    launchSnackbar("swaped with list on the left")
+                    launchSnackbar("swapped with list on the left")
                           },
                 enabled = viewModel.Read.isPrevList,
                 modifier = Modifier.weight(1f)
@@ -233,7 +234,7 @@ fun ListOptionsSheet(
                         painter = painterResource(id = R.drawable.swap_horiz_48px),
                         contentDescription = "drawer icon"
                     )
-                    Text(text = "swap with left")
+                    Text(text = stringResource(id = R.string.left_swap))
                 }
             }
 
@@ -244,19 +245,19 @@ fun ListOptionsSheet(
                 OutlinedButton(
                     onClick = removeList
                 ) {
-                    Text(text = "remove this list")
+                    Text(text = stringResource(id = R.string.remove_list))
                 }
 
                 OutlinedButton(
                     onClick = addList
                 ) {
-                    Text(text = "add new list")
+                    Text(text = stringResource(id = R.string.add_new_list))
                 }
 
                 Button(
                     onClick = goToHistory
                 ) {
-                    Text(text = "go to history")
+                    Text(text = stringResource(id = R.string.go_to_history))
                 }
             }
 
@@ -265,7 +266,7 @@ fun ListOptionsSheet(
                     globalScope.launch {
                         viewModel.swapWithRight() //swaps current list with list on the left
                     }
-                    launchSnackbar("swaped with list on the right")
+                    launchSnackbar("swapped with list on the right")
                           },
                 enabled = viewModel.Read.isNextList,
                 modifier = Modifier.weight(1f)
@@ -278,7 +279,7 @@ fun ListOptionsSheet(
                         contentDescription = "drawer icon"
                     )
 
-                    Text(text = "swap with right")
+                    Text(text = stringResource(id = R.string.right_swap))
                 }
             }
 

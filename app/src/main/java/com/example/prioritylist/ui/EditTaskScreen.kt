@@ -53,9 +53,11 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.R
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -143,11 +145,11 @@ fun EditTaskScreen(
             OutlinedTextField(
                 value = nameTextFieldValueState,
                 singleLine = true,
-                label = { Text(text = "task name") },
+                label = { Text(text = stringResource(id = R.string.task_name)) },
                 isError = holder.UI.isDuplicatedTask(),
                 trailingIcon = {
                     if (holder.UI.isDuplicatedTask())
-                        Icon(Icons.Outlined.Error, "error", tint = MaterialTheme.colors.error)
+                        Icon(Icons.Outlined.Error, stringResource(id = R.string.error), tint = MaterialTheme.colors.error)
                 },
                 onValueChange = {
                     nameTextFieldValueState = it
@@ -164,7 +166,7 @@ fun EditTaskScreen(
 
             if (holder.UI.duplicatedName) {//error messages
                 Text(
-                    text = "task with given name already in list",
+                    text = stringResource(id = R.string.duplicated_task_error),
                     color = MaterialTheme.colors.error,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier.padding(start = 16.dp)
@@ -172,7 +174,7 @@ fun EditTaskScreen(
             }
             if (holder.UI.emptyName) {//error messages
                 Text(
-                    text = "task name can't be empty",
+                    text = stringResource(id = R.string.empty_task_name_error),
                     color = MaterialTheme.colors.error,
                     style = MaterialTheme.typography.caption,
                     modifier = Modifier.padding(start = 16.dp)
@@ -185,7 +187,7 @@ fun EditTaskScreen(
 
             TextField(
                 value = descriptionTextFieldValueState,
-                label = { Text(text = "description") },
+                label = { Text(text = stringResource(id = R.string.task_description)) },
                 onValueChange = {
                     descriptionTextFieldValueState = it
                     holder.UI.updateDescriptionOfEditedTask(it.text)
@@ -213,7 +215,7 @@ fun EditTaskScreen(
             if (holder.Read.getCurrentType().hasPriority()) {   //if current task has priority atributte
                 TextField(
                     value = priorityTextFieldValueState,
-                    label = { Text(text = "priority") },
+                    label = { Text(text = stringResource(id = R.string.task_priority)) },
                     onValueChange = {
                         priorityTextFieldValueState = it
                         holder.UI.updatePriorityOfEditedTask(it.text)
@@ -266,7 +268,7 @@ fun EditTaskScreen(
                                 },
                                 enabled = confirmEnabled.value
                             ) {
-                                Material3Text("OK")
+                                Material3Text(stringResource(id = R.string.OK))
                             }
 
                         },
@@ -276,7 +278,7 @@ fun EditTaskScreen(
                                     openDialog.value = false
                                 }
                             ) {
-                                Material3Text("Cancel")
+                                Material3Text(stringResource(id = R.string.cancel))
                             }
 
                         }
@@ -289,8 +291,8 @@ fun EditTaskScreen(
                 }
                 ){
                     Row{
-                        Text(text = timePointer.value.get(Calendar.DAY_OF_MONTH).toString())
-                        Text(text = "select deadline")
+                        Text(text = stringResource(id = R.string.selected_deadline))
+                        Text(text = dateFormatter(timePointer.value.time))
                     }
 
                 }
@@ -317,7 +319,7 @@ fun EditTaskScreen(
 
                     Spacer(Modifier.padding(5.dp))
 
-                    Text(text = "Cancel")
+                    Text(text = stringResource(R.string.cancel))
 
                 }
 

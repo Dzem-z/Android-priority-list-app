@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.prioritylist.R
 
 /**
  * [SideBar] is an composable that is displayed as a sidebar
@@ -35,28 +37,28 @@ fun SideBar(
             .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 48.dp)
     ) {
         Text(
-            "home",
+            stringResource(id = R.string.home),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clickable { goToHome() }
         )
         Text(
-            "history",
+            stringResource(id = R.string.history),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clickable { goToHistory() }
         )
         Text(
-            "settings",
+            stringResource(id = R.string.settings),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clickable { goToSettings() }
         )
         Text(
-            "help",
+            stringResource(id = R.string.help),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
