@@ -1,12 +1,17 @@
 package com.example.prioritylist.ui
 
-import androidx.compose.material.DrawerValue
-import androidx.compose.material.ModalDrawer
-import androidx.compose.material.rememberDrawerState
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.width
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,54 +42,60 @@ fun MainPageScreen(
     }
 
     //drawer used for displaying sideBar
-    ModalDrawer(
+    ModalNavigationDrawer(
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
         drawerContent = {
-            SideBar(
-                goToHome = {
-                    if(navController.popBackStack() != true) {
-                        if (holder.Read.isEmpty()) {
-                            navController.navigate("EmptyScreen") {
-                                popUpTo(0)
-                            }
-                        } else {
-                            navController.navigate("ListContainer") {
-                                popUpTo(0)
+            ModalDrawerSheet(
+                modifier = Modifier
+                    .width(300.dp)
+                    .fillMaxHeight()
+            ){
+                SideBar(
+                    goToHome = {
+                        if (navController.popBackStack() != true) {
+                            if (holder.Read.isEmpty()) {
+                                navController.navigate("EmptyScreen") {
+                                    popUpTo(0)
+                                }
+                            } else {
+                                navController.navigate("ListContainer") {
+                                    popUpTo(0)
+                                }
                             }
                         }
-                    }
-                    coroutineScope.launch {
-                        drawerState.open()  //duplicated due to bug in animation
-                        drawerState.close()
-                    }
-                },
-                goToHistory = {
-                    navController.navigate("historyScreen") {
-                        popUpTo(0)
-                    }
-                    coroutineScope.launch {
-                        drawerState.open()  //duplicated due to bug in animation
-                        drawerState.close()
+                        coroutineScope.launch {
+                            drawerState.open()  //duplicated due to bug in animation
+                            drawerState.close()
+                        }
+                    },
+                    goToHistory = {
+                        navController.navigate("historyScreen") {
+                            popUpTo(0)
+                        }
+                        coroutineScope.launch {
+                            drawerState.open()  //duplicated due to bug in animation
+                            drawerState.close()
 
-                    }
+                        }
 
-                },
-                goToSettings = {
+                    },
+                    goToSettings = {
 
-                    coroutineScope.launch {
-                        drawerState.open()  //duplicated due to bug in animation
-                        drawerState.close()
-                    }
-                },
-                goToHelp = {
+                        coroutineScope.launch {
+                            drawerState.open()  //duplicated due to bug in animation
+                            drawerState.close()
+                        }
+                    },
+                    goToHelp = {
 
-                    coroutineScope.launch {
-                        drawerState.open()  //duplicated due to bug in animation
-                        drawerState.close()
+                        coroutineScope.launch {
+                            drawerState.open()  //duplicated due to bug in animation
+                            drawerState.close()
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) {
 

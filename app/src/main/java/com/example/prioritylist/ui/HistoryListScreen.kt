@@ -1,37 +1,29 @@
 package com.example.prioritylist.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.TextButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Button
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.height
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.prioritylist.data.backend.DeadlineTask
-import com.example.prioritylist.data.backend.PriorityTask
-import com.example.prioritylist.data.backend.TaskTypes
-import kotlinx.coroutines.launch
 
 /**
 * [HistoryListContainer] is a composable with functionality analogous to the listContainer
@@ -39,19 +31,19 @@ import kotlinx.coroutines.launch
 * @param displaySidebar is called when user opens sidebar (clicks navigation button located on the sidebar
 * */
 
+
 @Composable
 fun HistoryListContainer(
     modifier: Modifier = Modifier,
     holder: StateHolder = viewModel(factory = AppViewModelProvider.Factory),
     displaySidebar: () -> Unit = {}
 ) {
-    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
-        scaffoldState = scaffoldState,
 
         topBar = {
             TopAppBar(
+                backgroundColor = MaterialTheme.colorScheme.onPrimary,
                 title = { /*TODO*/ },
                 navigationIcon = {
                     IconButton(

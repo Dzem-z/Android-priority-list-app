@@ -18,22 +18,23 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.TextButton
-import androidx.compose.material.Icon
+import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.Icon
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.IconButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Snackbar
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.Text
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material.icons.rounded.Add
@@ -102,7 +103,7 @@ fun ListContainer(
     val snackbarPosition = remember { Animatable(180f) }    //the vertical position of the snackbar
     var isDialogOpened by remember { mutableStateOf(false) } //state flag indicating if undo dialog is opened
 
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember{ SnackbarHostState() }
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
@@ -156,7 +157,7 @@ fun ListContainer(
                 },
                 launchSnackbar = { message ->
                     coroutineScope.launch {
-                        scaffoldState.snackbarHostState.showSnackbar(message)
+                        snackbarHostState.showSnackbar(message)
                     }
                 },
                 globalScope = globalScope    //global scope
@@ -167,11 +168,10 @@ fun ListContainer(
     ) {
 
         Scaffold(
-            scaffoldState = scaffoldState,
 
             snackbarHost = {
                 // reuse default SnackbarHost to have default animation and timing handling
-                SnackbarHost(it) { data ->
+                SnackbarHost(snackbarHostState) { data ->
                     Snackbar(
                         modifier = Modifier.padding(vertical = snackbarPosition.value.dp),
                         snackbarData = data
@@ -182,6 +182,7 @@ fun ListContainer(
 
             topBar = {
                 TopAppBar(  //side bar button
+                    backgroundColor = MaterialTheme.colorScheme.onPrimary,
                     title = { /*TODO*/ },
                     navigationIcon = {
                         IconButton(
@@ -267,6 +268,7 @@ fun ListContainer(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.ArrowBack,
+                                tint = MaterialTheme.colorScheme.secondary,
                                 contentDescription = "Drawer Icon"
                             )
                         }
@@ -305,6 +307,7 @@ fun ListContainer(
                         ) {
                             Icon(
                                 imageVector = Icons.Outlined.ArrowForward,
+                                tint = MaterialTheme.colorScheme.secondary,
                                 contentDescription = "Drawer Icon"
                             )
                         }

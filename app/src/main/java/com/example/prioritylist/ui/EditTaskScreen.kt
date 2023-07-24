@@ -8,18 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.rounded.Add
@@ -149,7 +149,7 @@ fun EditTaskScreen(
                 isError = holder.UI.isDuplicatedTask(),
                 trailingIcon = {
                     if (holder.UI.isDuplicatedTask())
-                        Icon(Icons.Outlined.Error, stringResource(id = R.string.error), tint = MaterialTheme.colors.error)
+                        Icon(Icons.Outlined.Error, stringResource(id = R.string.error), tint = MaterialTheme.colorScheme.error)
                 },
                 onValueChange = {
                     nameTextFieldValueState = it
@@ -167,16 +167,16 @@ fun EditTaskScreen(
             if (holder.UI.duplicatedName) {//error messages
                 Text(
                     text = stringResource(id = R.string.duplicated_task_error),
-                    color = MaterialTheme.colors.error,
-                    style = MaterialTheme.typography.caption,
+                    color = MaterialTheme.colorScheme.error,
+                    //style = MaterialTheme.typography.,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
             if (holder.UI.emptyName) {//error messages
                 Text(
                     text = stringResource(id = R.string.empty_task_name_error),
-                    color = MaterialTheme.colors.error,
-                    style = MaterialTheme.typography.caption,
+                    color = MaterialTheme.colorScheme.error,
+                    //style = MaterialTheme.typography.caption,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
