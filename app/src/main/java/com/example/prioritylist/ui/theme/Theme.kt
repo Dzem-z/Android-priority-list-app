@@ -11,6 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme as material3
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 private val LightColors = lightColorScheme(
@@ -83,6 +84,12 @@ fun PriorityListTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+            color = DarkColors.secondary
+        )
+
     val colors = //if (!useDarkTheme) {
         //LightColors
     //} else {
