@@ -16,6 +16,8 @@ import kotlin.math.*
 TODO(comments)
  */
 
+val MAXIMUM_PRIORITY = 100
+
 abstract class TaskList<TaskType: Task>(
     protected var name: String,
     protected var id: Int,
@@ -200,9 +202,11 @@ class DeadlineTaskList(
 ) {
 
     private var maximumDeadline: Long = Long.MIN_VALUE
+    private var minimumDeadline: Long = Long.MAX_VALUE
 
     init {
         maximumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE
+        minimumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.minOrNull() ?: Long.MAX_VALUE
     }
 
     override fun toTaskEntity(task: DeadlineTask): TaskEntity {
@@ -223,11 +227,17 @@ class DeadlineTaskList(
         maximumDeadline = max(
             super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
             task.deadline.toInstant().toEpochMilli())
+        minimumDeadline = min(
+            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
+            task.deadline.toInstant().toEpochMilli())
         return super.add(task)
     }
 
     override suspend fun delete(task: DeadlineTask): Status {
         maximumDeadline = max(
+            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
+            task.deadline.toInstant().toEpochMilli())
+        minimumDeadline = min(
             super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
             task.deadline.toInstant().toEpochMilli())
         return super.delete(task)
@@ -237,7 +247,7 @@ class DeadlineTaskList(
         val currentTask = super.listOfTasks[id]
         val dateInt = currentTask.deadline.toInstant().toEpochMilli()
 
-        currentTask.evaluatedPriority = sqrt(1 - dateInt  * 1.0/maximumDeadline) * 100
+        currentTask.evaluatedPriority = sqrt(1 - (dateInt - minimumDeadline)  * 1.0 / (maximumDeadline - minimumDeadline)) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         return currentTask.evaluatedPriority
     }
@@ -298,7 +308,7 @@ class PriorityTaskList(
         val currentTask = super.listOfTasks[id]
         val currentPriority = currentTask.priority
 
-        currentTask.evaluatedPriority = sqrt(currentPriority * 1.0/maximumPriority ) * 100
+        currentTask.evaluatedPriority = sqrt(currentPriority * 1.0/maximumPriority ) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         return currentTask.evaluatedPriority
     }

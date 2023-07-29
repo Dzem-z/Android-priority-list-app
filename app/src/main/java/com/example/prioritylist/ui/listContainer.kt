@@ -131,6 +131,7 @@ fun ListContainer(
     ModalBottomSheetLayout(
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(topStart = roundedCornerRadius, topEnd = roundedCornerRadius),
+        sheetBackgroundColor = MaterialTheme.colorScheme.onSecondary,
         sheetContent = if (holder.UI.taskBottomSheetExpanded) { //determines which bottomSheet should be expanded
             { TaskOptionsSheet(
                 hide = {
@@ -161,9 +162,8 @@ fun ListContainer(
                     }
                 },
                 globalScope = globalScope    //global scope
-
             ) }
-            }
+        }
 
     ) {
 

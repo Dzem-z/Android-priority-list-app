@@ -87,7 +87,7 @@ fun PriorityListTheme(
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-            color = DarkColors.secondary
+            color = DarkColors.primaryContainer
         )
 
     val colors = //if (!useDarkTheme) {
