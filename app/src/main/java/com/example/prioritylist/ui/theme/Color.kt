@@ -86,6 +86,8 @@ val priorityGradient = listOf(
     Color(0xFFF60606),
 )
 
+val deadlinePassedColor = Color(0xFF666666)
+
 val GRADIENT_SIZE = priorityGradient.size
 
 /*val md_theme_light_primary = Color(0xFF1B6C31)

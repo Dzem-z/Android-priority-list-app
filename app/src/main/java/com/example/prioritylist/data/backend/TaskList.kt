@@ -7,6 +7,7 @@ import com.example.prioritylist.data.database.ListEntity
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.TaskEntity
 import java.lang.Math.sqrt
+import java.util.Calendar
 import java.util.Collections.list
 import java.util.Collections.max
 import java.util.Date
@@ -201,10 +202,12 @@ class DeadlineTaskList(
     historyTasks = historyTasks
 ) {
 
+    private var today: Long = Long.MAX_VALUE
     private var maximumDeadline: Long = Long.MIN_VALUE
     private var minimumDeadline: Long = Long.MAX_VALUE
 
     init {
+        today = Calendar.getInstance().timeInMillis
         maximumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE
         minimumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.minOrNull() ?: Long.MAX_VALUE
     }
@@ -246,8 +249,9 @@ class DeadlineTaskList(
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
         val dateInt = currentTask.deadline.toInstant().toEpochMilli()
+        today = Calendar.getInstance().timeInMillis
 
-        currentTask.evaluatedPriority = sqrt(1 - (dateInt - minimumDeadline)  * 1.0 / (maximumDeadline - minimumDeadline)) * MAXIMUM_PRIORITY
+        currentTask.evaluatedPriority = sqrt(1 - (dateInt - today)  * 1.0 / (maximumDeadline - today)) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         return currentTask.evaluatedPriority
     }
@@ -310,6 +314,7 @@ class PriorityTaskList(
 
         currentTask.evaluatedPriority = sqrt(currentPriority * 1.0/maximumPriority ) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
+        //priorities higher than 100 indicate that deadline has passed
         return currentTask.evaluatedPriority
     }
 }

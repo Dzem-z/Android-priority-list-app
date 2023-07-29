@@ -37,6 +37,7 @@ import com.example.prioritylist.data.backend.DeadlineTask
 import com.example.prioritylist.data.backend.MAXIMUM_PRIORITY
 import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.ui.theme.GRADIENT_SIZE
+import com.example.prioritylist.ui.theme.deadlinePassedColor
 import com.example.prioritylist.ui.theme.priorityGradient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -213,7 +214,10 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
             defaultElevation = 10.dp
         ),
         colors = CardDefaults.cardColors(
-            containerColor = priorityGradient[(tile.evaluatedPriority * GRADIENT_SIZE / (MAXIMUM_PRIORITY + 1)).toInt()]
+            containerColor = if (tile.evaluatedPriority > MAXIMUM_PRIORITY)
+                    deadlinePassedColor
+                else
+                    priorityGradient[(tile.evaluatedPriority * GRADIENT_SIZE / (MAXIMUM_PRIORITY + 1)).toInt()]
         ),
         modifier = modifier
             .padding(10.dp)
