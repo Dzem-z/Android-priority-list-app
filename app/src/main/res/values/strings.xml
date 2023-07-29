@@ -25,11 +25,11 @@
     <string name="task_description">description</string>
     <string name="task_priority">priority</string>
     <string name="OK">OK</string>
-    <string name="selected_deadline">selected deadline: </string>
+    <string name="selected_deadline">selected deadline:&#160;</string>
     <string name="first_list">add your first list!</string>
-    <string name="priority">priority: </string>
-    <string name="description">description: </string>
-    <string name="deadline">deadline: </string>
+    <string name="priority">priority:&#160;</string>
+    <string name="description">description:&#160;</string>
+    <string name="deadline">deadline:&#160;</string>
     <string name="undo_alert">Do you want to undo previous action?</string>
     <string name="undo">undo</string>
 

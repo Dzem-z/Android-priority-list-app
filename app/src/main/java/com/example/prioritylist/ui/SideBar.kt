@@ -5,9 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text as Text3
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,28 +35,28 @@ fun SideBar(
             .fillMaxSize()
             .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 48.dp)
     ) {
-        Text(
+        Text3(
             stringResource(id = R.string.home),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clickable { goToHome() }
         )
-        Text(
+        Text3(
             stringResource(id = R.string.history),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clickable { goToHistory() }
         )
-        Text(
+        Text3(
             stringResource(id = R.string.settings),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .clickable { goToSettings() }
         )
-        Text(
+        Text3(
             stringResource(id = R.string.help),
             modifier = Modifier
                 .fillMaxWidth()
