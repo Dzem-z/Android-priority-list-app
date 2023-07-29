@@ -1,5 +1,6 @@
 package com.example.prioritylist.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text as Text3
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,17 @@ fun SideBar(
             .fillMaxSize()
             .padding(start = 24.dp, end = 24.dp, top = 48.dp, bottom = 48.dp)
     ) {
+        
+        Image(
+            painter = painterResource(id = R.drawable.prioritylist_icon_v2),
+            contentDescription = "priority list icon",
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(3f)
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
         Text3(
             stringResource(id = R.string.home),
             modifier = Modifier
@@ -63,7 +76,7 @@ fun SideBar(
                 .weight(1f)
                 .clickable { goToHelp() }
         )
-        Spacer(modifier = Modifier.weight(3f))
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
