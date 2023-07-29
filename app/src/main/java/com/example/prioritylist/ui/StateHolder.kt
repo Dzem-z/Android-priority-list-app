@@ -193,7 +193,7 @@ class StateHolder(
             }
         }
 
-        //updates all of the credentials of single list
+        //updates all of the credentials of a single list
         fun updateList() {
             setList(dataManager.getListUseCase())
             setHistoryList(dataManager.getHistoryListUseCase())
