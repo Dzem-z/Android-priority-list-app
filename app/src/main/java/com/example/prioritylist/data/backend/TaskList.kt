@@ -13,11 +13,19 @@ import java.util.Collections.max
 import java.util.Date
 import kotlin.math.*
 
-/*
-TODO(comments)
+/**
+ * [TaskList] is an abstract container class used for storing [Task] objects as well as managing [Storage]
+ * and providing access to [HistoryList]
+ *
+ * @param name is a name of a list
+ * @param id is a id of the list
+ * @param dateOfCreation is a date of creation of a list
+ * @param listRepository is a reference to the listRepository
+ * @param listOfTasks is a list of TaskType that holds every task of list being created
+ * @param historyTasks is a list of every [HistoryTask] that belongs to the [HistoryList] associated with the list
  */
 
-val MAXIMUM_PRIORITY = 100
+val MAXIMUM_PRIORITY = 100  //maximum numerical value possible holded by task.evaluatedPriority
 
 abstract class TaskList<TaskType: Task>(
     protected var name: String,
@@ -28,17 +36,32 @@ abstract class TaskList<TaskType: Task>(
     protected val historyTasks: MutableList<HistoryTask<TaskType>>
 ) {
 
-    var history: HistoryList<TaskType>
+    var history: HistoryList<TaskType>  //reference to HistoryList
 
     init{
-        history = HistoryList(listRepository, this, historyTasks)
+        history = HistoryList(listRepository, this, historyTasks)   //creates historyList and initializes it with tasks stored in the database
     }
 
-    protected open val storage: Storage<TaskType> = Storage<TaskType>()
+    protected open val storage: Storage<TaskType> = Storage<TaskType>() //reference to storage
 
+    /**
+     * [getPriority] returns numerical value that indicates current priority of the task identified by id. The higher the value the bigger the priority is
+     * @param id is an id of task
+     */
     abstract fun getPriority(id: Int): Double
+
+    /**
+     * [toTaskEntity] converts [Task] to [TaskEntity]
+     * @param task of [Task] type to be converted
+     */
     abstract fun toTaskEntity(task: TaskType): TaskEntity
 
+    /**
+     * [add] is an internal method called when task is being added to the list.
+     * It checks for duplicated task and empty name, inserts task to the list, and writes changes to the database.
+     * Returns proper [Status] object.
+     * @param task is a task of [Task] type that is being added
+     */
 
     @VisibleForTesting
     suspend internal open fun add(task: TaskType): Status {
@@ -53,6 +76,14 @@ abstract class TaskList<TaskType: Task>(
         listRepository.add(toTaskEntity(task))
         return Status(StatusCodes.SUCCESS)
     }
+
+    /**
+     * [delete] is an internal method called when task is being deleted from the list.
+     * It checks if the task is present in the list, removes task from the list, and writes changes to the database.
+     * Returns proper [Status] object.
+     * @param task is a task of [Task] type that is being deleted
+     */
+
     @VisibleForTesting
     suspend internal open fun delete(task: TaskType): Status {
         if (listOfTasks.find { it == task } == null){
@@ -64,13 +95,27 @@ abstract class TaskList<TaskType: Task>(
         return Status(StatusCodes.SUCCESS)
     }
 
+    /**
+     * [getName] returns the name of the list
+     */
+
     @JvmName("getNameTaskList")
     fun getName(): String {
         return name
     }
+
+    /**
+     * [getID] returns id of the list
+     */
+
     fun getID(): Int {
         return id
     }
+
+    /**
+     * [sort] sorts tasks by its priority. It is used when task is added to the list (or edited).
+     */
+
     protected fun sort() {
         for(i in listOfTasks) {
             getPriority(i.id)
@@ -81,26 +126,56 @@ abstract class TaskList<TaskType: Task>(
         normalizeIndexes()
     }
 
+    /**
+     * [normalizeIndexes] assigns an id equal to the task index in the list to each task.
+     */
+
     private fun normalizeIndexes() {
         listOfTasks.forEachIndexed { index, element -> element.id = index }
     }
 
+    /**
+     * [changeName] sets the list name to the newName
+     * @param newName is the new name of the list
+     */
+
     fun changeName(newName: String){
         name = newName
     }
+
+    /**
+     * [changeID] sets the list id to the newID
+     * @param newID is the new id of the list
+     */
     suspend fun changeID(newID: Int) {
         id = newID
     }
+
+    /**
+     * [getDateOfCreation] returns dateOfCreation
+     */
 
     @JvmName("getDateOfCreationTaskList")
     fun getDateOfCreation(): Date {
         return dateOfCreation
     }
 
+    /**
+     * [getList] returns [MutableList] of every task in the list, sorted by priority (id).
+     */
+
     fun getList(): MutableList<TaskType> {
         sort()
         return listOfTasks.toMutableList()
     }
+
+    /**
+     * [getTaskByName] returns [Task] identified by name
+     * @param name is a name of the task
+     *
+     * if task with name is not present in the list, [NoSuchElementException] is thrown.
+     */
+
     fun getTaskByName(name: String): TaskType {
         val element = listOfTasks.find { it.name == name }
         if (element != null)
@@ -108,9 +183,24 @@ abstract class TaskList<TaskType: Task>(
         else
             throw NoSuchElementException()
     }
+
+    /**
+     * [getTaskByID] returns [Task] identified by id
+     * @param id is an id of the task
+     *
+     * if task with id is not present in the list, [IndexOutOfBoundsException] is thrown.
+     */
+     */
+
     fun getTaskByID(id: Int): TaskType {
         return listOfTasks[id]
     }
+
+    /**
+     * [undo] is a method that rewerts last action (addTask, deleteTask, editTask).
+     * if there is no action to rewert, throws [Exception]
+      */
+
     suspend fun undo(): Status {
         if (storage.isEmpty())
             throw Exception()
@@ -130,13 +220,28 @@ abstract class TaskList<TaskType: Task>(
         return Status(StatusCodes.FAILURE)
     }
 
+    /**
+     * [isStorageEmpty] returns true if storage is empty, false otherwise
+     */
+
     fun isStorageEmpty(): Boolean {
         return storage.isEmpty()
     }
 
+    /**
+     *
+     */
+
     fun updatePriority() {
         TODO("Not yet implemented")
     }
+
+    /**
+     * [editTask] replaces the task with id: id to newTask.
+     * @param id is an id of the task to be replaced
+     * @param newTask is the task to replace old task
+     */
+
     suspend fun editTask(id: Int, newTask: TaskType): Status {
         val oldTask = getTaskByID(id)
         val status = delete(oldTask)
@@ -146,12 +251,22 @@ abstract class TaskList<TaskType: Task>(
         return add(newTask)
     }
 
-    suspend fun deleteTask(deletedTask: TaskType): Status {
-        val status = delete(deletedTask)
+    /**
+     * [deleteTask] deletes the task from the list
+     * @param taskToDelete is the task to be deleted
+     */
+
+    suspend fun deleteTask(taskToDelete: TaskType): Status {
+        val status = delete(taskToDelete)
         if (status.code == StatusCodes.SUCCESS)
-            storage.push(Delete(deletedTask))
+            storage.push(Delete(taskToDelete))
         return status
     }
+
+    /**
+     * [addTask] adds the task to the list
+     * @param newTask is the task to be added
+     */
 
     suspend fun addTask(newTask: TaskType): Status {
         storage.push(Add(newTask))
@@ -160,6 +275,10 @@ abstract class TaskList<TaskType: Task>(
 
 
 }
+
+/**
+ * [CategoryTaskList] ranks tasks by category. Every task has assigned category, every category has its own priority and color.
+ */
 
 class CategoryTaskList(
     name: String,
@@ -185,6 +304,10 @@ class CategoryTaskList(
         TODO("not yet implemented")
     }
 }
+
+/**
+ * [DeadlineTaskList] ranks tasks by deadline. the earlier the date, the higher the priority is. Tasks with deadline that already passed have different color from others.
+ */
 
 class DeadlineTaskList(
     name: String,

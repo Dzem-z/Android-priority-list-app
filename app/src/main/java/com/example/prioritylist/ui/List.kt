@@ -215,7 +215,7 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
         ),
         colors = CardDefaults.cardColors(
             containerColor = if (tile.evaluatedPriority > MAXIMUM_PRIORITY)
-                    deadlinePassedColor
+                    deadlinePassedColor //if deadline passed show as missed
                 else
                     priorityGradient[(tile.evaluatedPriority * GRADIENT_SIZE / (MAXIMUM_PRIORITY + 1)).toInt()]
         ),
