@@ -190,7 +190,6 @@ abstract class TaskList<TaskType: Task>(
      *
      * if task with id is not present in the list, [IndexOutOfBoundsException] is thrown.
      */
-     */
 
     fun getTaskByID(id: Int): TaskType {
         return listOfTasks[id]
