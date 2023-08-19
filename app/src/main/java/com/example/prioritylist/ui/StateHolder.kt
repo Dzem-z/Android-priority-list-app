@@ -63,7 +63,8 @@ class StateHolder(
 
         var duplicatedName by mutableStateOf(false) //same name already in list
         var emptyName by mutableStateOf(false)  //emptyName
-        var overflowError by mutableStateOf(false) //if number (priority, deadline, etc.) is too big
+        var priorityOverflowError by mutableStateOf(false) //if priority number is too big
+        var settingsOverflowError by mutableStateOf(false) //if settings number is too big
 
         var taskBottomSheetExpanded by mutableStateOf(true) //a state flag indicating if bottomSheet is expanded
 
@@ -79,16 +80,16 @@ class StateHolder(
         }
 
         fun setOverflowError() {
-            overflowError = true
+            priorityOverflowError = true
         }
 
         //checks for overflowError and sets overflowError flag accordingly
         fun checkForOverflowError(str: String): Boolean {
             if (str.length > 3)
-                overflowError = true
+                priorityOverflowError = true
             else
-                overflowError = false
-            return overflowError
+                priorityOverflowError = false
+            return priorityOverflowError
         }
 
         //clears all errors
@@ -253,7 +254,30 @@ class StateHolder(
 
     val Read = ReadViewModel()
 
+    /**
+     * [SettingsManager] manages [UserPreferencesRepository]. It bridges UI with [UserPreferencesRepository].
+     * @param userPreferencesRepository is a reference to [UserPreferencesRepository]
+     */
 
+    class SettingsManager(
+        private val userPreferencesRepository: UserPreferencesRepository
+    ): ViewModel() {
+
+        fun saveDeadlinePeriodDays(period: UInt) {
+            viewModelScope.launch {
+                userPreferencesRepository.saveDeadlinePeriodDays(period)
+            }
+        }
+
+        val deadlinePeriodDays: StateFlow<UInt> = userPreferencesRepository.deadlinePeriodDays
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = userPreferencesRepository.THREE_DAYS
+            )
+    }
+
+    val Settings = SettingsManager(userPreferencesRepository)
 
 
     fun setName(): Status {

@@ -217,9 +217,9 @@ fun EditTaskScreen(
                 TextField(
                     value = priorityTextFieldValueState,
                     label = { Text(text = stringResource(id = R.string.task_priority)) },
-                    isError = holder.UI.overflowError,
+                    isError = holder.UI.priorityOverflowError,
                     trailingIcon = {
-                        if (holder.UI.overflowError)
+                        if (holder.UI.priorityOverflowError)
                             Icon(Icons.Outlined.Error, stringResource(id = R.string.error), tint = MaterialTheme.colorScheme.error)
                     },
                     onValueChange = {
@@ -245,7 +245,7 @@ fun EditTaskScreen(
                     )
                 )
 
-                if (holder.UI.overflowError) {//error messages
+                if (holder.UI.priorityOverflowError) {//error messages
                     Text(
                         text = stringResource(id = R.string.overflow_error_3),
                         color = MaterialTheme.colorScheme.error,

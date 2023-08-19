@@ -17,7 +17,8 @@ object AppViewModelProvider {
             StateHolder(
                 priorityListApplication().container.listRepository,
                 priorityListApplication().container.mainRepository,
-                priorityListApplication().container.mainPageRepository
+                priorityListApplication().container.mainPageRepository,
+                priorityListApplication().userPreferencesRepository
             )
         }
     }

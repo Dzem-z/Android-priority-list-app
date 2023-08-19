@@ -81,6 +81,9 @@ fun MainPageScreen(
 
                     },
                     goToSettings = {
+                        navController.navigate("Settings"){
+                            popUpTo(0)
+                        }
 
                         coroutineScope.launch {
                             drawerState.open()  //duplicated due to bug in animation
@@ -231,6 +234,17 @@ fun MainPageScreen(
                     onAddList = {
                         navController.navigate("AddList")
                     },
+                    displaySidebar = {
+                        displaySidebar()
+                    }
+                )
+            }
+
+            composable(
+                route = "Settings"
+            ) {
+                SettingsPage(
+                    holder = holder,
                     displaySidebar = {
                         displaySidebar()
                     }
