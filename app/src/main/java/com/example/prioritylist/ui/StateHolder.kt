@@ -12,24 +12,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.prioritylist.data.backend.Category
-import com.example.prioritylist.data.backend.CategoryTask
-import com.example.prioritylist.data.backend.CategoryTaskList
-import com.example.prioritylist.data.backend.DeadlineCategoryTask
-import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
-import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTask
-import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
-import com.example.prioritylist.data.backend.DeadlinePriorityTask
-import com.example.prioritylist.data.backend.DeadlineTask
+import androidx.lifecycle.viewModelScope
 import com.example.prioritylist.data.backend.HistoryTask
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.MainRepository
-import com.example.prioritylist.data.database.OfflineListRepository
-import com.example.prioritylist.data.backend.PriorityTask
-import com.example.prioritylist.data.backend.StatusCodes
+import com.example.prioritylist.data.backend.UserPreferencesRepository
 import com.example.prioritylist.domain.DataManager
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
@@ -40,14 +32,17 @@ import java.util.Date
 * @param listRepository is a reference to [listRepository] class
 * @param mainRepository is a reference to [MainRepository] class
 * @param mainPageRepository is a reference to [MainPageRepository] class
-* all of these should be initialized with [AppContainer]
+ * @param userPreferencesRepository is a reference to [UserPreferencesRepository] class
+* all of these should be initialized with [AppViewModelProvider]
 *  */
 
 class StateHolder(
     private val listRepository: ListRepository,
     private val mainRepository: MainRepository,
-    private val mainPageRepository: MainPage
+    private val mainPageRepository: MainPage,
+    private val userPreferencesRepository: UserPreferencesRepository
     ) : ViewModel() {
+
     /**
      * [UiViewModel] is responsible for all state-related actions that do not require any database data nor any backend interference
      */
@@ -68,6 +63,7 @@ class StateHolder(
 
         var duplicatedName by mutableStateOf(false) //same name already in list
         var emptyName by mutableStateOf(false)  //emptyName
+        var overflowError by mutableStateOf(false) //if number (priority, deadline, etc.) is too big
 
         var taskBottomSheetExpanded by mutableStateOf(true) //a state flag indicating if bottomSheet is expanded
 
@@ -80,6 +76,19 @@ class StateHolder(
         fun setEmptyNameError() {
             badName = true
             emptyName = true
+        }
+
+        fun setOverflowError() {
+            overflowError = true
+        }
+
+        //checks for overflowError and sets overflowError flag accordingly
+        fun checkForOverflowError(str: String): Boolean {
+            if (str.length > 3)
+                overflowError = true
+            else
+                overflowError = false
+            return overflowError
         }
 
         //clears all errors
