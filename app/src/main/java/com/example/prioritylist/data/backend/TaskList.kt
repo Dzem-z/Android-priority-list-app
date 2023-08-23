@@ -11,6 +11,7 @@ import java.util.Calendar
 import java.util.Collections.list
 import java.util.Collections.max
 import java.util.Date
+import java.util.concurrent.TimeUnit
 import kotlin.math.*
 
 /**
@@ -373,8 +374,13 @@ class DeadlineTaskList(
         val dateInt = currentTask.deadline.toInstant().toEpochMilli()
         today = Calendar.getInstance().timeInMillis
 
+        if (maximumDeadline < today) {
+            maximumDeadline = today + TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
+        }
+
         currentTask.evaluatedPriority = sqrt(1 - (dateInt - today)  * 1.0 / (maximumDeadline - today)) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
+        //priorities higher than 100 indicate that deadline has passed
         return currentTask.evaluatedPriority
     }
 }
@@ -436,7 +442,6 @@ class PriorityTaskList(
 
         currentTask.evaluatedPriority = sqrt(currentPriority * 1.0/maximumPriority ) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
-        //priorities higher than 100 indicate that deadline has passed
         return currentTask.evaluatedPriority
     }
 }
