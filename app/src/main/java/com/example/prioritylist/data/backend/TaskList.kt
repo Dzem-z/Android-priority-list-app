@@ -401,9 +401,11 @@ class PriorityTaskList(
     historyTasks = historyTasks
 ) {
     private var maximumPriority = Int.MIN_VALUE
+    private var minimumPriority = Int.MAX_VALUE
 
     init {
         maximumPriority = super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE
+        minimumPriority = super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE
     }
 
     override fun toTaskEntity(task: PriorityTask): TaskEntity {
@@ -422,16 +424,25 @@ class PriorityTaskList(
 
     override suspend fun add(task: PriorityTask): Status {
         val status = super.add(task)
-        if (status.code == StatusCodes.SUCCESS)
+        if (status.code == StatusCodes.SUCCESS) {
             maximumPriority = max(
                 super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
-                task.priority)
+                task.priority
+            )
+            minimumPriority = min(
+                super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
+                task.priority
+            )
+        }
         return status
     }
 
     override suspend fun delete(task: PriorityTask): Status {
         maximumPriority = max(
             super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
+            task.priority)
+        minimumPriority = max(
+            super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
             task.priority)
         return super.delete(task)
     }
@@ -440,8 +451,8 @@ class PriorityTaskList(
         val currentTask = super.listOfTasks[id]
         val currentPriority = currentTask.priority
 
-        currentTask.evaluatedPriority = sqrt(currentPriority * 1.0/maximumPriority ) * MAXIMUM_PRIORITY
-        //evaluates priority: scales between 0 - 100 asymptotically to root function
+        currentTask.evaluatedPriority = sqrt((currentPriority - minimumPriority) * 1.0/(maximumPriority - minimumPriority)) * MAXIMUM_PRIORITY
+        //evaluates priority: scales values on range min priority - max priority to 0 - 100 asymptotically to root function
         return currentTask.evaluatedPriority
     }
 }
