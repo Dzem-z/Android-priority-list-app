@@ -12,24 +12,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import com.example.prioritylist.data.backend.Category
-import com.example.prioritylist.data.backend.CategoryTask
-import com.example.prioritylist.data.backend.CategoryTaskList
-import com.example.prioritylist.data.backend.DeadlineCategoryTask
-import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
-import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTask
-import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
-import com.example.prioritylist.data.backend.DeadlinePriorityTask
-import com.example.prioritylist.data.backend.DeadlineTask
+import androidx.lifecycle.viewModelScope
 import com.example.prioritylist.data.backend.HistoryTask
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.MainRepository
-import com.example.prioritylist.data.database.OfflineListRepository
-import com.example.prioritylist.data.backend.PriorityTask
-import com.example.prioritylist.data.backend.StatusCodes
+import com.example.prioritylist.data.backend.UserPreferencesRepository
 import com.example.prioritylist.domain.DataManager
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
@@ -40,14 +32,17 @@ import java.util.Date
 * @param listRepository is a reference to [listRepository] class
 * @param mainRepository is a reference to [MainRepository] class
 * @param mainPageRepository is a reference to [MainPageRepository] class
-* all of these should be initialized with [AppContainer]
+ * @param userPreferencesRepository is a reference to [UserPreferencesRepository] class
+* all of these should be initialized with [AppViewModelProvider]
 *  */
 
 class StateHolder(
     private val listRepository: ListRepository,
     private val mainRepository: MainRepository,
-    private val mainPageRepository: MainPage
+    private val mainPageRepository: MainPage,
+    private val userPreferencesRepository: UserPreferencesRepository
     ) : ViewModel() {
+
     /**
      * [UiViewModel] is responsible for all state-related actions that do not require any database data nor any backend interference
      */
@@ -68,6 +63,8 @@ class StateHolder(
 
         var duplicatedName by mutableStateOf(false) //same name already in list
         var emptyName by mutableStateOf(false)  //emptyName
+        var priorityOverflowError by mutableStateOf(false) //if priority number is too big
+        var settingsOverflowError by mutableStateOf(false) //if settings number is too big
 
         var taskBottomSheetExpanded by mutableStateOf(true) //a state flag indicating if bottomSheet is expanded
 
@@ -80,6 +77,19 @@ class StateHolder(
         fun setEmptyNameError() {
             badName = true
             emptyName = true
+        }
+
+        fun setOverflowError() {
+            priorityOverflowError = true
+        }
+
+        //checks for overflowError and sets overflowError flag accordingly
+        fun checkForOverflowError(str: String): Boolean {
+            if (str.length > 3)
+                priorityOverflowError = true
+            else
+                priorityOverflowError = false
+            return priorityOverflowError
         }
 
         //clears all errors
@@ -177,7 +187,7 @@ class StateHolder(
         //assigns list to the variable exposing it to the UI
         @VisibleForTesting
         internal fun setList(list: MutableList<out Task>) {
-            if (currentListIndex.value.equals(0)){
+            if (currentListIndex.value == 0){
                 firstList = list
             } else {
                 secondList = list
@@ -186,7 +196,7 @@ class StateHolder(
 
         //assigns list to the variable exposing it to the UI
         internal fun setHistoryList(list: MutableList<out HistoryTask<out Task>>){
-            if(currentListIndex.value.equals(0)){
+            if(currentListIndex.value == 0){
                 firstHistoryList = list
             } else {
                 secondHistoryList = list
@@ -201,10 +211,11 @@ class StateHolder(
             isNextList = isNextListPresent()
             UI.currentListName = dataManager.getNameUseCase()
             isStorageEmpty = dataManager.isStorageEmptyUseCase()
+            setCurrentType(dataManager.getCurrentType()?: TaskTypes.PRIORITY)
         }
 
         fun getList(): MutableList<out Task> {
-            return if (currentListIndex.value.equals(0))
+            return if (currentListIndex.value == 0)
                 firstList
             else
                 secondList
@@ -215,14 +226,14 @@ class StateHolder(
         }
 
         fun getCurrentType(): TaskTypes {
-            return if (currentListIndex.value.equals(0))
+            return if (currentListIndex.value == 0)
                 firstType
             else
                 secondType
         }
 
         fun setCurrentType(type: TaskTypes) {
-            if (currentListIndex.value.equals(0))
+            if (currentListIndex.value == 0)
                 firstType = type
             else
                 secondType = type
@@ -243,7 +254,30 @@ class StateHolder(
 
     val Read = ReadViewModel()
 
+    /**
+     * [SettingsManager] manages [UserPreferencesRepository]. It bridges UI with [UserPreferencesRepository].
+     * @param userPreferencesRepository is a reference to [UserPreferencesRepository]
+     */
 
+    class SettingsManager(
+        private val userPreferencesRepository: UserPreferencesRepository
+    ): ViewModel() {
+
+        fun saveDeadlinePeriodDays(period: UInt) {
+            viewModelScope.launch {
+                userPreferencesRepository.saveDeadlinePeriodDays(period)
+            }
+        }
+
+        val deadlinePeriodDays: StateFlow<UInt> = userPreferencesRepository.deadlinePeriodDays
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = userPreferencesRepository.THREE_DAYS
+            )
+    }
+
+    val Settings = SettingsManager(userPreferencesRepository)
 
 
     fun setName(): Status {

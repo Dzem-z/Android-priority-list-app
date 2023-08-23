@@ -188,6 +188,7 @@ fun EditTaskScreen(
             TextField(
                 value = descriptionTextFieldValueState,
                 label = { Text(text = stringResource(id = R.string.task_description)) },
+
                 onValueChange = {
                     descriptionTextFieldValueState = it
                     holder.UI.updateDescriptionOfEditedTask(it.text)
@@ -216,9 +217,16 @@ fun EditTaskScreen(
                 TextField(
                     value = priorityTextFieldValueState,
                     label = { Text(text = stringResource(id = R.string.task_priority)) },
+                    isError = holder.UI.priorityOverflowError,
+                    trailingIcon = {
+                        if (holder.UI.priorityOverflowError)
+                            Icon(Icons.Outlined.Error, stringResource(id = R.string.error), tint = MaterialTheme.colorScheme.error)
+                    },
                     onValueChange = {
-                        priorityTextFieldValueState = it
-                        holder.UI.updatePriorityOfEditedTask(it.text)
+                        if (!holder.UI.checkForOverflowError(it.text)) {
+                            priorityTextFieldValueState = it
+                            holder.UI.updatePriorityOfEditedTask(it.text)
+                        }
                                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
@@ -236,6 +244,15 @@ fun EditTaskScreen(
                         onDone = { onConfirm() }
                     )
                 )
+
+                if (holder.UI.priorityOverflowError) {//error messages
+                    Text(
+                        text = stringResource(id = R.string.overflow_error_3),
+                        color = MaterialTheme.colorScheme.error,
+                        //style = MaterialTheme.typography.caption,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
 
                 Spacer(
                     Modifier.padding(12.dp)

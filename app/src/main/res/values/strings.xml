@@ -19,9 +19,12 @@
     <string name="add_new_list">add new list</string>
     <string name="go_to_history">go to history</string>
     <string name="task_name">task name</string>
+
     <string name="error">error</string>
     <string name="empty_task_name_error">task name can\'t be empty</string>
     <string name="duplicated_task_error">task with given name already in list</string>
+    <string name="overflow_error_3">number can\'t be greater than 1000</string>
+
     <string name="task_description">description</string>
     <string name="task_priority">priority</string>
     <string name="OK">OK</string>

@@ -20,8 +20,12 @@ import com.example.prioritylist.data.database.TaskEntity
 import java.util.Date
 import kotlin.reflect.KClass
 
-/*
-TODO(comments)
+/**
+ * [TaskTypes] is an enum that holds an information about specified type such as presence of certain attributes.
+ * It is also capable of creating list holding specified type and can convert from [ModifiableTask]
+ *
+ * @param taskType is [KClass] of the specified task type
+ * @param listType is [KClass] of the specified list type
  */
 
 enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out TaskList<*>>) {
@@ -161,9 +165,21 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
         }
                                                             };
 
-    abstract fun hasPriority(): Boolean
-    abstract fun hasCategory(): Boolean
-    abstract fun hasDeadline(): Boolean
+
+    abstract fun hasPriority(): Boolean //returns true if list of that type has priority
+    abstract fun hasCategory(): Boolean //returns true if list of that type has category
+    abstract fun hasDeadline(): Boolean //returns true if list of that type has deadline
+
+    /**
+     * create is an factory method that produces [TaskList]
+     *
+     * @param name is a name of list
+     * @param id is a id of list
+     * @param dateOfCreation is a date of creation of a list
+     * @param listRepository is a reference to the listRepository
+     * @param listOfEntities is a list of [TaskEntity] of this list
+     * @param listOfHistoryEntities is a list of [TaskEntity] of history list associated with that list
+     */
 
     abstract fun create(
         name: String,
@@ -174,9 +190,15 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
         listOfHistoryEntities: List<TaskEntity> = listOf()
     ): TaskList<out Task>
 
+    /**
+     * converts [ModifiableTask] to [Task] of specified type
+     *
+     * @param editedTask task to be converted from
+     */
+
     abstract fun toTask(editedTask: ModifiableTask): Task
 }
 
-val listOfTypes = arrayOf(
+val listOfTypes = arrayOf(  //list of types used by TaskList
     TaskTypes.PRIORITY, TaskTypes.DEADLINE
 )

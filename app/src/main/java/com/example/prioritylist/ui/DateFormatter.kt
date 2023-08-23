@@ -17,31 +17,31 @@ fun dateFormatter(date: Date): String {
 
 internal fun getDayOfWeek(day: Int): String{
     return when(day) {
-        1 -> "Monday"
-        2 -> "Tuesday"
-        3 -> "Wednesday"
-        4 -> "Thursday"
-        5 -> "Friday"
-        6 -> "Saturday"
-        7 -> "Sunday"
+        Calendar.MONDAY -> "Monday"
+        Calendar.TUESDAY -> "Tuesday"
+        Calendar.WEDNESDAY -> "Wednesday"
+        Calendar.THURSDAY -> "Thursday"
+        Calendar.FRIDAY -> "Friday"
+        Calendar.SATURDAY -> "Saturday"
+        Calendar.SUNDAY -> "Sunday"
         else -> "error"
     }
 }
 
 internal fun getMonth(month: Int): String{
     return when(month) {
-        1 -> "January"
-        2 -> "February"
-        3 -> "March"
-        4 -> "April"
-        5 -> "May"
-        6 -> "June"
-        7 -> "July"
-        8 -> "August"
-        9 -> "September"
-        10 -> "October"
-        11 -> "November"
-        12 -> "December"
+        Calendar.JANUARY -> "January"
+        Calendar.FEBRUARY -> "February"
+        Calendar.MARCH -> "March"
+        Calendar.APRIL -> "April"
+        Calendar.MAY -> "May"
+        Calendar.JUNE -> "June"
+        Calendar.JULY -> "July"
+        Calendar.AUGUST -> "August"
+        Calendar.SEPTEMBER -> "September"
+        Calendar.OCTOBER -> "October"
+        Calendar.NOVEMBER -> "November"
+        Calendar.DECEMBER -> "December"
         else -> "error"
     }
 }

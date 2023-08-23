@@ -38,5 +38,4 @@ class AppDataContainer(private val context: Context): AppContainer {
     }
 
     override val mainPageRepository : MainPage = MainPage(listRepository, mainRepository)
-
 }

@@ -2,7 +2,6 @@ package com.example.prioritylist.domain
 
 import com.example.prioritylist.data.backend.*
 import com.example.prioritylist.data.backend.MainPage
-import com.example.prioritylist.data.backend.Settings
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.backend.TaskTypes
@@ -15,14 +14,12 @@ import java.util.Date
  * @param mainRepository is a link to main repository
  * @param listRepository is a link to list repository
  * @param mainPage is an instance of MainPage class that manages all lists
- * @param settings is an instance of Settings class //TODO("not yet implemented")
  * */
 
 class DataManager(
     private val mainRepository: MainRepository,
     private val listRepository: ListRepository,
     private val mainPage: MainPage = MainPage(listRepository, mainRepository),
-    private val settings: Settings = Settings()
 ) {
 
     //suspended function that adds task to the current list
@@ -121,6 +118,11 @@ class DataManager(
         } else {
             return list.history.getList()
         }
+    }
+
+    //returns current type
+    fun getCurrentType(): TaskTypes? {
+        return mainPage.currentType
     }
 
     //deletes task identified by name from history of current list
