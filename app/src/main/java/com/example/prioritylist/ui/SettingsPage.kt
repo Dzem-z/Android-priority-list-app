@@ -6,6 +6,10 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
 import com.example.prioritylist.data.database.Converters
+import com.example.prioritylist.ui.theme.ThemeID
 import kotlinx.coroutines.flow.toSet
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsPage(
    modifier: Modifier = Modifier,
@@ -39,7 +45,7 @@ fun SettingsPage(
    displaySidebar: () -> Unit = {}
 ) {
 
-
+   val theme = holder.Settings.themeIdStateFlow.collectAsState()
 
    var deadlinePeriodTextFieldValueState by remember {
       mutableStateOf(
@@ -49,6 +55,8 @@ fun SettingsPage(
          )
       )
    }
+
+   var isExpandedMenu by remember { mutableStateOf(false) }
 
    Scaffold(
       topBar = {
@@ -74,6 +82,39 @@ fun SettingsPage(
       }
    ) { innerPadding ->
       Column(modifier = Modifier.padding(innerPadding)){
+
+         ExposedDropdownMenuBox(
+            expanded = isExpandedMenu,
+            onExpandedChange = {
+               isExpandedMenu = !isExpandedMenu
+            }
+         ) {
+            TextField(
+               value = theme.value.themeName,
+               singleLine = true,
+               label = { Text(text = stringResource(id = R.string.select_theme)) },
+               onValueChange = {},
+               readOnly = true,
+               trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpandedMenu) },
+               modifier = Modifier.menuAnchor()
+            )
+
+            ExposedDropdownMenu(
+               expanded = isExpandedMenu,
+               onDismissRequest = { isExpandedMenu = false }
+            ) {
+               ThemeID.values().forEach { item ->
+                  DropdownMenuItem(
+                     text = {
+                            Text(text = item.themeName)
+                     },
+                     onClick = {
+                        holder.Settings.saveThemeId(item)
+                     }
+                  )
+               }
+            }
+         }
 
          Text(text = "deadline period: " + holder.Settings.deadlinePeriodDays.collectAsState().value.toString() + " days")
 

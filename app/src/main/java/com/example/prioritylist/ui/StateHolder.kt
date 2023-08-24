@@ -7,6 +7,7 @@ import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskTypes
 import com.example.prioritylist.data.backend.MainPage
+import com.example.prioritylist.ui.theme.ThemeID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -262,6 +263,19 @@ class StateHolder(
     class SettingsManager(
         private val userPreferencesRepository: UserPreferencesRepository
     ): ViewModel() {
+
+        fun saveThemeId(id: ThemeID) {
+            viewModelScope.launch {
+                userPreferencesRepository.saveThemeId(id)
+            }
+        }
+
+        val themeIdStateFlow: StateFlow<ThemeID> = userPreferencesRepository.themeIdFlow
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = userPreferencesRepository.THEME_INIT
+            )
 
         fun saveDeadlinePeriodDays(period: UInt) {
             viewModelScope.launch {
