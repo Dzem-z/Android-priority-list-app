@@ -57,6 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.icons.rounded.Undo
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -200,8 +201,8 @@ fun ListContainer(
                             enabled = !holder.Read.isStorageEmpty
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.undo_48px),
-                                tint = if (!holder.Read.isStorageEmpty) Color.White else Color.Transparent,
+                                imageVector = Icons.Rounded.Undo,
+                                tint = if (!holder.Read.isStorageEmpty) MaterialTheme.colorScheme.onSurfaceVariant else Color.Transparent,
                                 modifier = Modifier.scale(0.85f),
                                 contentDescription = "Drawer Icon"
                             )
@@ -319,6 +320,7 @@ fun ListContainer(
                     }
 
                 }
+
                 /*
                 * when user navigates to the next list, states change and animation is launched
                 * */
