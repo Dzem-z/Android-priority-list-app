@@ -1,6 +1,11 @@
 package com.example.prioritylist.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -14,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -22,15 +28,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
 import com.example.prioritylist.data.database.Converters
+import com.example.prioritylist.ui.theme.PriorityListTheme
 import com.example.prioritylist.ui.theme.ThemeID
 import kotlinx.coroutines.flow.toSet
 import java.util.Calendar
@@ -83,38 +92,67 @@ fun SettingsPage(
    ) { innerPadding ->
       Column(modifier = Modifier.padding(innerPadding)){
 
-         ExposedDropdownMenuBox(
-            expanded = isExpandedMenu,
-            onExpandedChange = {
-               isExpandedMenu = !isExpandedMenu
-            }
+         Text(
+            text = stringResource(id = R.string.theme_settings),
+            modifier = Modifier.padding(12.dp)
+         )
+
+         //Spacer(modifier = Modifier.padding(6.dp))
+
+         Row(
+            modifier = Modifier
+               .fillMaxWidth()
+               .padding(12.dp)
          ) {
-            TextField(
-               value = theme.value.themeName,
-               singleLine = true,
-               label = { Text(text = stringResource(id = R.string.select_theme)) },
-               onValueChange = {},
-               readOnly = true,
-               trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpandedMenu) },
-               modifier = Modifier.menuAnchor()
+            Text(
+               modifier = modifier
+                  .fillMaxWidth()
+                  .weight(1f)
+                  .padding(vertical = 14.dp)
+               ,
+               textAlign = TextAlign.Center,
+               text = "select theme:"
             )
 
-            ExposedDropdownMenu(
+            Spacer(modifier = Modifier.padding(12.dp))
+
+            ExposedDropdownMenuBox(
                expanded = isExpandedMenu,
-               onDismissRequest = { isExpandedMenu = false }
+               onExpandedChange = {
+                  isExpandedMenu = !isExpandedMenu
+               },
+               modifier = Modifier
+                  .fillMaxWidth()
+                  .weight(2f)
             ) {
-               ThemeID.values().forEach { item ->
-                  DropdownMenuItem(
-                     text = {
-                            Text(text = item.themeName)
-                     },
-                     onClick = {
-                        holder.Settings.saveThemeId(item)
-                     }
-                  )
+               TextField(
+                  value = theme.value.themeName,
+                  singleLine = true,
+                  onValueChange = {},
+                  readOnly = true,
+                  trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpandedMenu) },
+                  modifier = Modifier.menuAnchor()
+               )
+
+               ExposedDropdownMenu(
+                  expanded = isExpandedMenu,
+                  onDismissRequest = { isExpandedMenu = false }
+               ) {
+                  ThemeID.values().forEach { item ->
+                     DropdownMenuItem(
+                        text = {
+                           Text(text = item.themeName)
+                        },
+                        onClick = {
+                           holder.Settings.saveThemeId(item)
+                        }
+                     )
+                  }
                }
             }
          }
+
+         Spacer(modifier = Modifier.padding(16.dp))
 
          Text(text = "deadline period: " + holder.Settings.deadlinePeriodDays.collectAsState().value.toString() + " days")
 
@@ -151,5 +189,16 @@ fun SettingsPage(
 @Preview(showBackground = true)
 @Composable
 fun SettingsPagePreview(){
-   SettingsPage()
+   val viewModel: StateHolder = viewModel(factory = AppViewModelProvider.Factory)
+   val theme = viewModel.Settings.themeIdStateFlow.collectAsState()
+
+   PriorityListTheme(theme.value) {  //initializes apps theme with proper theme according to ThemeID val read from dataStore object
+      // A surface container using the 'background' color from the theme
+      Surface(
+         modifier = Modifier.fillMaxSize(),
+         color = MaterialTheme.colorScheme.background
+      ) {
+         SettingsPage(holder = viewModel)
+      }
+   }
 }

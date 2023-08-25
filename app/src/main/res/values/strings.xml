@@ -20,6 +20,7 @@
     <string name="go_to_history">go to history</string>
     <string name="task_name">task name</string>
     <string name="select_theme">selected theme</string>
+    <string name="theme_settings">theme settings:</string>
 
     <string name="error">error</string>
     <string name="empty_task_name_error">task name can\'t be empty</string>
