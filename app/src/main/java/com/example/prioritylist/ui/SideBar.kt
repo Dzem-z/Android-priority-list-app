@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text as Text3
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -53,28 +54,32 @@ fun SideBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .clickable { goToHome() }
+                .clickable { goToHome() },
+            style = MaterialTheme.typography.titleMedium
         )
         Text3(
             stringResource(id = R.string.history),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .clickable { goToHistory() }
+                .clickable { goToHistory() },
+            style = MaterialTheme.typography.titleMedium
         )
         Text3(
             stringResource(id = R.string.settings),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .clickable { goToSettings() }
+                .clickable { goToSettings() },
+            style = MaterialTheme.typography.titleMedium
         )
         Text3(
             stringResource(id = R.string.help),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .clickable { goToHelp() }
+                .clickable { goToHelp() },
+            style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.weight(1f))
     }

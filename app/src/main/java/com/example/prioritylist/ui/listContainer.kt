@@ -292,7 +292,8 @@ fun ListContainer(
                         shape = RectangleShape
                     ) {
                         Text(
-                            holder.Read.getName()
+                            text = holder.Read.getName(),
+                            style = MaterialTheme.typography.headlineSmall
                         )
                     }
 

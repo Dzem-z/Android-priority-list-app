@@ -22,7 +22,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -176,7 +178,8 @@ fun PriorityTaskTile(tile: PriorityTask, modifier: Modifier = Modifier) {
             Row {
                 Text(
                     text = tile.name,
-                    modifier = Modifier.weight(3f)
+                    modifier = Modifier.weight(3f),
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 IconButton(
@@ -191,14 +194,20 @@ fun PriorityTaskTile(tile: PriorityTask, modifier: Modifier = Modifier) {
             }
 
             Row {
-                Text(text = stringResource(id = R.string.priority) + tile.priority)
+                Text(
+                    text = stringResource(id = R.string.priority) + tile.priority,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
             if(expanded){
 
                 Spacer(modifier = Modifier.padding(6.dp))
 
-                Text(text = stringResource(id = R.string.description) + tile.description)
+                Text(
+                    text = stringResource(id = R.string.description) + tile.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
         }
@@ -236,7 +245,8 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
             Row {
                 Text(
                     text = tile.name,
-                    modifier = Modifier.weight(3f)
+                    modifier = Modifier.weight(3f),
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 IconButton(
@@ -250,14 +260,20 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
                 }
             }
             Row{
-                Text(text = stringResource(id = R.string.deadline) + dateFormatter(tile.deadline))
+                Text(
+                    text = stringResource(id = R.string.deadline) + dateFormatter(tile.deadline),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
             if(expanded){
 
                 Spacer(modifier = Modifier.padding(6.dp))
 
-                Text(text = stringResource(id = R.string.description) + tile.description)
+                Text(
+                    text = stringResource(id = R.string.description) + tile.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
         }

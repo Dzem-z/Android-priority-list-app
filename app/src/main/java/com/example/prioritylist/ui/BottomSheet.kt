@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.focus.FocusRequester
@@ -124,7 +125,7 @@ fun ListOptionsSheet(
     var textFieldValueState by remember {
         mutableStateOf(
             TextFieldValue(
-                text = viewModel.UI.currentListName
+                text = viewModel.UI.currentListName,
             )
         )
     }
@@ -151,7 +152,9 @@ fun ListOptionsSheet(
                         viewModel.UI.currentListName = it.text
                         viewModel.setName()
                     },
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                    textStyle = MaterialTheme.typography.titleMedium.copy(
+                        textAlign = TextAlign.Center
+                    ),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
                     ),
@@ -168,6 +171,7 @@ fun ListOptionsSheet(
             } else {
                 Text(
                     text = viewModel.UI.currentListName,
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(3f)
 
@@ -196,6 +200,7 @@ fun ListOptionsSheet(
         }
         Text(
             text = viewModel.Read.getDateOfCreation().toString(),
+            style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center
         )
         Text(
@@ -207,7 +212,8 @@ fun ListOptionsSheet(
                 TaskTypes.DEADLINE_CATEGORY -> stringResource(id = R.string.deadline_category_task)
                 TaskTypes.CATEGORY -> stringResource(id = R.string.category_task)
             },
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Row(
@@ -231,7 +237,10 @@ fun ListOptionsSheet(
                         painter = painterResource(id = R.drawable.swap_horiz_48px),
                         contentDescription = "drawer icon"
                     )
-                    Text(text = stringResource(id = R.string.left_swap))
+                    Text(
+                        text = stringResource(id = R.string.left_swap),
+                        style = MaterialTheme.typography.titleSmall
+                    )
                 }
             }
 
@@ -242,19 +251,28 @@ fun ListOptionsSheet(
                 OutlinedButton(
                     onClick = removeList
                 ) {
-                    Text(text = stringResource(id = R.string.remove_list))
+                    Text(
+                        text = stringResource(id = R.string.remove_list),
+                        style = MaterialTheme.typography.titleSmall
+                    )
                 }
 
                 OutlinedButton(
                     onClick = addList
                 ) {
-                    Text(text = stringResource(id = R.string.add_new_list))
+                    Text(
+                        text = stringResource(id = R.string.add_new_list),
+                        style = MaterialTheme.typography.titleSmall
+                    )
                 }
 
                 Button(
                     onClick = goToHistory
                 ) {
-                    Text(text = stringResource(id = R.string.go_to_history))
+                    Text(
+                        text = stringResource(id = R.string.go_to_history),
+                        style = MaterialTheme.typography.titleSmall
+                    )
                 }
             }
 
@@ -276,7 +294,10 @@ fun ListOptionsSheet(
                         contentDescription = "drawer icon"
                     )
 
-                    Text(text = stringResource(id = R.string.right_swap))
+                    Text(
+                        text = stringResource(id = R.string.right_swap),
+                        style = MaterialTheme.typography.titleSmall
+                    )
                 }
             }
 

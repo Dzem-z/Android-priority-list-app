@@ -24,6 +24,8 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.ui.theme.PriorityListTheme
+import com.example.prioritylist.ui.theme.ThemeID
 
 /**
 * [HistoryListContainer] is a composable with functionality analogous to the listContainer
@@ -100,7 +102,8 @@ fun HistoryListContainer(
                     shape = RectangleShape
                 ) {
                     Text(
-                        holder.Read.getName() + " history"
+                        text = holder.Read.getName() + " history",
+                        style = MaterialTheme.typography.headlineSmall
                     )
                 }
 
@@ -158,5 +161,7 @@ fun HistoryListContainer(
 @Preview(showBackground = true)
 @Composable
 fun HistoryListContainerPreview() {
-    HistoryListContainer()
+    PriorityListTheme(themeId = ThemeID.FIRST) {
+        HistoryListContainer()
+    }
 }

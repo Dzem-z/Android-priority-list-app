@@ -94,7 +94,8 @@ fun SettingsPage(
 
          Text(
             text = stringResource(id = R.string.theme_settings),
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
+            style = MaterialTheme.typography.headlineMedium
          )
 
          //Spacer(modifier = Modifier.padding(6.dp))
@@ -111,7 +112,8 @@ fun SettingsPage(
                   .padding(vertical = 14.dp)
                ,
                textAlign = TextAlign.Center,
-               text = "select theme:"
+               text = "select theme:",
+               style = MaterialTheme.typography.titleSmall
             )
 
             Spacer(modifier = Modifier.padding(12.dp))
