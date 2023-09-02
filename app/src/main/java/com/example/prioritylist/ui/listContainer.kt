@@ -132,14 +132,7 @@ fun ListContainer(
 
     val roundedCornerRadius = 12.dp //used in [modalBottomSheetLayout]
 
-    val animationSpecSpring: FiniteAnimationSpec<IntOffset> = tween(
-        durationMillis = 300,
-        easing = LinearOutSlowInEasing
-    )/*spring(   //used in [animatedVisibility] when scrolling through lists
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessLow,
-        visibilityThreshold = IntOffset.VisibilityThreshold
-    )*/
+
 
     BackHandler(modalSheetState.isVisible) {    //executed when user presses back button
         coroutineScope.launch {
@@ -379,12 +372,12 @@ fun ListContainer(
                     visibleState = holder.UI.firstVisibleState,
                     enter = if (holder.UI.isLeftSwipe) {
                         slideInHorizontally(
-                            animationSpec = animationSpecSpring,
+                            animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { -it / 2 }
                         )
                     } else {
                         slideInHorizontally(
-                            animationSpec = animationSpecSpring,
+                            animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { it / 2 }
                         )
                     },
@@ -425,12 +418,12 @@ fun ListContainer(
                     visibleState = holder.UI.secondVisibleState,
                     enter = if (holder.UI.isLeftSwipe) {
                         slideInHorizontally(
-                            animationSpec = animationSpecSpring,
+                            animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { -it / 2 }
                         )
                     } else {
                         slideInHorizontally(
-                            animationSpec = animationSpecSpring,
+                            animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { it / 2 }
                         )
                     },

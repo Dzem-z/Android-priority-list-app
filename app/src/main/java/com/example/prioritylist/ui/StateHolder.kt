@@ -1,7 +1,10 @@
 package com.example.prioritylist.ui
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
 import androidx.lifecycle.ViewModel
 import com.example.prioritylist.data.backend.ModifiableTask
 import com.example.prioritylist.data.backend.Status
@@ -15,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewModelScope
 import com.example.prioritylist.data.backend.HistoryTask
 import com.example.prioritylist.data.database.ListRepository
@@ -65,6 +69,17 @@ class StateHolder(
         val secondVisibleState = MutableTransitionState(true).apply {
             targetState = false
         }
+
+        //used in [animatedVisibility] when scrolling through lists
+        val animationSpecSpring: FiniteAnimationSpec<IntOffset> = tween(
+            durationMillis = 300,
+            easing = LinearOutSlowInEasing
+        )/*spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow,
+        visibilityThreshold = IntOffset.VisibilityThreshold
+    )*/
+
 
         var currentListName by mutableStateOf("")   //an actual list name
 
