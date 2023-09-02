@@ -9,10 +9,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -54,9 +63,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.icons.rounded.Undo
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -102,6 +113,8 @@ fun ListContainer(
     val coroutineScope = rememberCoroutineScope()   //an inner coroutineScope
     val snackbarPosition = remember { Animatable(180f) }    //the vertical position of the snackbar
     var isDialogOpened by remember { mutableStateOf(false) } //state flag indicating if undo dialog is opened
+
+
 
     val snackbarHostState = remember{ SnackbarHostState() }
     val modalSheetState = rememberModalBottomSheetState(
@@ -200,8 +213,8 @@ fun ListContainer(
                             enabled = !holder.Read.isStorageEmpty
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.undo_48px),
-                                tint = if (!holder.Read.isStorageEmpty) Color.White else Color.Transparent,
+                                imageVector = Icons.Rounded.Undo,
+                                tint = if (!holder.Read.isStorageEmpty) MaterialTheme.colorScheme.onSurfaceVariant else Color.Transparent,
                                 modifier = Modifier.scale(0.85f),
                                 contentDescription = "Drawer Icon"
                             )
@@ -256,21 +269,30 @@ fun ListContainer(
                     Modifier.padding(0.dp),
                 ) {
                     if (holder.Read.isPrevList) {  //previous list navigator
-                        TextButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            onClick = {
-                                holder.prevList()
-                            },
-
-                            shape = RectangleShape
+                        Box(modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal=20.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Outlined.ArrowBack,
-                                tint = MaterialTheme.colorScheme.secondary,
-                                contentDescription = "Drawer Icon"
-                            )
+                            this@Row.AnimatedVisibility(
+                                //next list navigator
+                                visible = holder.Read.isPrevList && holder.UI.firstVisibleState.isIdle && holder.UI.secondVisibleState.isIdle,
+                            ) {
+                                TextButton(
+                                    modifier = Modifier
+                                        .height(48.dp),
+                                    onClick = {
+                                        holder.prevList()
+                                    },
+
+                                    shape = RectangleShape
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ArrowBack,
+                                        tint = MaterialTheme.colorScheme.secondary,
+                                        contentDescription = "Drawer Icon"
+                                    )
+                                }
+                            }
                         }
                     } else {
                         Spacer(
@@ -291,25 +313,34 @@ fun ListContainer(
                         shape = RectangleShape
                     ) {
                         Text(
-                            holder.Read.getName()
+                            text = holder.Read.getName(),
+                            style = MaterialTheme.typography.headlineSmall
                         )
                     }
 
-                    if (holder.Read.isNextList) {   //next list navigator
-                        TextButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            onClick = {
-                                holder.nextList()
-                            },
-                            shape = RectangleShape
+                    if (holder.Read.isNextList) {
+                        Box(modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal=20.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Outlined.ArrowForward,
-                                tint = MaterialTheme.colorScheme.secondary,
-                                contentDescription = "Drawer Icon"
-                            )
+                            this@Row.AnimatedVisibility( //next list navigator
+                                visible = holder.Read.isNextList && holder.UI.firstVisibleState.isIdle && holder.UI.secondVisibleState.isIdle,
+                            ) {
+                                TextButton(
+                                    modifier = Modifier
+                                        .height(48.dp),
+                                    onClick = {
+                                        holder.nextList()
+                                    },
+                                    shape = RectangleShape
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ArrowForward,
+                                        tint = MaterialTheme.colorScheme.secondary,
+                                        contentDescription = "Drawer Icon"
+                                    )
+                                }
+                            }
                         }
                     } else {
                         Spacer(
@@ -319,10 +350,49 @@ fun ListContainer(
                     }
 
                 }
+
+                if (!holder.UI.visible && holder.UI.isAnimationPending) {  //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
+                    if (holder.UI.firstVisibleState.isIdle && !holder.UI.firstVisibleState.currentState) {
+                        holder.UI.secondVisibleState.targetState =
+                            !holder.UI.secondVisibleState.targetState
+                        holder.UI.isAnimationPending = false
+                    }
+                }
+                if (holder.UI.visible && holder.UI.isAnimationPending) {   //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
+                    if (holder.UI.secondVisibleState.isIdle && !holder.UI.secondVisibleState.currentState) {
+                        holder.UI.firstVisibleState.targetState =
+                            !holder.UI.firstVisibleState.targetState
+                        holder.UI.isAnimationPending = false
+                    }
+                }
                 /*
                 * when user navigates to the next list, states change and animation is launched
                 * */
-                AnimatedVisibility(visible = holder.UI.visible) {
+                AnimatedVisibility(
+                    visibleState = holder.UI.firstVisibleState,
+                    enter = if (holder.UI.isLeftSwipe) {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { -it / 2 }
+                        )
+                    } else {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { it / 2 }
+                        )
+                    },
+                    exit = if (holder.UI.isLeftSwipe) {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX =  { it }
+                        )
+                    } else {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX = { -it }
+                        )
+                    }
+                ) {
                     if (holder.Read.firstType == TaskTypes.PRIORITY) {
                         PriorityList(
                             holder,
@@ -344,7 +414,31 @@ fun ListContainer(
                     }
                 }
 
-                AnimatedVisibility(visible = !holder.UI.visible) {
+                AnimatedVisibility(
+                    visibleState = holder.UI.secondVisibleState,
+                    enter = if (holder.UI.isLeftSwipe) {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { -it / 2 }
+                        )
+                    } else {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { it / 2 }
+                        )
+                    },
+                    exit = if (holder.UI.isLeftSwipe) {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX =  { it }
+                        )
+                    } else {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX = { -it }
+                        )
+                    }
+                ) {
                     if (holder.Read.secondType == TaskTypes.PRIORITY) {
                         PriorityList(
                             holder,

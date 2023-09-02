@@ -1,18 +1,24 @@
 package com.example.prioritylist.ui
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
 import androidx.lifecycle.ViewModel
 import com.example.prioritylist.data.backend.ModifiableTask
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskTypes
 import com.example.prioritylist.data.backend.MainPage
+import com.example.prioritylist.ui.theme.ThemeID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.viewModelScope
 import com.example.prioritylist.data.backend.HistoryTask
 import com.example.prioritylist.data.database.ListRepository
@@ -51,6 +57,29 @@ class StateHolder(
         var editedTask by mutableStateOf(ModifiableTask())  //an instance of state of currently edited Task
 
         var visible by mutableStateOf(true) //state used in [animatedVisibility], determines which list should be displayed
+
+        var isAnimationPending = false //flag used in [animatedVisibility], tells if first animation is pending
+
+        var isLeftSwipe = true //flag used in [animatedVisibility], indicates the direction of the swap animation
+
+        val firstVisibleState = MutableTransitionState(false).apply {
+            targetState = true
+        }
+
+        val secondVisibleState = MutableTransitionState(true).apply {
+            targetState = false
+        }
+
+        //used in [animatedVisibility] when scrolling through lists
+        val animationSpecSpring: FiniteAnimationSpec<IntOffset> = tween(
+            durationMillis = 300,
+            easing = LinearOutSlowInEasing
+        )/*spring(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow,
+        visibilityThreshold = IntOffset.VisibilityThreshold
+    )*/
+
 
         var currentListName by mutableStateOf("")   //an actual list name
 
@@ -168,7 +197,12 @@ class StateHolder(
         internal fun incrementIndex() {
             currentListIndex.value = (currentListIndex.value + 1) % 2
             index = currentListIndex.asStateFlow()
+            if (UI.visible == true)     //triggers animation of the visible AnimatedVisibility component based on visible attribute
+                UI.firstVisibleState.targetState = !UI.firstVisibleState.targetState
+            else
+                UI.secondVisibleState.targetState = !UI.secondVisibleState.targetState
             UI.visible = !UI.visible
+            UI.isAnimationPending = true
         }
 
         fun isEmpty(): Boolean {
@@ -263,6 +297,19 @@ class StateHolder(
         private val userPreferencesRepository: UserPreferencesRepository
     ): ViewModel() {
 
+        fun saveThemeId(id: ThemeID) {
+            viewModelScope.launch {
+                userPreferencesRepository.saveThemeId(id)
+            }
+        }
+
+        val themeIdStateFlow: StateFlow<ThemeID> = userPreferencesRepository.themeIdFlow
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = userPreferencesRepository.THEME_INIT
+            )
+
         fun saveDeadlinePeriodDays(period: UInt) {
             viewModelScope.launch {
                 userPreferencesRepository.saveDeadlinePeriodDays(period)
@@ -314,6 +361,7 @@ class StateHolder(
         if(returnedType == null){
             throw Exception()
         } else {
+            UI.isLeftSwipe = false
             Read.incrementIndex()
             Read.setCurrentType(returnedType)
             Read.updateList()
@@ -326,6 +374,7 @@ class StateHolder(
         if(returnedType == null){
             throw Exception()
         } else {
+            UI.isLeftSwipe = true
             Read.incrementIndex()
             Read.setCurrentType(returnedType)
             Read.updateList()

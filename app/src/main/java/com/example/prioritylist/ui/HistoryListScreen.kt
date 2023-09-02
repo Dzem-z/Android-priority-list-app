@@ -1,6 +1,9 @@
 package com.example.prioritylist.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
@@ -24,6 +27,8 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.prioritylist.ui.theme.PriorityListTheme
+import com.example.prioritylist.ui.theme.ThemeID
 
 /**
 * [HistoryListContainer] is a composable with functionality analogous to the listContainer
@@ -67,21 +72,31 @@ fun HistoryListContainer(
             Row(
                 Modifier.padding(0.dp)
             ) {
-                if (holder.Read.isPrevList) { //previous list navigator
-                    TextButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp),
-                        onClick = {
-                            holder.prevList()
-                        },
-
-                        shape = RectangleShape
+                if (holder.Read.isPrevList) {  //previous list navigator
+                    Box(modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal=20.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowBack,
-                            contentDescription = "Drawer Icon"
-                        )
+                        this@Row.AnimatedVisibility(
+                            //next list navigator
+                            visible = holder.Read.isPrevList && holder.UI.firstVisibleState.isIdle && holder.UI.secondVisibleState.isIdle,
+                        ) {
+                            TextButton(
+                                modifier = Modifier
+                                    .height(48.dp),
+                                onClick = {
+                                    holder.prevList()
+                                },
+
+                                shape = RectangleShape
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ArrowBack,
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    contentDescription = "Drawer Icon"
+                                )
+                            }
+                        }
                     }
                 } else {
                     Spacer(
@@ -100,24 +115,34 @@ fun HistoryListContainer(
                     shape = RectangleShape
                 ) {
                     Text(
-                        holder.Read.getName() + " history"
+                        text = holder.Read.getName() + " history",
+                        style = MaterialTheme.typography.headlineSmall
                     )
                 }
 
-                if (holder.Read.isNextList) { //next list navigator
-                    TextButton(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(48.dp),
-                        onClick = {
-                            holder.nextList()
-                        },
-                        shape = RectangleShape
+                if (holder.Read.isNextList) {
+                    Box(modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal=20.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ArrowForward,
-                            contentDescription = "Drawer Icon"
-                        )
+                        this@Row.AnimatedVisibility( //next list navigator
+                            visible = holder.Read.isNextList && holder.UI.firstVisibleState.isIdle && holder.UI.secondVisibleState.isIdle,
+                        ) {
+                            TextButton(
+                                modifier = Modifier
+                                    .height(48.dp),
+                                onClick = {
+                                    holder.nextList()
+                                },
+                                shape = RectangleShape
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.ArrowForward,
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                    contentDescription = "Drawer Icon"
+                                )
+                            }
+                        }
                     }
                 } else {
                     Spacer(
@@ -129,8 +154,49 @@ fun HistoryListContainer(
             }
 
             Column(modifier = modifier.weight(1f)) {
-                this@Column.AnimatedVisibility(
-                    visible = holder.UI.visible
+
+
+                if (!holder.UI.visible && holder.UI.isAnimationPending) {  //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
+                    if (holder.UI.firstVisibleState.isIdle && !holder.UI.firstVisibleState.currentState) {
+                        holder.UI.secondVisibleState.targetState =
+                            !holder.UI.secondVisibleState.targetState
+                        holder.UI.isAnimationPending = false
+                    }
+                }
+                if (holder.UI.visible && holder.UI.isAnimationPending) {   //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
+                    if (holder.UI.secondVisibleState.isIdle && !holder.UI.secondVisibleState.currentState) {
+                        holder.UI.firstVisibleState.targetState =
+                            !holder.UI.firstVisibleState.targetState
+                        holder.UI.isAnimationPending = false
+                    }
+                }
+                /*
+                * when user navigates to the next list, states change and animation is launched
+                * */
+                AnimatedVisibility(
+                    visibleState = holder.UI.firstVisibleState,
+                    enter = if (holder.UI.isLeftSwipe) {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { -it / 2 }
+                        )
+                    } else {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { it / 2 }
+                        )
+                    },
+                    exit = if (holder.UI.isLeftSwipe) {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX =  { it }
+                        )
+                    } else {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX = { -it }
+                        )
+                    }
                 ) {
                    HistoryList(
                        viewModel = holder,
@@ -139,8 +205,30 @@ fun HistoryListContainer(
                    )
                 }
 
-                this@Column.AnimatedVisibility(
-                    visible = !holder.UI.visible
+                AnimatedVisibility(
+                    visibleState = holder.UI.secondVisibleState,
+                    enter = if (holder.UI.isLeftSwipe) {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { -it / 2 }
+                        )
+                    } else {
+                        slideInHorizontally(
+                            animationSpec = holder.UI.animationSpecSpring,
+                            initialOffsetX = { it / 2 }
+                        )
+                    },
+                    exit = if (holder.UI.isLeftSwipe) {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX =  { it }
+                        )
+                    } else {
+                        slideOutHorizontally(
+                            //animationSpec = animationSpecSpring,
+                            targetOffsetX = { -it }
+                        )
+                    }
                 ) {
                     HistoryList(
                         viewModel = holder,
@@ -158,5 +246,7 @@ fun HistoryListContainer(
 @Preview(showBackground = true)
 @Composable
 fun HistoryListContainerPreview() {
-    HistoryListContainer()
+    PriorityListTheme(themeId = ThemeID.FIRST) {
+        HistoryListContainer()
+    }
 }

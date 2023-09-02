@@ -21,6 +21,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,8 @@ import com.example.prioritylist.data.backend.HistoryTask
 import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.ui.theme.PriorityListTheme
+import com.example.prioritylist.ui.theme.ThemeID
 
 /**
 * [HistoryList] is an composable with functionality analogous to List composable
@@ -103,16 +106,17 @@ fun HistoryTaskTile(tile: HistoryTask<out Task>, modifier: Modifier = Modifier, 
             modifier = modifier
                 .padding(12.dp)
                 .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
                 )
-            )
         ) {
             Row {
                 Text(
                     text = tile.it.name,
-                    modifier = Modifier.weight(3f)
+                    modifier = Modifier.weight(3f),
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 IconButton(
@@ -127,31 +131,49 @@ fun HistoryTaskTile(tile: HistoryTask<out Task>, modifier: Modifier = Modifier, 
 
             }
 
-            Text(text = "completed on: " + dateFormatter(tile.completionDate))
+            Text(
+                text = "completed on: " + dateFormatter(tile.completionDate),
+                style = MaterialTheme.typography.bodyLarge
+            )
 
             Spacer(Modifier.padding(2.dp))
 
-            Text(text = "started on: " + dateFormatter(tile.it.dateOfCreation))
+            Text(
+                text = "started on: " + dateFormatter(tile.it.dateOfCreation),
+                style = MaterialTheme.typography.bodyLarge
+            )
 
             Spacer(Modifier.padding(2.dp))
 
             if (type.hasPriority()) {
-                Text("priority: " + (tile.it as PriorityTask).priority)
+                Text(
+                    text = "priority: " + (tile.it as PriorityTask).priority,
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Spacer(Modifier.padding(2.dp))
             }
 
             if (type.hasDeadline()) {
-                Text("deadline: " + dateFormatter((tile.it as DeadlineTask).deadline))
+                Text(
+                    text = "deadline: " + dateFormatter((tile.it as DeadlineTask).deadline),
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Spacer(Modifier.padding(2.dp))
             }
 
             if (type.hasCategory()) {
-                Text("deadline: " + (tile.it as CategoryTask).category)
+                Text(
+                    text = "deadline: " + (tile.it as CategoryTask).category,
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Spacer(Modifier.padding(2.dp))
             }
 
             if (expanded) {
-                Text("description: " + tile.it.description)
+                Text(
+                    text = "description: " + tile.it.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
         }
@@ -163,5 +185,8 @@ fun HistoryTaskTile(tile: HistoryTask<out Task>, modifier: Modifier = Modifier, 
 @Composable
 fun HistoryListPreview(){
     val viewModel: StateHolder = viewModel(factory = AppViewModelProvider.Factory)
-    HistoryList(viewModel, viewModel.Read.getHistoryList(), type = viewModel.Read.getCurrentType())
+    PriorityListTheme(themeId = ThemeID.FIRST) {
+        HistoryList(viewModel, viewModel.Read.getHistoryList(), type = viewModel.Read.getCurrentType())
+    }
+
 }
