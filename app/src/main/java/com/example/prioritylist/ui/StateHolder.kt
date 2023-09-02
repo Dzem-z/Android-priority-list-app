@@ -1,6 +1,7 @@
 package com.example.prioritylist.ui
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.lifecycle.ViewModel
 import com.example.prioritylist.data.backend.ModifiableTask
 import com.example.prioritylist.data.backend.Status
@@ -52,6 +53,18 @@ class StateHolder(
         var editedTask by mutableStateOf(ModifiableTask())  //an instance of state of currently edited Task
 
         var visible by mutableStateOf(true) //state used in [animatedVisibility], determines which list should be displayed
+
+        var isAnimationPending = false //flag used in [animatedVisibility], tells if first animation is pending
+
+        var isLeftSwipe = true //flag used in [animatedVisibility], indicates the direction of the swap animation
+
+        val firstVisibleState = MutableTransitionState(false).apply {
+            targetState = true
+        }
+
+        val secondVisibleState = MutableTransitionState(true).apply {
+            targetState = false
+        }
 
         var currentListName by mutableStateOf("")   //an actual list name
 
@@ -169,7 +182,12 @@ class StateHolder(
         internal fun incrementIndex() {
             currentListIndex.value = (currentListIndex.value + 1) % 2
             index = currentListIndex.asStateFlow()
+            if (UI.visible == true)     //triggers animation of the visible AnimatedVisibility component based on visible attribute
+                UI.firstVisibleState.targetState = !UI.firstVisibleState.targetState
+            else
+                UI.secondVisibleState.targetState = !UI.secondVisibleState.targetState
             UI.visible = !UI.visible
+            UI.isAnimationPending = true
         }
 
         fun isEmpty(): Boolean {
@@ -328,6 +346,7 @@ class StateHolder(
         if(returnedType == null){
             throw Exception()
         } else {
+            UI.isLeftSwipe = false
             Read.incrementIndex()
             Read.setCurrentType(returnedType)
             Read.updateList()
@@ -340,6 +359,7 @@ class StateHolder(
         if(returnedType == null){
             throw Exception()
         } else {
+            UI.isLeftSwipe = true
             Read.incrementIndex()
             Read.setCurrentType(returnedType)
             Read.updateList()
