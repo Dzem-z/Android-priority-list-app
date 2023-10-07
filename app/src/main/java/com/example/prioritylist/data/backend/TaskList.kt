@@ -326,13 +326,25 @@ class DeadlineTaskList(
 ) {
 
     private var today: Long = Long.MAX_VALUE
-    private var maximumDeadline: Long = Long.MIN_VALUE
-    private var minimumDeadline: Long = Long.MAX_VALUE
+
+    private var scalingFactor = period.SHORT_PERIOD.value  //scaling variable used in interpolation function
+
+    companion object {
+        //hardcoded values used to determine the right scaling for the list (user may want to rather put long deadlines than short and other way round)
+        enum class period(val value: Int) {
+            SHORT_PERIOD(20),
+            MEDIUM_PERIOD(90),
+            LONG_PERIOD(300)
+        }
+    }
 
     init {
         today = Calendar.getInstance().timeInMillis
-        maximumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE
-        minimumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.minOrNull() ?: Long.MAX_VALUE
+        //TODO: read scalingFactor
+    }
+
+    private fun interpolatingFunction(x: UInt) : Double {   //takes x as number of days to the specified deadline
+        return MAXIMUM_PRIORITY * scalingFactor * 1.0 / (x.toInt() * x.toInt() + scalingFactor - 1)
     }
 
     override fun toTaskEntity(task: DeadlineTask): TaskEntity {
@@ -349,36 +361,16 @@ class DeadlineTaskList(
         )
     }
 
-    override suspend fun add(task: DeadlineTask): Status {
-        maximumDeadline = max(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        minimumDeadline = min(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        return super.add(task)
-    }
-
-    override suspend fun delete(task: DeadlineTask): Status {
-        maximumDeadline = max(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        minimumDeadline = min(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        return super.delete(task)
-    }
-
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
-        val dateInt = currentTask.deadline.toInstant().toEpochMilli()
-        today = Calendar.getInstance().timeInMillis
+        val dateInt = TimeUnit.DAYS.convert(currentTask.deadline.toInstant().toEpochMilli(), TimeUnit.MILLISECONDS)
+        today = TimeUnit.DAYS.convert(Calendar.getInstance().timeInMillis, TimeUnit.MILLISECONDS)
 
-        if (maximumDeadline < today) {
-            maximumDeadline = today + TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
+        if (dateInt < today) {
+            currentTask.evaluatedPriority = 150.0
+        } else {
+            currentTask.evaluatedPriority = interpolatingFunction((dateInt - today).toUInt())
         }
-
-        currentTask.evaluatedPriority = sqrt(1 - (dateInt - today)  * 1.0 / (maximumDeadline - today)) * MAXIMUM_PRIORITY
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         //priorities higher than 100 indicate that deadline has passed
         return currentTask.evaluatedPriority
@@ -497,7 +489,17 @@ class DeadlinePriorityTaskList(
     historyTasks = historyTasks
 ) {
     override fun toTaskEntity(task: DeadlinePriorityTask): TaskEntity {
-        TODO("Not yet implemented")
+        return TaskEntity(
+            name = task.name,
+            description = task.description,
+            dateOfCreation = task.dateOfCreation,
+            priority = task.priority,
+            category = null,
+            deadline = task.deadline,
+            listID = id,
+            type = TaskTypes.PRIORITY,
+            dateOfCompletion = null
+        )
     }
 
     override fun getPriority(id: Int): Double {
