@@ -351,20 +351,23 @@ fun ListContainer(
 
                 }
 
-                if (!holder.UI.visible && holder.UI.isAnimationPending) {  //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
-                    if (holder.UI.firstVisibleState.isIdle && !holder.UI.firstVisibleState.currentState) {
-                        holder.UI.secondVisibleState.targetState =
-                            !holder.UI.secondVisibleState.targetState
-                        holder.UI.isAnimationPending = false
+
+                if(holder.UI.isAnimationPending) {
+                    if(!holder.UI.visible) {
+                        if (holder.UI.firstVisibleState.isIdle && !holder.UI.firstVisibleState.currentState) {
+                            holder.UI.secondVisibleState.targetState =
+                                !holder.UI.secondVisibleState.targetState
+                            holder.UI.isAnimationPending = false
+                        }
+                    } else {
+                        if (holder.UI.secondVisibleState.isIdle && !holder.UI.secondVisibleState.currentState) {
+                            holder.UI.firstVisibleState.targetState =
+                                !holder.UI.firstVisibleState.targetState
+                            holder.UI.isAnimationPending = false
+                        }
                     }
                 }
-                if (holder.UI.visible && holder.UI.isAnimationPending) {   //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
-                    if (holder.UI.secondVisibleState.isIdle && !holder.UI.secondVisibleState.currentState) {
-                        holder.UI.firstVisibleState.targetState =
-                            !holder.UI.firstVisibleState.targetState
-                        holder.UI.isAnimationPending = false
-                    }
-                }
+
                 /*
                 * when user navigates to the next list, states change and animation is launched
                 * */
@@ -372,12 +375,12 @@ fun ListContainer(
                     visibleState = holder.UI.firstVisibleState,
                     enter = if (holder.UI.isLeftSwipe) {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { -it / 2 }
                         )
                     } else {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { it / 2 }
                         )
                     },
@@ -418,12 +421,12 @@ fun ListContainer(
                     visibleState = holder.UI.secondVisibleState,
                     enter = if (holder.UI.isLeftSwipe) {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { -it / 2 }
                         )
                     } else {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { it / 2 }
                         )
                     },
