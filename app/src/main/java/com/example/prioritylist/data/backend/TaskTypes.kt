@@ -200,5 +200,5 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
 }
 
 val listOfTypes = arrayOf(  //list of types used by TaskList
-    TaskTypes.PRIORITY, TaskTypes.DEADLINE
+    TaskTypes.PRIORITY, TaskTypes.DEADLINE, TaskTypes.DEADLINE_PRIORITY
 )

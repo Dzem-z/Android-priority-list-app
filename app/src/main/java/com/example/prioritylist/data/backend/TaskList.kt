@@ -6,6 +6,7 @@ import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.database.ListEntity
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.TaskEntity
+import com.example.prioritylist.ui.theme.priorityGradient
 import java.lang.Math.sqrt
 import java.util.Calendar
 import java.util.Collections.list
@@ -315,7 +316,8 @@ class DeadlineTaskList(
     dateOfCreation: Date,
     listRepository: ListRepository,
     listOfTasks: MutableList<DeadlineTask> = mutableListOf(),
-    historyTasks: MutableList<HistoryTask<DeadlineTask>> = mutableListOf()
+    historyTasks: MutableList<HistoryTask<DeadlineTask>> = mutableListOf(),
+    var deadlineHandler: DeadlineHandlerInterface = DeadlineHandlerImpl()
 ): TaskList<DeadlineTask>(
     name = name,
     id = id,
@@ -324,15 +326,8 @@ class DeadlineTaskList(
     listOfTasks = listOfTasks,
     historyTasks = historyTasks
 ) {
-
-    private var today: Long = Long.MAX_VALUE
-    private var maximumDeadline: Long = Long.MIN_VALUE
-    private var minimumDeadline: Long = Long.MAX_VALUE
-
     init {
-        today = Calendar.getInstance().timeInMillis
-        maximumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE
-        minimumDeadline = super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.minOrNull() ?: Long.MAX_VALUE
+        //TODO: read scalingFactor
     }
 
     override fun toTaskEntity(task: DeadlineTask): TaskEntity {
@@ -349,36 +344,10 @@ class DeadlineTaskList(
         )
     }
 
-    override suspend fun add(task: DeadlineTask): Status {
-        maximumDeadline = max(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        minimumDeadline = min(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        return super.add(task)
-    }
-
-    override suspend fun delete(task: DeadlineTask): Status {
-        maximumDeadline = max(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        minimumDeadline = min(
-            super.listOfTasks.map { it.deadline.toInstant().toEpochMilli() }.maxOrNull() ?: Long.MIN_VALUE,
-            task.deadline.toInstant().toEpochMilli())
-        return super.delete(task)
-    }
-
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
-        val dateInt = currentTask.deadline.toInstant().toEpochMilli()
-        today = Calendar.getInstance().timeInMillis
 
-        if (maximumDeadline < today) {
-            maximumDeadline = today + TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
-        }
-
-        currentTask.evaluatedPriority = sqrt(1 - (dateInt - today)  * 1.0 / (maximumDeadline - today)) * MAXIMUM_PRIORITY
+        currentTask.evaluatedPriority = deadlineHandler.getPriority(currentTask.deadline.toInstant().toEpochMilli())
         //evaluates priority: scales between 0 - 100 asymptotically to root function
         //priorities higher than 100 indicate that deadline has passed
         return currentTask.evaluatedPriority
@@ -391,7 +360,8 @@ class PriorityTaskList(
     dateOfCreation: Date,
     listRepository: ListRepository,
     listOfTasks: MutableList<PriorityTask> = mutableListOf(),
-    historyTasks: MutableList<HistoryTask<PriorityTask>> = mutableListOf()
+    historyTasks: MutableList<HistoryTask<PriorityTask>> = mutableListOf(),
+    var PriorityHandler: RelativePriorityHandlerInterface = RelativePriorityHandlerImpl()
 ): TaskList<PriorityTask>(
     name = name,
     id = id,
@@ -400,12 +370,12 @@ class PriorityTaskList(
     listOfTasks = listOfTasks,
     historyTasks = historyTasks
 ) {
-    private var maximumPriority = Int.MIN_VALUE
-    private var minimumPriority = Int.MAX_VALUE
 
     init {
-        maximumPriority = super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE
-        minimumPriority = super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE
+        PriorityHandler.updateExtremes(
+            super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
+            super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE
+        )
     }
 
     override fun toTaskEntity(task: PriorityTask): TaskEntity {
@@ -425,33 +395,25 @@ class PriorityTaskList(
     override suspend fun add(task: PriorityTask): Status {
         val status = super.add(task)
         if (status.code == StatusCodes.SUCCESS) {
-            maximumPriority = max(
-                super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
-                task.priority
-            )
-            minimumPriority = min(
-                super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
-                task.priority
-            )
+            PriorityHandler.updateExtremes(task.priority, task.priority)
         }
         return status
     }
 
     override suspend fun delete(task: PriorityTask): Status {
-        maximumPriority = max(
+        /*maximumPriority = max(
             super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
             task.priority)
         minimumPriority = max(
             super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
-            task.priority)
+            task.priority)*/
         return super.delete(task)
     }
 
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
-        val currentPriority = currentTask.priority
 
-        currentTask.evaluatedPriority = sqrt((currentPriority - minimumPriority) * 1.0/(maximumPriority - minimumPriority)) * MAXIMUM_PRIORITY
+        currentTask.evaluatedPriority = PriorityHandler.getPriority(currentTask.priority)
         //evaluates priority: scales values on range min priority - max priority to 0 - 100 asymptotically to root function
         return currentTask.evaluatedPriority
     }
@@ -487,7 +449,8 @@ class DeadlinePriorityTaskList(
     dateOfCreation: Date,
     listRepository: ListRepository,
     listOfTasks: MutableList<DeadlinePriorityTask> = mutableListOf(),
-    historyTasks: MutableList<HistoryTask<DeadlinePriorityTask>> = mutableListOf()
+    historyTasks: MutableList<HistoryTask<DeadlinePriorityTask>> = mutableListOf(),
+    var deadlinePriorityHandler: DeadlinePriorityHandlerInterface = DeadlinePriorityHandlerImpl()
 ): TaskList<DeadlinePriorityTask>(
     name = name,
     id = id,
@@ -497,11 +460,31 @@ class DeadlinePriorityTaskList(
     historyTasks = historyTasks
 ) {
     override fun toTaskEntity(task: DeadlinePriorityTask): TaskEntity {
-        TODO("Not yet implemented")
+        return TaskEntity(
+            name = task.name,
+            description = task.description,
+            dateOfCreation = task.dateOfCreation,
+            priority = task.priority,
+            category = null,
+            deadline = task.deadline,
+            listID = id,
+            type = TaskTypes.PRIORITY,
+            dateOfCompletion = null
+        )
+    }
+
+    init {
+        //TODO("read ScalingFactor")
+        //TODO("read PriorityRange")
     }
 
     override fun getPriority(id: Int): Double {
-        TODO("not yet implemented")
+        val currentTask = super.listOfTasks[id]
+
+        currentTask.evaluatedPriority = deadlinePriorityHandler.getPriority(priority = currentTask.priority, deadlineInMillis = currentTask.deadline.toInstant().toEpochMilli())
+        //evaluates priority: scales values on range min priority - max priority to 0 - 100 asymptotically to root function
+        return currentTask.evaluatedPriority
+
     }
 }
 

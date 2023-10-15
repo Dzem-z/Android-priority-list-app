@@ -75,6 +75,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
+import com.example.prioritylist.data.backend.DeadlinePriorityTask
 import com.example.prioritylist.data.backend.DeadlineTask
 import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.TaskTypes
@@ -271,7 +272,7 @@ fun ListContainer(
                     if (holder.Read.isPrevList) {  //previous list navigator
                         Box(modifier = Modifier
                             .weight(1f)
-                            .padding(horizontal=20.dp)
+                            .padding(horizontal = 20.dp)
                         ) {
                             this@Row.AnimatedVisibility(
                                 //next list navigator
@@ -321,7 +322,7 @@ fun ListContainer(
                     if (holder.Read.isNextList) {
                         Box(modifier = Modifier
                             .weight(1f)
-                            .padding(horizontal=20.dp)
+                            .padding(horizontal = 20.dp)
                         ) {
                             this@Row.AnimatedVisibility( //next list navigator
                                 visible = holder.Read.isNextList && holder.UI.firstVisibleState.isIdle && holder.UI.secondVisibleState.isIdle,
@@ -351,20 +352,23 @@ fun ListContainer(
 
                 }
 
-                if (!holder.UI.visible && holder.UI.isAnimationPending) {  //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
-                    if (holder.UI.firstVisibleState.isIdle && !holder.UI.firstVisibleState.currentState) {
-                        holder.UI.secondVisibleState.targetState =
-                            !holder.UI.secondVisibleState.targetState
-                        holder.UI.isAnimationPending = false
+
+                if(holder.UI.isAnimationPending) {
+                    if(!holder.UI.visible) {
+                        if (holder.UI.firstVisibleState.isIdle && !holder.UI.firstVisibleState.currentState) {
+                            holder.UI.secondVisibleState.targetState =
+                                !holder.UI.secondVisibleState.targetState
+                            holder.UI.isAnimationPending = false
+                        }
+                    } else {
+                        if (holder.UI.secondVisibleState.isIdle && !holder.UI.secondVisibleState.currentState) {
+                            holder.UI.firstVisibleState.targetState =
+                                !holder.UI.firstVisibleState.targetState
+                            holder.UI.isAnimationPending = false
+                        }
                     }
                 }
-                if (holder.UI.visible && holder.UI.isAnimationPending) {   //continues animation: triggers animation of the invisible AnimatedVisibility after first animation finishes
-                    if (holder.UI.secondVisibleState.isIdle && !holder.UI.secondVisibleState.currentState) {
-                        holder.UI.firstVisibleState.targetState =
-                            !holder.UI.firstVisibleState.targetState
-                        holder.UI.isAnimationPending = false
-                    }
-                }
+
                 /*
                 * when user navigates to the next list, states change and animation is launched
                 * */
@@ -372,12 +376,12 @@ fun ListContainer(
                     visibleState = holder.UI.firstVisibleState,
                     enter = if (holder.UI.isLeftSwipe) {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { -it / 2 }
                         )
                     } else {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { it / 2 }
                         )
                     },
@@ -411,6 +415,15 @@ fun ListContainer(
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
+                    } else if (holder.Read.firstType == TaskTypes.DEADLINE_PRIORITY) {
+                        DeadlinePriorityList(
+                            viewModel = holder,
+                            list = holder.Read.firstList as MutableList<DeadlinePriorityTask>,
+                            globalScope = globalScope,
+                            onLongPress = {
+                                holder.UI.taskBottomSheetExpanded = true
+                                coroutineScope.launch { modalSheetState.show() }
+                            })
                     }
                 }
 
@@ -418,12 +431,12 @@ fun ListContainer(
                     visibleState = holder.UI.secondVisibleState,
                     enter = if (holder.UI.isLeftSwipe) {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { -it / 2 }
                         )
                     } else {
                         slideInHorizontally(
-                            animationSpec = holder.UI.animationSpecSpring,
+                            //animationSpec = holder.UI.animationSpecSpring,
                             initialOffsetX = { it / 2 }
                         )
                     },
@@ -457,6 +470,16 @@ fun ListContainer(
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
+                    } else if (holder.Read.secondType == TaskTypes.DEADLINE_PRIORITY) {
+                        DeadlinePriorityList(
+                            holder,
+                            holder.Read.secondList as MutableList<DeadlinePriorityTask>,
+                            globalScope,
+                            {
+                                holder.UI.taskBottomSheetExpanded = true
+                                coroutineScope.launch { modalSheetState.show() }
+                            }
+                        )
                     }
                 }
 
