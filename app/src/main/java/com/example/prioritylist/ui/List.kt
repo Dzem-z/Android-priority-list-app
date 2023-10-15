@@ -35,6 +35,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.prioritylist.R
+import com.example.prioritylist.data.backend.DeadlinePriorityTask
 import com.example.prioritylist.data.backend.DeadlineTask
 import com.example.prioritylist.data.backend.MAXIMUM_PRIORITY
 import com.example.prioritylist.data.backend.PriorityTask
@@ -132,6 +133,52 @@ fun DeadlineList(
                                 viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
                                 viewModel.UI.editedTask.id = item.id
                                 viewModel.UI.editedTask.deadline = item.deadline
+                                onLongPress()
+                            },
+                            onTap = { /* Called on Tap */ }
+                        )
+                    }
+
+            )
+        }
+    }
+
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@Composable
+fun DeadlinePriorityList(
+    viewModel: StateHolder,
+    list: MutableList<DeadlinePriorityTask>,
+    globalScope: CoroutineScope,
+    onLongPress: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier
+            .padding(end = 10.dp)
+            .fillMaxHeight()
+    ) {
+        items(
+            list,
+            key = { it.name }
+        ) { item ->
+            DeadlinePriorityTaskTile(
+                tile = item as DeadlinePriorityTask,
+                modifier = Modifier
+                    .animateItemPlacement()
+                    .pointerInput(item) {
+                        detectTapGestures(
+                            onPress = { /* Called when the gesture starts */ },
+                            onDoubleTap = { globalScope.launch { viewModel.onDone(item) } },
+                            onLongPress = {
+                                viewModel.UI.resetEditedTask()
+                                viewModel.UI.updateDescriptionOfEditedTask(item.description)
+                                viewModel.UI.updateNameOfEditedTask(item.name)
+                                viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
+                                viewModel.UI.editedTask.id = item.id
+                                viewModel.UI.editedTask.deadline = item.deadline
+                                viewModel.UI.updatePriorityOfEditedTask(item.priority.toString())
                                 onLongPress()
                             },
                             onTap = { /* Called on Tap */ }
@@ -276,6 +323,78 @@ fun DeadlineTaskTile(tile: DeadlineTask, modifier: Modifier = Modifier) {
                 )
             }
 
+        }
+    }
+}
+
+@Composable
+fun DeadlinePriorityTaskTile(tile: DeadlinePriorityTask, modifier: Modifier = Modifier) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Card(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 10.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (tile.evaluatedPriority > MAXIMUM_PRIORITY)
+                deadlinePassedColor //if deadline passed show as missed
+            else
+                priorityGradient[(tile.evaluatedPriority * GRADIENT_SIZE / (MAXIMUM_PRIORITY + 1)).toInt()]
+        ),
+        modifier = modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = modifier
+                .padding(12.dp)
+                .animateContentSize(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                )
+        ) {
+            Row {
+                Text(
+                    text = tile.name,
+                    modifier = Modifier.weight(3f),
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                IconButton(
+                    onClick = { expanded = !expanded },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                        contentDescription = null
+                    )
+                }
+            }
+            Row{
+                Text(
+                    text = stringResource(id = R.string.deadline) + dateFormatter(tile.deadline),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Row{
+                Text(
+                    text = stringResource(id = R.string.priority) + tile.priority,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            if(expanded){
+
+                Spacer(modifier = Modifier.padding(6.dp))
+
+                Text(
+                    text = stringResource(id = R.string.description) + tile.description,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

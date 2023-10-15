@@ -75,6 +75,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.prioritylist.R
+import com.example.prioritylist.data.backend.DeadlinePriorityTask
 import com.example.prioritylist.data.backend.DeadlineTask
 import com.example.prioritylist.data.backend.PriorityTask
 import com.example.prioritylist.data.backend.TaskTypes
@@ -271,7 +272,7 @@ fun ListContainer(
                     if (holder.Read.isPrevList) {  //previous list navigator
                         Box(modifier = Modifier
                             .weight(1f)
-                            .padding(horizontal=20.dp)
+                            .padding(horizontal = 20.dp)
                         ) {
                             this@Row.AnimatedVisibility(
                                 //next list navigator
@@ -321,7 +322,7 @@ fun ListContainer(
                     if (holder.Read.isNextList) {
                         Box(modifier = Modifier
                             .weight(1f)
-                            .padding(horizontal=20.dp)
+                            .padding(horizontal = 20.dp)
                         ) {
                             this@Row.AnimatedVisibility( //next list navigator
                                 visible = holder.Read.isNextList && holder.UI.firstVisibleState.isIdle && holder.UI.secondVisibleState.isIdle,
@@ -414,6 +415,15 @@ fun ListContainer(
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
+                    } else if (holder.Read.firstType == TaskTypes.DEADLINE_PRIORITY) {
+                        DeadlinePriorityList(
+                            viewModel = holder,
+                            list = holder.Read.firstList as MutableList<DeadlinePriorityTask>,
+                            globalScope = globalScope,
+                            onLongPress = {
+                                holder.UI.taskBottomSheetExpanded = true
+                                coroutineScope.launch { modalSheetState.show() }
+                            })
                     }
                 }
 
@@ -460,6 +470,16 @@ fun ListContainer(
                             holder.UI.taskBottomSheetExpanded = true
                             coroutineScope.launch { modalSheetState.show() }
                         })
+                    } else if (holder.Read.secondType == TaskTypes.DEADLINE_PRIORITY) {
+                        DeadlinePriorityList(
+                            holder,
+                            holder.Read.secondList as MutableList<DeadlinePriorityTask>,
+                            globalScope,
+                            {
+                                holder.UI.taskBottomSheetExpanded = true
+                                coroutineScope.launch { modalSheetState.show() }
+                            }
+                        )
                     }
                 }
 
