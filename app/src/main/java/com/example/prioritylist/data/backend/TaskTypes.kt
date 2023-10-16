@@ -1,20 +1,5 @@
 package com.example.prioritylist.data.backend
 
-import com.example.prioritylist.data.backend.CategoryTask
-import com.example.prioritylist.data.backend.CategoryTaskList
-import com.example.prioritylist.data.backend.DeadlineCategoryTask
-import com.example.prioritylist.data.backend.DeadlineCategoryTaskList
-import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTask
-import com.example.prioritylist.data.backend.DeadlinePriorityCategoryTaskList
-import com.example.prioritylist.data.backend.DeadlinePriorityTask
-import com.example.prioritylist.data.backend.DeadlinePriorityTaskList
-import com.example.prioritylist.data.backend.DeadlineTask
-import com.example.prioritylist.data.backend.DeadlineTaskList
-import com.example.prioritylist.data.backend.PriorityTask
-import com.example.prioritylist.data.backend.PriorityTaskList
-import com.example.prioritylist.data.backend.Task
-import com.example.prioritylist.data.backend.TaskList
-import com.example.prioritylist.data.database.MainRepository
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.TaskEntity
 import java.util.Date
@@ -128,8 +113,8 @@ enum class TaskTypes(val taskType: KClass<out Task>, val listType: KClass<out Ta
             listOfEntities: List<TaskEntity>,
             listOfHistoryEntities: List<TaskEntity>
         ): TaskList<out Task> {
-            val listOfTasks = listOfEntities.map {
-                DeadlinePriorityTask(deadline = it.deadline!!, priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name)
+            val listOfTasks = listOfEntities.mapIndexed { index, it ->
+                DeadlinePriorityTask(deadline = it.deadline!!, priority = it.priority!!, dateOfCreation = it.dateOfCreation, description = it.description, name = it.name, id = index)
             }.toMutableList()
             return DeadlinePriorityTaskList(name, id, dateOfCreation, listRepository, listOfTasks)
         }
