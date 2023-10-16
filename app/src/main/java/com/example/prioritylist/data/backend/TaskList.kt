@@ -401,19 +401,13 @@ class PriorityTaskList(
     }
 
     override suspend fun delete(task: PriorityTask): Status {
-        /*maximumPriority = max(
-            super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE,
-            task.priority)
-        minimumPriority = max(
-            super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
-            task.priority)*/
         return super.delete(task)
     }
 
     override fun getPriority(id: Int): Double {
         val currentTask = super.listOfTasks[id]
 
-        currentTask.evaluatedPriority = PriorityHandler.getPriority(currentTask.priority)
+        currentTask.evaluatedPriority = PriorityHandler.getPriority(currentTask.priority, MAXIMUM_PRIORITY)
         //evaluates priority: scales values on range min priority - max priority to 0 - 100 asymptotically to root function
         return currentTask.evaluatedPriority
     }
@@ -468,14 +462,29 @@ class DeadlinePriorityTaskList(
             category = null,
             deadline = task.deadline,
             listID = id,
-            type = TaskTypes.PRIORITY,
+            type = TaskTypes.DEADLINE_PRIORITY,
             dateOfCompletion = null
         )
     }
 
     init {
         //TODO("read ScalingFactor")
-        //TODO("read PriorityRange")
+        deadlinePriorityHandler.updateExtremes(
+            super.listOfTasks.map { it.priority }.minOrNull() ?: Int.MAX_VALUE,
+            super.listOfTasks.map { it.priority }.maxOrNull() ?: Int.MIN_VALUE
+        )
+    }
+
+    override suspend fun add(task: DeadlinePriorityTask): Status {
+        val status = super.add(task)
+        if (status.code == StatusCodes.SUCCESS) {
+            deadlinePriorityHandler.updateExtremes(task.priority, task.priority)
+        }
+        return status
+    }
+
+    override suspend fun delete(task: DeadlinePriorityTask): Status {
+        return super.delete(task)
     }
 
     override fun getPriority(id: Int): Double {
