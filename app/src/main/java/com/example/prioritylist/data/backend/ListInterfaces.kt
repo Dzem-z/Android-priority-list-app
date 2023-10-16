@@ -1,7 +1,8 @@
 package com.example.prioritylist.data.backend
 
-import java.lang.Integer.max
-import java.lang.Integer.min
+
+import java.lang.Math.max
+import java.lang.Math.min
 import kotlin.math.sqrt
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -43,7 +44,7 @@ class DeadlineHandlerImpl: DeadlineHandlerInterface {
         return if (doesDeadlinePassed()) {
             150.0
         } else {
-            interpolatingFunction((deadlineOfTask - today).toUInt())
+            interpolatingFunction((deadlineOfTask - today + 1).toUInt())
         }
     }
 
@@ -66,7 +67,7 @@ class DeadlineHandlerImpl: DeadlineHandlerInterface {
 
 interface RelativePriorityHandlerInterface {
     fun updateExtremes(minPriority: Int, maxPriority: Int)
-    fun getPriority(currentPriority: Int): Double
+    fun getPriority(currentPriority: Int, max: Int): Double
 }
 
 class RelativePriorityHandlerImpl : RelativePriorityHandlerInterface {
@@ -79,12 +80,12 @@ class RelativePriorityHandlerImpl : RelativePriorityHandlerInterface {
         maximumPriority = max(maxPriority, maximumPriority)
     }
 
-    override fun getPriority(currentPriority: Int): Double {
-        return interpolatingFunction(currentPriority, minimumPriority, maximumPriority)
+    override fun getPriority(currentPriority: Int, max: Int): Double {
+        return interpolatingFunction(currentPriority, minimumPriority, maximumPriority, max)
     }
 
-    private fun interpolatingFunction(x: Int, min: Int, max: Int): Double { //stretches linear function on maximum and minimum priority, then picks point according to x priority
-        return sqrt((x - min) * 1.0 / (max - min)) * MAXIMUM_PRIORITY
+    private fun interpolatingFunction(x: Int, min: Int, max: Int, maxOut: Int): Double { //stretches linear function on maximum and minimum priority, then picks point according to x priority
+        return sqrt((x - min) * 1.0 / (max - min)) * maxOut
     }
 
 
@@ -117,22 +118,24 @@ class AbsolutePriorityHandlerImpl : AbsolutePriorityHandlerInterface {
 
 interface DeadlinePriorityHandlerInterface{
     fun getPriority(priority: Int, deadlineInMillis: Long): Double
+
+    fun updateExtremes(minPriority: Int, maxPriority: Int)
 }
 
 class DeadlinePriorityHandlerImpl(
-    priorityHandler: AbsolutePriorityHandlerInterface = AbsolutePriorityHandlerImpl(),
+    priorityHandler: RelativePriorityHandlerInterface = RelativePriorityHandlerImpl(),
     deadlineHandler: DeadlineHandlerInterface = DeadlineHandlerImpl()
-) : AbsolutePriorityHandlerInterface by priorityHandler, DeadlineHandlerInterface by deadlineHandler, DeadlinePriorityHandlerInterface {
+) : RelativePriorityHandlerInterface by priorityHandler, DeadlineHandlerInterface by deadlineHandler, DeadlinePriorityHandlerInterface {
 
 
     private fun interpolatingFunction(priority: Int, deadline: Long): Double {  //scales inversely proportional to priority and deadline as well
-        return MAXIMUM_PRIORITY * getFactor() * 1.0 / ((MAXIMUM_PRIORITY - priority) * deadline + getFactor() - 1)
+        return getPriority(priority, min(MAXIMUM_PRIORITY / 3, (MAXIMUM_PRIORITY + 1 - getPriority(deadline).toInt()))) + getPriority(deadline) - 1
     }
 
     override fun getPriority(priority: Int, deadlineInMillis: Long): Double {
-        getPriority(deadlineInMillis)   //update dates
+        //getPriority(deadlineInMillis)   //update dates
 
-        return interpolatingFunction(priority, getDeadline())
+        return interpolatingFunction(priority, deadlineInMillis)
     }
 
 
