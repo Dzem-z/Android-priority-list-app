@@ -70,24 +70,24 @@ fun PriorityList(
                     .fillMaxHeight()
             ) {
         items(
-            list,
-            key = { it.name }
-        ) { item ->
+            count = list.size,
+            key = { list[it].name }
+        ) { index ->
             PriorityTaskTile(
-                tile = item as PriorityTask,
+                tile = list[index] as PriorityTask,
                 modifier = Modifier
                     .animateItemPlacement()
-                    .pointerInput(item) {
+                    .pointerInput(list[index]) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
-                            onDoubleTap = { globalScope.launch { viewModel.onDone(item) } },
+                            onDoubleTap = { globalScope.launch { viewModel.onDone(list[index]) } },
                             onLongPress = {
                                 viewModel.UI.resetEditedTask()
-                                viewModel.UI.updateDescriptionOfEditedTask(item.description)
-                                viewModel.UI.updateNameOfEditedTask(item.name)
-                                viewModel.UI.editedTask.id = item.id
-                                viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
-                                viewModel.UI.updatePriorityOfEditedTask(item.priority.toString())
+                                viewModel.UI.updateDescriptionOfEditedTask(list[index].description)
+                                viewModel.UI.updateNameOfEditedTask(list[index].name)
+                                viewModel.UI.editedTask.id = list[index].id
+                                viewModel.UI.editedTask.dateOfCreation = list[index].dateOfCreation
+                                viewModel.UI.updatePriorityOfEditedTask(list[index].priority.toString())
                                 onLongPress()
                             },
                             onTap = { /* Called on Tap */ }
@@ -115,24 +115,24 @@ fun DeadlineList(
                 .fillMaxHeight()
         ) {
         items(
-            list,
-            key = { it.name }
-        ) { item ->
+            count = list.size,
+            key = { list[it].name }
+        ) { index ->
             DeadlineTaskTile(
-                tile = item as DeadlineTask,
+                tile = list[index] as DeadlineTask,
                 modifier = Modifier
                     .animateItemPlacement()
-                    .pointerInput(item) {
+                    .pointerInput(list[index]) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
-                            onDoubleTap = { globalScope.launch { viewModel.onDone(item) } },
+                            onDoubleTap = { globalScope.launch { viewModel.onDone(list[index]) } },
                             onLongPress = {
                                 viewModel.UI.resetEditedTask()
-                                viewModel.UI.updateDescriptionOfEditedTask(item.description)
-                                viewModel.UI.updateNameOfEditedTask(item.name)
-                                viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
-                                viewModel.UI.editedTask.id = item.id
-                                viewModel.UI.editedTask.deadline = item.deadline
+                                viewModel.UI.updateDescriptionOfEditedTask(list[index].description)
+                                viewModel.UI.updateNameOfEditedTask(list[index].name)
+                                viewModel.UI.editedTask.dateOfCreation = list[index].dateOfCreation
+                                viewModel.UI.editedTask.id = list[index].id
+                                viewModel.UI.editedTask.deadline = list[index].deadline
                                 onLongPress()
                             },
                             onTap = { /* Called on Tap */ }
@@ -160,25 +160,25 @@ fun DeadlinePriorityList(
             .fillMaxHeight()
     ) {
         items(
-            list,
-            key = { it.name }
-        ) { item ->
+            count = list.size,
+            key = { list[it].name }
+        ) { index ->
             DeadlinePriorityTaskTile(
-                tile = item as DeadlinePriorityTask,
+                tile = list[index] as DeadlinePriorityTask,
                 modifier = Modifier
                     .animateItemPlacement()
-                    .pointerInput(item) {
+                    .pointerInput(list[index]) {
                         detectTapGestures(
                             onPress = { /* Called when the gesture starts */ },
-                            onDoubleTap = { globalScope.launch { viewModel.onDone(item) } },
+                            onDoubleTap = { globalScope.launch { viewModel.onDone(list[index]) } },
                             onLongPress = {
                                 viewModel.UI.resetEditedTask()
-                                viewModel.UI.updateDescriptionOfEditedTask(item.description)
-                                viewModel.UI.updateNameOfEditedTask(item.name)
-                                viewModel.UI.editedTask.dateOfCreation = item.dateOfCreation
-                                viewModel.UI.editedTask.id = item.id
-                                viewModel.UI.editedTask.deadline = item.deadline
-                                viewModel.UI.updatePriorityOfEditedTask(item.priority.toString())
+                                viewModel.UI.updateDescriptionOfEditedTask(list[index].description)
+                                viewModel.UI.updateNameOfEditedTask(list[index].name)
+                                viewModel.UI.editedTask.dateOfCreation = list[index].dateOfCreation
+                                viewModel.UI.editedTask.id = list[index].id
+                                viewModel.UI.editedTask.deadline = list[index].deadline
+                                viewModel.UI.updatePriorityOfEditedTask(list[index].priority.toString())
                                 onLongPress()
                             },
                             onTap = { /* Called on Tap */ }
