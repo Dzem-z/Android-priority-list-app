@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Error
@@ -32,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -167,12 +170,16 @@ fun SettingsPage(
                   Icon(Icons.Outlined.Error, stringResource(id = R.string.error), tint = MaterialTheme.colorScheme.error)
             },
             onValueChange = { new ->
-               if (!holder.UI.checkForOverflowError(new.text)) {
+               if (!holder.UI.checkForOverflowError(new.text) && !holder.UI.checkForNumberFormatError(new.text)) {
                   deadlinePeriodTextFieldValueState = new
                   holder.Settings.saveDeadlinePeriodDays(deadlinePeriodTextFieldValueState.text.let { if (it == "") "0" else it }
                      .toUInt())
                }
-            }
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+               imeAction = ImeAction.Done,
+               keyboardType = KeyboardType.Number,
+            )
          )
 
          if (holder.UI.priorityOverflowError) {//error messages

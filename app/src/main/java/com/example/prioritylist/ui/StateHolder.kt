@@ -94,6 +94,7 @@ class StateHolder(
         var emptyName by mutableStateOf(false)  //emptyName
         var priorityOverflowError by mutableStateOf(false) //if priority number is too big
         var settingsOverflowError by mutableStateOf(false) //if settings number is too big
+        var priorityNumberFormatError by mutableStateOf(false)  //if string is not a number
 
         var taskBottomSheetExpanded by mutableStateOf(true) //a state flag indicating if bottomSheet is expanded
 
@@ -112,6 +113,15 @@ class StateHolder(
             priorityOverflowError = true
         }
 
+        fun switchIndex() { //triggers animation of the visible AnimatedVisibility component based on visible attribute
+            if (visible == true)
+                firstVisibleState.targetState = !firstVisibleState.targetState
+            else
+                secondVisibleState.targetState = !secondVisibleState.targetState
+            visible = !visible
+            isAnimationPending = true
+        }
+
         //checks for overflowError and sets overflowError flag accordingly
         fun checkForOverflowError(str: String): Boolean {
             if (str.length > 3)
@@ -120,6 +130,15 @@ class StateHolder(
                 priorityOverflowError = false
             return priorityOverflowError
         }
+
+        fun checkForNumberFormatError(str: String): Boolean {
+            if (str.toUIntOrNull() == null)
+                priorityNumberFormatError = true
+            else
+                priorityNumberFormatError = false
+            return priorityNumberFormatError
+        }
+
 
         //clears all errors
         fun clearNameErrorFlags() {
@@ -197,12 +216,7 @@ class StateHolder(
         internal fun incrementIndex() {
             currentListIndex.value = (currentListIndex.value + 1) % 2
             index = currentListIndex.asStateFlow()
-            if (UI.visible == true)     //triggers animation of the visible AnimatedVisibility component based on visible attribute
-                UI.firstVisibleState.targetState = !UI.firstVisibleState.targetState
-            else
-                UI.secondVisibleState.targetState = !UI.secondVisibleState.targetState
-            UI.visible = !UI.visible
-            UI.isAnimationPending = true
+            UI.switchIndex() //triggers animation of the visible AnimatedVisibility component based on visible attribute
         }
 
         fun isEmpty(): Boolean {

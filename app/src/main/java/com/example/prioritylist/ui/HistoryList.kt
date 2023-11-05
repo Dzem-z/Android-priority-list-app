@@ -65,14 +65,14 @@ fun HistoryList(
             .fillMaxHeight()
     ) {
         items(
-            list,
-            key = { it.it.name }
-        ) { item ->
+            count = list.size,
+            key = { list[it].it.name }
+        ) { index ->
             HistoryTaskTile(
-                tile = item,
+                tile = list[index],
                 modifier = Modifier
                     .animateItemPlacement()
-                    .pointerInput(item) {
+                    .pointerInput(list[index]) {
                         detectTapGestures(
                             onPress = {},
                             onDoubleTap = {},
