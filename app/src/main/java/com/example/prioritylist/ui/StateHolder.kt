@@ -43,8 +43,6 @@ import java.util.Date
 *  */
 
 class StateHolder(
-    private val listRepository: ListRepository,
-    private val mainRepository: MainRepository,
     private val mainPageRepository: MainPage,
     private val userPreferencesRepository: UserPreferencesRepository
     ) : ViewModel() {
@@ -298,7 +296,7 @@ class StateHolder(
 
     }
 
-    private val dataManager = DataManager(mainPage = mainPageRepository, listRepository = listRepository, mainRepository = mainRepository)  //an instance of DataManager
+    private val dataManager = DataManager(mainPage = mainPageRepository)  //an instance of DataManager
 
     val Read = ReadViewModel()
 

@@ -1,5 +1,6 @@
 package com.example.prioritylist.data.backend
 
+import androidx.compose.ui.graphics.Color
 import com.example.prioritylist.data.backend.Category
 import java.util.Calendar
 import java.util.Date
@@ -164,4 +165,12 @@ data class ModifiableTask(
     var id: Int = 0,
     var description: String = "",
     var name: String = ""
+)
+
+data class Category(
+    val name: String,
+    val color: Color,
+    val description: String,
+    val priority: Int,
+    val id: Int
 )

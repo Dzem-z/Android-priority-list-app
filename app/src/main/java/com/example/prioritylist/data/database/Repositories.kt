@@ -40,3 +40,13 @@ interface ListRepository {
 
     suspend fun updateDateOfCompletion(name: String, listID: Int, dateOfCompletion: Date)
 }
+
+interface CategoryRepository {
+    suspend fun add(categoryEntity: CategoryEntity)
+
+    suspend fun delete(categoryEntity: CategoryEntity)
+
+    fun loadListOfCategories(): List<CategoryEntity>
+
+    fun getCategoryByID(id: Int): CategoryEntity
+}

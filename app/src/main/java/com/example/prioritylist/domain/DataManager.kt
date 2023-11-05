@@ -5,6 +5,7 @@ import com.example.prioritylist.data.backend.MainPage
 import com.example.prioritylist.data.backend.Status
 import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.data.database.CategoryRepository
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.MainRepository
 import java.util.Date
@@ -17,9 +18,7 @@ import java.util.Date
  * */
 
 class DataManager(
-    private val mainRepository: MainRepository,
-    private val listRepository: ListRepository,
-    private val mainPage: MainPage = MainPage(listRepository, mainRepository),
+    private val mainPage: MainPage
 ) {
 
     //suspended function that adds task to the current list

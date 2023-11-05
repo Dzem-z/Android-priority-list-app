@@ -75,3 +75,13 @@ class OfflineListRepository(private val listDao: ListDao): ListRepository {
     = listDao.updateDateOfCompletion(name, listID, dateOfCompletion)
 
 }
+
+class OfflineCategoryRepository(private val categoryDao: CategoryDao): CategoryRepository {
+    override suspend fun add(categoryEntity: CategoryEntity) = categoryDao.add(categoryEntity)
+
+    override suspend fun delete(categoryEntity: CategoryEntity) = categoryDao.delete(categoryEntity.categoryID)
+
+    override fun loadListOfCategories(): List<CategoryEntity> = categoryDao.loadListOfCategories()
+
+    override fun getCategoryByID(id: Int): CategoryEntity = categoryDao.getCategoryByID(id)
+}

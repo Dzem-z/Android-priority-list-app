@@ -15,6 +15,7 @@ import com.example.prioritylist.data.backend.StatusCodes
 import com.example.prioritylist.data.backend.Task
 import com.example.prioritylist.data.backend.TaskList
 import com.example.prioritylist.data.backend.TaskTypes
+import com.example.prioritylist.data.database.CategoryRepository
 import com.example.prioritylist.data.database.ListEntity
 import com.example.prioritylist.data.database.ListRepository
 import com.example.prioritylist.data.database.MainRepository
@@ -26,7 +27,8 @@ import java.util.Date
 
 class MainPage(
     private val listRepository: ListRepository,
-    private val mainRepository: MainRepository
+    private val mainRepository: MainRepository,
+    private val categoryRepository: CategoryRepository
 ) {
 
     private val listOfLists: MutableList<TaskList<*>> = mutableListOf<TaskList<*>>()
@@ -66,7 +68,7 @@ class MainPage(
                     i.dateOfCreation,
                     listRepository,
                     mainRepository.loadTaskListByID(i.listID),
-                    mainRepository.loadHistoryListByID(i.listID)
+                    mainRepository.loadHistoryListByID(i.listID),
                 )
             )
         }
