@@ -67,7 +67,24 @@ interface MainDao {
 
     @Query("SELECT * FROM TasksTable WHERE listID = :listID AND dateOfCompletion IS NOT NULL")
     fun loadHistoryListByID(listID: Int): List<TaskEntity>
+}
 
+/**
+ * Dao used by [OfflineCategoryRepository]
+ */
 
+@Dao
+interface CategoryDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun add(categoryEntity: CategoryEntity)
+
+    @Query("DELETE FROM CategoriesTable WHERE categoryID = :categoryID")
+    suspend fun delete(categoryID: Int)
+
+    @Query("SELECT * FROM CategoriesTable")
+    fun loadListOfCategories(): List<CategoryEntity>
+
+    @Query("SELECT * FROM CategoriesTable WHERE categoryID = :id")
+    fun getCategoryByID(id: Int): CategoryEntity
 }

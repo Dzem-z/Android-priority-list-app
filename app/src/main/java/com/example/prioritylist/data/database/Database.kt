@@ -6,12 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [TaskEntity::class, ListEntity::class], version = 1, exportSchema = false)
+@Database(entities = [TaskEntity::class, ListEntity::class, CategoryEntity::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class database : RoomDatabase() {
 
     abstract fun listDao(): ListDao
     abstract fun mainDao(): MainDao
+    abstract fun categoryDao(): CategoryDao
 
     companion object {
         @Volatile

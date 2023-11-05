@@ -1,5 +1,6 @@
 package com.example.prioritylist.data.database
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.TypeConverter
 import com.example.prioritylist.data.backend.TaskTypes
 import java.time.Instant
@@ -44,5 +45,15 @@ class Converters {
             6 -> TaskTypes.DEADLINE_PRIORITY_CATEGORY
             else -> null
         }
+    }
+
+    @TypeConverter
+    fun colorToULong(color: Color): ULong {
+        return color.value
+    }
+
+    @TypeConverter
+    fun ULongToColor(ulong: ULong): Color {
+        return Color(ulong)
     }
 }
